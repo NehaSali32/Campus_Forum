@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Forum | Academic Discussion &amp; College Communication</title>
+    <meta name="description" content="Campus Forum is the verified academic discussion and campus communication platform for students, faculty, and administrative staff.">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit;">
+                <div class="brand-icon">CF</div>
+                <div>
+                    <div class="brand-title">Campus Forum</div>
+                    <div class="brand-subtitle">Academic Discussion &amp; Campus Communication Platform</div>
+                </div>
+            </a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container">
+            <!-- Populated via app.js -->
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        
+        <!-- Section 1: Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-pill-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <span>Verified Academic Portal &bull; Campus Forum</span>
+                </div>
+                <h1>Connect. Discuss. Learn.</h1>
+                <p>Campus Forum connects students, faculty, and college administration for verified academic discussions, peer collaboration, official announcements, and departmental resource sharing.</p>
+                
+                <div class="hero-actions">
+                    <a href="/forum" class="btn btn-primary btn-lg" style="display:inline-flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>Explore Discussions</span>
+                    </a>
+                    <a href="/notices" class="btn btn-outline btn-lg" style="display:inline-flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <span>View Notices</span>
+                    </a>
+                </div>
+
+                <!-- Urgent Notice Ticker (Only displays if active urgent notice exists) -->
+                <div class="ticker-container" id="ticker-container" style="display:none; margin-top:20px;">
+                    <div class="ticker-badge">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <span>Urgent Circular</span>
+                    </div>
+                    <div class="ticker-content" id="ticker-text">Loading notices...</div>
+                    <a href="/notices" class="btn btn-sm">Read Notice &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Platform Statistics (Real Database Records) -->
+        <section class="stats-grid" aria-label="Platform Statistics">
+            <div class="stat-card navy">
+                <div class="stat-icon" style="background:var(--primary-light); color:var(--navy);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-students">0</div>
+                    <div class="stat-label">Registered Students</div>
+                </div>
+            </div>
+            <div class="stat-card forest">
+                <div class="stat-icon" style="background:var(--forest-light); color:var(--forest);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-faculty">0</div>
+                    <div class="stat-label">Faculty Members</div>
+                </div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-icon" style="background:var(--warning-light); color:var(--warning);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-topics">0</div>
+                    <div class="stat-label">Active Discussions</div>
+                </div>
+            </div>
+            <div class="stat-card terracotta">
+                <div class="stat-icon" style="background:var(--terracotta-light); color:var(--terracotta);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-notices">0</div>
+                    <div class="stat-label">Published Notices</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content 2-Column Grid: Notices & Discussions -->
+        <div class="feed-grid" style="margin-top:32px;">
+            
+            <!-- Section 3: Latest Official Notices -->
+            <div class="feed-column">
+                <div class="feed-header">
+                    <h2 class="feed-title" style="display:flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <span>Latest Official Notices</span>
+                    </h2>
+                    <a href="/notices" class="btn btn-sm btn-outline">All Notices &rarr;</a>
+                </div>
+                <div id="home-notices-container">
+                    <div style="padding:24px; text-align:center; color:var(--muted);">Loading notices...</div>
+                </div>
+            </div>
+
+            <!-- Section 4: Recent Discussions -->
+            <div class="feed-column">
+                <div class="feed-header">
+                    <h2 class="feed-title" style="display:flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary);"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                        <span>Recent Discussions</span>
+                    </h2>
+                    <a href="/forum" class="btn btn-sm btn-outline">Join Forum &rarr;</a>
+                </div>
+                <div id="home-topics-container">
+                    <div style="padding:24px; text-align:center; color:var(--muted);">Loading discussions...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section 5 & 6: Events and Academic Resources -->
+        <div class="feed-grid" style="margin-top:32px;">
+            
+            <!-- Section 5: Upcoming Campus Events -->
+            <div class="feed-column">
+                <div class="feed-header">
+                    <h2 class="feed-title" style="display:flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--forest);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Upcoming Campus Events</span>
+                    </h2>
+                    <a href="/events" class="btn btn-sm btn-outline">Explore &rarr;</a>
+                </div>
+                <div id="home-events-container">
+                    <div style="padding:20px; text-align:center; color:var(--muted);">Loading events...</div>
+                </div>
+            </div>
+
+            <!-- Section 6: Academic Resources -->
+            <div class="feed-column">
+                <div class="feed-header">
+                    <h2 class="feed-title" style="display:flex; align-items:center; gap:8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--navy);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Academic Resources</span>
+                    </h2>
+                    <a href="/resources" class="btn btn-sm btn-outline">All Resources &rarr;</a>
+                </div>
+                <div id="home-resources-container">
+                    <div style="padding:20px; text-align:center; color:var(--muted);">Loading resources...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section 7: How Campus Forum Works -->
+        <section style="margin-top:48px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px 30px; box-shadow:var(--shadow-sm);">
+            <div style="text-align:center; max-width:640px; margin:0 auto 30px;">
+                <h2 style="font-size:1.45rem; font-weight:800; color:var(--dark);">How Campus Forum Works</h2>
+                <p style="color:var(--muted); font-size:0.92rem; margin-top:6px;">A structured academic environment designed for clear communication, peer support, and verified answers.</p>
+            </div>
+            
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:24px;">
+                <div style="padding:20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--primary-light); color:var(--primary); display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">1</div>
+                    <h3 style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:6px;">Sign In</h3>
+                    <p style="font-size:0.85rem; color:var(--dark-muted); line-height:1.5;">Authenticate using your official college credentials or register with your institutional PRN.</p>
+                </div>
+                <div style="padding:20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--forest-light); color:var(--forest); display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">2</div>
+                    <h3 style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:6px;">Ask or Explore</h3>
+                    <p style="font-size:0.85rem; color:var(--dark-muted); line-height:1.5;">Search categorized discussions, syllabus queries, coding issues, or start a new thread.</p>
+                </div>
+                <div style="padding:20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--warning-light); color:var(--warning); display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">3</div>
+                    <h3 style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:6px;">Discuss &amp; Learn</h3>
+                    <p style="font-size:0.85rem; color:var(--dark-muted); line-height:1.5;">Collaborate with classmates and receive answers verified with official faculty badges.</p>
+                </div>
+                <div style="padding:20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);">
+                    <div style="width:36px; height:36px; border-radius:50%; background:var(--terracotta-light); color:var(--terracotta); display:flex; align-items:center; justify-content:center; font-weight:800; margin-bottom:12px;">4</div>
+                    <h3 style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:6px;">Stay Updated</h3>
+                    <p style="font-size:0.85rem; color:var(--dark-muted); line-height:1.5;">Receive official circulars, exam schedules, and department notices with zero misinformation.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Notice Quick View Modal -->
+    <div class="modal-backdrop" id="notice-modal">
+        <div class="modal-content" style="max-width:650px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-notice-title">Notice Details</h3>
+                <button class="modal-close" onclick="App.closeModal('notice-modal')">&times;</button>
+            </div>
+            <div class="modal-meta" id="modal-notice-meta" style="margin-bottom:14px; font-size:0.85rem; color:var(--muted); line-height:1.5;"></div>
+            <div class="modal-body" id="modal-notice-body" style="line-height:1.75; white-space:pre-line; color:var(--dark); font-size:0.95rem;"></div>
+            <div id="modal-notice-attachment" style="margin-top:16px;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; gap:10px;">
+                <div id="modal-ack-area"></div>
+                <button type="button" class="btn btn-outline" onclick="App.closeModal('notice-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 8: Professional Institutional Footer -->
+    <footer class="footer">
+        <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:30px; text-align:left; margin-bottom:24px;">
+            <div>
+                <div style="font-weight:800; font-size:1.1rem; color:var(--dark); display:flex; align-items:center; gap:8px;">
+                    <span style="width:24px; height:24px; border-radius:4px; background:var(--primary); color:#ffffff; font-size:0.75rem; display:inline-flex; align-items:center; justify-content:center; font-weight:800;">CF</span>
+                    <span>Campus Forum</span>
+                </div>
+                <p style="font-size:0.85rem; color:var(--muted); margin-top:10px; line-height:1.6;">
+                    The official collegiate platform for verified academic questions, course discussions, and institutional circulars.
+                </p>
+            </div>
+            <div>
+                <div style="font-weight:700; font-size:0.92rem; color:var(--dark); margin-bottom:10px;">Platform Links</div>
+                <ul style="list-style:none; padding:0; margin:0; font-size:0.85rem; line-height:2;">
+                    <li><a href="/" style="color:var(--muted); text-decoration:none;">Home</a></li>
+                    <li><a href="/forum" style="color:var(--muted); text-decoration:none;">Academic Discussions</a></li>
+                    <li><a href="/notices" style="color:var(--muted); text-decoration:none;">Official Notices</a></li>
+                    <li><a href="/events" style="color:var(--muted); text-decoration:none;">Campus Events</a></li>
+                    <li><a href="/resources" style="color:var(--muted); text-decoration:none;">Academic Resources</a></li>
+                </ul>
+            </div>
+            <div>
+                <div style="font-weight:700; font-size:0.92rem; color:var(--dark); margin-bottom:10px;">Academic Conduct</div>
+                <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">
+                    All contributions are subject to collegiate academic integrity guidelines. Faculty-verified answers provide definitive curriculum guidance.
+                </p>
+            </div>
+            <div>
+                <div style="font-weight:700; font-size:0.92rem; color:var(--dark); margin-bottom:10px;">Technical Stack</div>
+                <p style="font-size:0.85rem; color:var(--muted); line-height:1.6;">
+                    Engineered with Spring Boot 3, Java 17, Hibernate ORM, MySQL 8, BCrypt security, and Vanilla JavaScript.
+                </p>
+            </div>
+        </div>
+        <div style="border-top:1px solid var(--border); padding-top:16px; font-size:0.82rem; color:var(--muted);">
+            &copy; 2026 Campus Forum &bull; Academic Discussion &amp; Campus Communication Platform
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        async function loadHomeDashboard() {
+            await Promise.all([
+                loadStats(),
+                loadUrgentTicker(),
+                loadHomeNotices(),
+                loadHomeTopics(),
+                loadHomeEvents(),
+                loadHomeResources()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/stats/summary');
+                if (!res.ok) return;
+                const json = await res.json();
+                const d = json.data || {};
+                document.getElementById('stat-students').innerText = d.totalStudents || 0;
+                document.getElementById('stat-faculty').innerText = d.totalFaculty || 0;
+                document.getElementById('stat-topics').innerText = d.totalTopics || 0;
+                document.getElementById('stat-notices').innerText = d.totalNotices || 0;
+            } catch (e) {
+                console.error('Failed to load stats', e);
+            }
+        }
+
+        async function loadUrgentTicker() {
+            try {
+                const res = await fetch('/api/notices?priority=Urgent');
+                if (!res.ok) return;
+                const json = await res.json();
+                const urgentList = json.data || [];
+                const ticker = document.getElementById('ticker-container');
+                if (urgentList.length > 0) {
+                    const topNotice = urgentList[0];
+                    document.getElementById('ticker-text').innerText = topNotice.title;
+                    ticker.style.display = 'flex';
+                } else {
+                    ticker.style.display = 'none';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadHomeNotices() {
+            const container = document.getElementById('home-notices-container');
+            try {
+                const res = await fetch('/api/notices/recent');
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding:28px; text-align:center; color:var(--muted); font-size:0.9rem;">No official notices available.</div>';
+                    return;
+                }
+
+                container.innerHTML = list.slice(0, 4).map(n => {
+                    const priorityClass = n.priority ? 'badge-' + n.priority.toLowerCase() : 'badge-normal';
+                    const deptTag = n.department ? `<span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(n.department.code)}</span>` : '<span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--dark-muted);">All Campus</span>';
+                    const hasAttachment = n.attachmentUrl ? `<span style="color:var(--primary); display:inline-flex; align-items:center; gap:3px;">${App.icon('paperclip', 12)} Attachment</span>` : '';
+
+                    return `
+                        <div class="card ${n.pinned ? 'card-pinned' : ''}" style="margin-bottom:12px; cursor:pointer;" onclick="openNoticeModal(${n.id})">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
+                                <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                                    <span class="${priorityClass}">● ${App.escapeHtml(n.priority || 'Normal')}</span>
+                                    ${deptTag}
+                                    <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--dark); font-size:0.75rem;">${App.escapeHtml(n.category)}</span>
+                                </div>
+                                <span style="font-size:0.75rem; color:var(--muted); display:inline-flex; align-items:center; gap:3px;">
+                                    ${App.icon('clock', 12)}
+                                    <span>${App.formatDate(n.createdAt)}</span>
+                                </span>
+                            </div>
+                            <h3 style="font-size:1.02rem; font-weight:700; color:var(--dark); margin-bottom:6px; line-height:1.4;">${App.escapeHtml(n.title)}</h3>
+                            <p style="font-size:0.86rem; color:var(--dark-muted); line-height:1.55;">${App.escapeHtml(n.content.substring(0, 130))}${n.content.length > 130 ? '...' : ''}</p>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:0.78rem; color:var(--muted); border-top:1px solid var(--border); padding-top:8px;">
+                                <span style="display:inline-flex; align-items:center; gap:4px;">
+                                    ${App.icon('user', 13)}
+                                    <span>${App.escapeHtml(n.author ? n.author.fullName : 'Faculty Administration')}</span>
+                                </span>
+                                <span style="display:inline-flex; align-items:center; gap:4px;">${hasAttachment ? hasAttachment + ' &bull; ' : ''}${App.icon('eye', 13)} ${n.viewsCount || 0} views</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="padding:20px; text-align:center; color:var(--danger);">Failed to load notices.</div>';
+            }
+        }
+
+        async function loadHomeTopics() {
+            const container = document.getElementById('home-topics-container');
+            try {
+                const res = await fetch('/api/forum/topics/recent');
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding:28px; text-align:center; color:var(--muted); font-size:0.9rem;">No discussions yet. Start the first conversation.</div>';
+                    return;
+                }
+
+                container.innerHTML = list.slice(0, 4).map(t => {
+                    const authorBadges = App.getAuthorBadges(t.author);
+                    const solvedBadge = t.solved 
+                        ? `<span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">${App.icon('checkCircle', 12)} Solved</span>`
+                        : `<span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--dark-muted);">Open</span>`;
+
+                    return `
+                        <div class="card" style="margin-bottom:12px; padding:16px; cursor:pointer;" onclick="window.location.href='/topic-detail?id=${t.id}'">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                                <div style="display:flex; gap:6px; align-items:center;">
+                                    <span class="badge" style="background:#f3e8ff; color:#7c3aed; font-weight:600;">${App.escapeHtml(t.category ? t.category.name : 'General')}</span>
+                                    ${solvedBadge}
+                                </div>
+                                <span style="font-size:0.75rem; color:var(--muted); display:inline-flex; align-items:center; gap:3px;">
+                                    ${App.icon('clock', 12)}
+                                    <span>${App.formatDate(t.createdAt)}</span>
+                                </span>
+                            </div>
+                            <h3 style="font-size:1.02rem; font-weight:700; color:var(--dark); margin-bottom:8px; line-height:1.4;">${App.escapeHtml(t.title)}</h3>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--muted); border-top:1px solid var(--border); padding-top:8px;">
+                                <span style="display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('user', 13)}
+                                    <span style="font-weight:600; color:var(--dark);">${App.escapeHtml(authorBadges.name)}</span>
+                                </span>
+                                <div style="display:inline-flex; align-items:center; gap:10px;">
+                                    <span style="display:inline-flex; align-items:center; gap:3px;">${App.icon('thumbsUp', 12)} ${t.likesCount || 0}</span>
+                                    <span>&bull;</span>
+                                    <span style="display:inline-flex; align-items:center; gap:3px;">${App.icon('messageCircle', 12)} ${t.commentsCount || 0} replies</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="padding:14px; text-align:center; color:var(--muted);">Discussions temporarily unavailable.</div>';
+            }
+        }
+
+        async function loadHomeEvents() {
+            const container = document.getElementById('home-events-container');
+            try {
+                const res = await fetch('/api/events/upcoming');
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding:24px; text-align:center; color:var(--muted); font-size:0.88rem;">No upcoming events.</div>';
+                    return;
+                }
+
+                container.innerHTML = list.slice(0, 3).map(ev => `
+                    <div class="card" style="margin-bottom:10px; padding:14px; border-left:4px solid var(--forest);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">${App.escapeHtml(ev.category || 'Event')}</span>
+                            <span style="font-size:0.75rem; color:var(--muted); display:inline-flex; align-items:center; gap:3px;">
+                                ${App.icon('calendar', 12)}
+                                <span>${ev.eventDate || ''} ${ev.eventTime ? 'at ' + App.escapeHtml(ev.eventTime) : ''}</span>
+                            </span>
+                        </div>
+                        <h4 style="font-size:0.95rem; font-weight:700; color:var(--dark); margin-bottom:4px; line-height:1.35;">${App.escapeHtml(ev.title)}</h4>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--muted); margin-top:8px;">
+                            <span style="display:inline-flex; align-items:center; gap:4px;">
+                                ${App.icon('mapPin', 12)}
+                                <span>${App.escapeHtml(ev.location || 'Campus')}</span>
+                            </span>
+                            <a href="/events" class="btn btn-sm btn-outline" style="padding:2px 8px; font-size:0.75rem;">View</a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="padding:14px; text-align:center; color:var(--muted);">No upcoming events.</div>';
+            }
+        }
+
+        async function loadHomeResources() {
+            const container = document.getElementById('home-resources-container');
+            try {
+                const res = await fetch('/api/resources');
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding:24px; text-align:center; color:var(--muted); font-size:0.88rem;">No academic resources available.</div>';
+                    return;
+                }
+
+                container.innerHTML = list.slice(0, 3).map(r => `
+                    <div class="card" style="margin-bottom:10px; padding:14px; border-left:4px solid var(--navy);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(r.category || 'Academic')}</span>
+                            <span class="badge" style="background:var(--bg); border:1px solid var(--border); font-size:0.72rem;">${App.escapeHtml(r.resourceType || 'DOCUMENT')}</span>
+                        </div>
+                        <h4 style="font-size:0.95rem; font-weight:700; color:var(--dark); margin-bottom:4px; line-height:1.35;">${App.escapeHtml(r.title)}</h4>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:var(--muted); margin-top:8px;">
+                            <span style="color:var(--dark-muted);">${App.escapeHtml(r.department ? r.department.name : 'General Campus')}</span>
+                            <a href="${r.linkUrl || r.filePath || '/resources'}" target="_blank" class="btn btn-sm btn-outline" style="padding:2px 8px; font-size:0.75rem;">Access</a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="padding:14px; text-align:center; color:var(--muted);">No academic resources available.</div>';
+            }
+        }
+
+        async function openNoticeModal(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}`);
+                const json = await res.json();
+                const data = json.data || {};
+                const n = data.notice;
+                if (!n) return;
+
+                document.getElementById('modal-notice-title').innerText = n.title;
+                document.getElementById('modal-notice-meta').innerHTML = `
+                    <span>Published by <strong>${App.escapeHtml(n.author ? n.author.fullName : 'Faculty Administration')}</strong></span> &bull; 
+                    <span>${App.formatDate(n.createdAt)}</span> &bull; 
+                    <span>Category: <strong>${App.escapeHtml(n.category)}</strong></span>
+                `;
+                document.getElementById('modal-notice-body').innerText = n.content;
+
+                const attachDiv = document.getElementById('modal-notice-attachment');
+                if (n.attachmentUrl) {
+                    attachDiv.innerHTML = `
+                        <a href="${n.attachmentUrl}" target="_blank" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                            ${App.icon('download', 14)}
+                            <span>Download Attachment (${App.escapeHtml(n.attachmentName || 'Document')})</span>
+                        </a>
+                    `;
+                } else {
+                    attachDiv.innerHTML = '';
+                }
+
+                const ackArea = document.getElementById('modal-ack-area');
+                if (data.hasAcknowledged) {
+                    ackArea.innerHTML = `<span style="color:var(--forest); font-weight:700; font-size:0.85rem; display:inline-flex; align-items:center; gap:4px;">${App.icon('checkCircle', 14)} Acknowledged (${data.ackCount || 0})</span>`;
+                } else if (App.currentUser) {
+                    ackArea.innerHTML = `<button class="btn btn-sm btn-primary" onclick="handleAcknowledgeNotice(${n.id})">Acknowledge Notice</button>`;
+                } else {
+                    ackArea.innerHTML = `<span style="font-size:0.82rem; color:var(--muted);">${data.ackCount || 0} acknowledgements</span>`;
+                }
+
+                App.openModal('notice-modal');
+            } catch (e) {
+                App.showToast('Failed to load notice details', 'error');
+            }
+        }
+
+        async function handleAcknowledgeNotice(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}/acknowledge`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Notice acknowledged.', 'success');
+                    openNoticeModal(id);
+                } else {
+                    App.showToast(json.message || 'Acknowledgement failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init().then(() => loadHomeDashboard());
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
+  <defs>
+    <linearGradient id="grad4" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="bgGrad4" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="76" fill="url(#bgGrad4)" stroke="#f59e0b" stroke-width="4"/>
+  <circle cx="80" cy="62" r="28" fill="url(#grad4)"/>
+  <path d="M40 134 C40 102 60 94 80 94 C100 94 120 102 120 134 Z" fill="url(#grad4)"/>
+  <text x="80" y="68" font-family="'Segoe UI', Arial, sans-serif" font-size="20" font-weight="bold" fill="#ffffff" text-anchor="middle">NS</text>
+</svg>

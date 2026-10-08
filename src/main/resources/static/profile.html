@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile &amp; Security | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .profile-header-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-sm);
+        }
+        .profile-avatar-large {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy), #2d5282);
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-upload-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            font-size: 0.65rem;
+            text-align: center;
+            padding: 4px 0;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Profile &amp; Account Settings</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/profile" class="active">Profile</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container profile-container">
+
+        <!-- Profile Hero Header -->
+        <section class="profile-header-card">
+            <div class="profile-avatar-large" id="avatar-container" onclick="triggerPhotoUpload()">
+                <div id="avatar-content">CC</div>
+                <div class="photo-upload-overlay">Change Photo</div>
+            </div>
+            <input type="file" id="photo-file-input" style="display:none;" accept="image/*" onchange="uploadProfilePhoto(event)">
+
+            <div style="flex:1;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+                    <h1 style="font-size:1.6rem; font-weight:800; color:var(--dark); margin:0;" id="prof-hero-name">Loading...</h1>
+                    <span class="badge" id="prof-hero-role-badge">USER</span>
+                </div>
+                <div style="color:var(--muted); font-size:0.92rem; margin-bottom:6px;" id="prof-hero-id">
+                    ID: --
+                </div>
+                <div style="color:var(--muted); font-size:0.85rem;" id="prof-hero-dept">
+                    Department: --
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Details & Security Sections -->
+        <div class="grid-2col" style="gap:24px;">
+            
+            <!-- Left: Personal & Academic Info Form -->
+            <div class="card">
+                <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Personal &amp; Academic Information
+                </h3>
+                
+                <form id="profile-edit-form" onsubmit="handleUpdateProfile(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="edit-fullname">Full Name *</label>
+                        <input type="text" id="edit-fullname" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="edit-email">Email Address</label>
+                        <input type="email" id="edit-email" class="form-control" readonly style="background:var(--bg); cursor:not-allowed;">
+                        <small style="color:var(--muted); font-size:0.75rem;">Official institutional email cannot be changed directly.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="edit-phone">Contact Phone Number</label>
+                        <input type="tel" id="edit-phone" class="form-control" placeholder="+91 98765 43210">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="edit-address">Address / City</label>
+                        <input type="text" id="edit-address" class="form-control" placeholder="e.g. Pune, Maharashtra">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="edit-bio">Short Academic Bio</label>
+                        <textarea id="edit-bio" class="form-control" style="min-height:80px;" placeholder="Research interests, hobbies, or career aspirations..."></textarea>
+                    </div>
+
+                    <div id="student-academic-group" style="display:none;">
+                        <div class="grid-2col" style="margin-bottom:0;">
+                            <div class="form-group">
+                                <label class="form-label" for="edit-prn">PRN / Roll Number</label>
+                                <input type="text" id="edit-prn" class="form-control" placeholder="e.g. 251101084">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-dept">Academic Department</label>
+                                <select id="edit-dept" class="form-control">
+                                    <option value="">-- Select Department --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-2col" style="margin-bottom:0;">
+                            <div class="form-group">
+                                <label class="form-label" for="edit-year">Academic Year</label>
+                                <select id="edit-year" class="form-control" onchange="handleProfileYearChange(this.value)">
+                                    <option value="First Year">First Year (F.Y.)</option>
+                                    <option value="Second Year">Second Year (S.Y.)</option>
+                                    <option value="Third Year">Third Year (T.Y.)</option>
+                                    <option value="Final Year">Final Year (Final Yr)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="edit-semester">Current Semester</label>
+                                <select id="edit-semester" class="form-control">
+                                    <option value="Semester 1">Semester 1</option>
+                                    <option value="Semester 2">Semester 2</option>
+                                    <option value="Semester 3">Semester 3</option>
+                                    <option value="Semester 4">Semester 4</option>
+                                    <option value="Semester 5">Semester 5</option>
+                                    <option value="Semester 6">Semester 6</option>
+                                    <option value="Semester 7">Semester 7</option>
+                                    <option value="Semester 8">Semester 8</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="form-group">
+                            <label class="form-label" for="edit-linkedin">LinkedIn Profile URL</label>
+                            <input type="url" id="edit-linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit-github">GitHub Profile URL</label>
+                            <input type="url" id="edit-github" class="form-control" placeholder="https://github.com/username">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; margin-top:20px;">
+                        <button type="submit" id="btn-save-profile" class="btn btn-primary">Save Profile Changes</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right: Account Security & Password Change -->
+            <div class="card">
+                <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Account Security
+                </h3>
+                <p style="color:var(--muted); font-size:0.85rem; margin-bottom:20px;">
+                    Ensure your account uses a secure password. Passwords are saved with salted SHA-256 cryptographic protection.
+                </p>
+
+                <form id="password-form" onsubmit="handleChangePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="pwd-current">Current Password *</label>
+                        <input type="password" id="pwd-current" class="form-control" placeholder="Enter existing password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="pwd-new">New Password *</label>
+                        <input type="password" id="pwd-new" class="form-control" placeholder="Minimum 6 characters" minlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="pwd-confirm">Confirm New Password *</label>
+                        <input type="password" id="pwd-confirm" class="form-control" placeholder="Re-type new password" minlength="6" required>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; margin-top:20px;">
+                        <button type="submit" id="btn-change-pwd" class="btn btn-outline" style="border-color:var(--navy); color:var(--navy);">
+                            Update Password
+                        </button>
+                    </div>
+                </form>
+
+                <hr style="margin:28px 0; border:0; border-top:1px solid var(--border);">
+
+                <div style="background:var(--bg); padding:16px; border-radius:var(--radius);">
+                    <div style="font-weight:700; font-size:0.9rem; color:var(--dark); margin-bottom:4px;">Session Management</div>
+                    <p style="color:var(--muted); font-size:0.82rem; margin-bottom:12px;">Sign out across your current browser session.</p>
+                    <button class="btn btn-outline" style="font-size:0.85rem; color:var(--danger); border-color:var(--border); display:inline-flex; align-items:center; gap:6px;" onclick="App.logout()">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Log Out of Campus Forum
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; User Security &amp; Identity Management
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let profileUser = null;
+        let profileDepartments = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            profileUser = App.currentUser;
+
+            if (!profileUser) {
+                window.location.replace('/login');
+                return;
+            }
+
+            await loadProfileDepartments();
+            renderProfileData();
+        });
+
+        async function loadProfileDepartments() {
+            try {
+                const res = await fetch('/api/departments');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    profileDepartments = json.data;
+                    const deptSelect = document.getElementById('edit-dept');
+                    if (deptSelect) {
+                        deptSelect.innerHTML = '<option value="">-- Select Department --</option>' +
+                            profileDepartments.map(d => `<option value="${d.id}">${d.name} (${d.code || 'DEPT'})</option>`).join('');
+                    }
+                }
+            } catch (err) {
+                console.warn('Failed to load departments in profile:', err);
+            }
+        }
+
+        function renderProfileData() {
+            document.getElementById('prof-hero-name').textContent = profileUser.fullName || 'User';
+            
+            const roleBadge = document.getElementById('prof-hero-role-badge');
+            roleBadge.textContent = profileUser.role || 'USER';
+            if (profileUser.role === 'ADMIN') roleBadge.className = 'badge urgent';
+            else if (profileUser.role === 'FACULTY') roleBadge.className = 'badge important';
+            else roleBadge.className = 'badge';
+
+            const idLabel = profileUser.role === 'STUDENT' 
+                ? (profileUser.prnRollNo ? `PRN: ${profileUser.prnRollNo}` : 'PRN: Not Set')
+                : (profileUser.employeeId ? `Employee ID: ${profileUser.employeeId}` : `Role: ${profileUser.role}`);
+            document.getElementById('prof-hero-id').textContent = idLabel;
+
+            const deptName = profileUser.department ? profileUser.department.name : 'Not assigned to a department';
+            document.getElementById('prof-hero-dept').textContent = `Department: ${deptName}`;
+
+            updateAvatarDisplay();
+
+            // Populate Form Fields
+            document.getElementById('edit-fullname').value = profileUser.fullName || '';
+            document.getElementById('edit-email').value = profileUser.email || '';
+            document.getElementById('edit-phone').value = profileUser.phone || '';
+            document.getElementById('edit-address').value = profileUser.address || '';
+            document.getElementById('edit-bio').value = profileUser.bio || '';
+            document.getElementById('edit-linkedin').value = profileUser.linkedin || '';
+            document.getElementById('edit-github').value = profileUser.github || '';
+
+            if (profileUser.role === 'STUDENT' || profileUser.role === 'CLUB_LEADER') {
+                const acadGroup = document.getElementById('student-academic-group');
+                if (acadGroup) acadGroup.style.display = 'block';
+
+                const prnEl = document.getElementById('edit-prn');
+                if (prnEl) prnEl.value = profileUser.prnRollNo || '';
+
+                const deptEl = document.getElementById('edit-dept');
+                if (deptEl && profileUser.department) deptEl.value = profileUser.department.id;
+
+                const yearEl = document.getElementById('edit-year');
+                const semEl = document.getElementById('edit-semester');
+                if (yearEl) yearEl.value = profileUser.year || 'Second Year';
+                if (semEl) semEl.value = profileUser.semester || 'Semester 3';
+
+                const yrText = profileUser.year ? ` &bull; ${profileUser.year}` : '';
+                const semText = profileUser.semester ? ` &bull; ${profileUser.semester}` : '';
+                document.getElementById('prof-hero-id').innerHTML = `${profileUser.prnRollNo ? 'PRN: ' + profileUser.prnRollNo : 'PRN: Not Set'}${yrText}${semText}`;
+            }
+        }
+
+        function handleProfileYearChange(year) {
+            const semSelect = document.getElementById('edit-semester');
+            if (!semSelect) return;
+            if (year === 'First Year') semSelect.value = 'Semester 1';
+            else if (year === 'Second Year') semSelect.value = 'Semester 3';
+            else if (year === 'Third Year') semSelect.value = 'Semester 5';
+            else if (year === 'Final Year') semSelect.value = 'Semester 7';
+        }
+
+        function updateAvatarDisplay() {
+            const avatarContent = document.getElementById('avatar-content');
+            if (profileUser.profileImage) {
+                avatarContent.innerHTML = `<img src="${profileUser.profileImage}" alt="${profileUser.fullName}">`;
+            } else {
+                avatarContent.textContent = (profileUser.fullName || 'CC').substring(0, 2).toUpperCase();
+            }
+        }
+
+        function triggerPhotoUpload() {
+            document.getElementById('photo-file-input').click();
+        }
+
+        async function uploadProfilePhoto(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/profile/upload-photo', {
+                    method: 'POST',
+                    body: formData
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Profile photo updated!', 'success');
+                    profileUser.profileImage = json.data.profileImage;
+                    updateAvatarDisplay();
+                } else {
+                    App.showToast(json.message || 'Photo upload failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while uploading photo', 'error');
+            }
+        }
+
+        async function handleUpdateProfile(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-profile');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const payload = {
+                fullName: document.getElementById('edit-fullname').value.trim(),
+                phone: document.getElementById('edit-phone').value.trim(),
+                address: document.getElementById('edit-address').value.trim(),
+                bio: document.getElementById('edit-bio').value.trim(),
+                linkedin: document.getElementById('edit-linkedin').value.trim(),
+                github: document.getElementById('edit-github').value.trim()
+            };
+
+            if (profileUser.role === 'STUDENT' || profileUser.role === 'CLUB_LEADER') {
+                const prnEl = document.getElementById('edit-prn');
+                if (prnEl) payload.prnRollNo = prnEl.value.trim();
+
+                const deptEl = document.getElementById('edit-dept');
+                if (deptEl && deptEl.value) payload.departmentId = parseInt(deptEl.value);
+
+                const yearEl = document.getElementById('edit-year');
+                const semEl = document.getElementById('edit-semester');
+                if (yearEl) payload.year = yearEl.value;
+                if (semEl) payload.semester = semEl.value;
+            }
+
+            try {
+                const res = await fetch('/api/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Profile saved successfully!', 'success');
+                    profileUser = json.data;
+                    App.currentUser = json.data;
+                    renderProfileData();
+                } else {
+                    App.showToast(json.message || 'Failed to update profile', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while updating profile', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Profile Changes';
+            }
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('pwd-current').value;
+            const newPassword = document.getElementById('pwd-new').value;
+            const confirmPassword = document.getElementById('pwd-confirm').value;
+
+            if (newPassword !== confirmPassword) {
+                App.showToast('New passwords do not match.', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('btn-change-pwd');
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+
+            try {
+                const res = await fetch('/api/auth/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Password changed successfully!', 'success');
+                    document.getElementById('password-form').reset();
+                } else {
+                    App.showToast(json.message || 'Failed to change password', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while updating password', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Password';
+            }
+        }
+    </script>
+</body>
+</html>

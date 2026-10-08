@@ -1,0 +1,19 @@
+{
+    "java.jdt.ls.java.home": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-25",
+            "path": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2",
+            "default": true
+        }
+    ],
+    "maven.executable.path": "C:\\Users\\hp\\.maven\\apache-maven-3.9.6\\bin\\mvn.cmd",
+    "terminal.integrated.env.windows": {
+        "JAVA_HOME": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2",
+        "PATH": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2\\bin;C:\\Users\\hp\\.maven\\apache-maven-3.9.6\\bin;${env:PATH}"
+    },
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
+}

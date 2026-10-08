@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration Console | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        .admin-sidebar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .admin-nav-item {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--muted);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-nav-item:hover {
+            color: var(--navy);
+            background: var(--bg);
+        }
+        .admin-nav-item.active {
+            color: var(--navy);
+            background: #e2e8f0;
+            font-weight: 700;
+        }
+        .badge-count {
+            margin-left: auto;
+            background: var(--terracotta);
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Campus Administration Console</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/admin" class="active">Admin Console</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container" id="admin-main-container">
+
+        <!-- Unauthorized Prompt (hidden by default) -->
+        <div id="admin-unauthorized" style="display:none; text-align:center; padding:80px 20px;">
+            <div style="font-size:3rem; margin-bottom:12px; display:flex; justify-content:center; color:var(--danger);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+            </div>
+            <h2 style="font-size:1.6rem; font-weight:800; color:var(--danger); margin-bottom:8px;">Administrative Privileges Required</h2>
+            <p style="color:var(--muted); max-width:480px; margin:0 auto 20px;">
+                You must be logged in as an Administrator (e.g. admin@college.ac.in) to access this institutional control center.
+            </p>
+            <a href="/login" class="btn btn-primary">Sign In as Admin</a>
+        </div>
+
+        <div id="admin-content" style="display:none;">
+            <!-- Header Banner -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <h1 style="font-size:1.75rem; font-weight:800; color:var(--dark); margin:0;">Campus Administration Center</h1>
+                    <p style="color:var(--muted); font-size:0.9rem; margin-top:4px;">Institutional governance, user access controls, academic departments, and event approvals</p>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="openPublishNoticeModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Publish Notice</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="openAddDeptModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>New Department</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Administration Layout: Sidebar + Viewport -->
+            <div class="admin-layout">
+                
+                <!-- Admin Sidebar -->
+                <aside class="admin-sidebar">
+                    <div class="admin-nav-item active" onclick="switchAdminSection('dashboard', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span>Overview</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('students', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                        <span>Student Directory</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('faculty', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>Faculty &amp; Leadership</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('users', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span>All Users</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('departments', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="12 3 2 10 22 10 12 3"></polyline><line x1="6" y1="10" x2="6" y2="21"></line><line x1="10" y1="10" x2="10" y2="21"></line><line x1="14" y1="10" x2="14" y2="21"></line><line x1="18" y1="10" x2="18" y2="21"></line></svg>
+                        <span>Departments</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('subjects', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>Curriculum Subjects</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('notices', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <span>Official Notices</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('moderation', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span>Forum Moderation</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('events', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        <span>Event Approvals</span>
+                        <span class="badge-count" id="badge-pending-events" style="display:none;">0</span>
+                    </div>
+                    <div class="admin-nav-item" onclick="switchAdminSection('clubs', this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+                        <span>Campus Clubs</span>
+                    </div>
+                </aside>
+
+                <!-- Admin Main Viewport -->
+                <div class="admin-viewport">
+
+                    <!-- SECTION 1: Overview Dashboard -->
+                    <section id="section-dashboard">
+                        <div class="stats-grid" style="margin-bottom:24px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                            <div class="stat-card">
+                                <div class="stat-icon blue">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-students">0</div>
+                                    <div class="stat-label">Students</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon purple">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-faculty">0</div>
+                                    <div class="stat-label">Faculty Staff</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#e0f2fe; color:#0369a1;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l9 4.9V17L12 22 3 17V6.9z"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-hods">0</div>
+                                    <div class="stat-label">Department HODs</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background:#fef3c7; color:#b45309;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-deans">0</div>
+                                    <div class="stat-label">College Deans</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon amber">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"></line><line x1="3" y1="10" x2="21" y2="10"></line><polyline points="12 3 2 10 22 10 12 3"></polyline><line x1="6" y1="10" x2="6" y2="21"></line><line x1="10" y1="10" x2="10" y2="21"></line><line x1="14" y1="10" x2="14" y2="21"></line><line x1="18" y1="10" x2="18" y2="21"></line></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-depts">0</div>
+                                    <div class="stat-label">Departments</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon green">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                </div>
+                                <div>
+                                    <div class="stat-value" id="kpi-notices">0</div>
+                                    <div class="stat-label">Notices Published</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2col">
+                            <div class="card">
+                                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:12px;">Quick Administrative Actions</h3>
+                                <div style="display:flex; flex-direction:column; gap:10px;">
+                                    <button class="btn btn-outline" style="text-align:left; justify-content:flex-start; gap:8px;" onclick="switchAdminSection('students', document.querySelectorAll('.admin-nav-item')[1])">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                                        Enroll New Student
+                                    </button>
+                                    <button class="btn btn-outline" style="text-align:left; justify-content:flex-start; gap:8px;" onclick="switchAdminSection('faculty', document.querySelectorAll('.admin-nav-item')[2])">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        Register Faculty / Appoint HOD &amp; Dean
+                                    </button>
+                                    <button class="btn btn-outline" style="text-align:left; justify-content:flex-start; gap:8px;" onclick="switchAdminSection('events', document.querySelectorAll('.admin-nav-item')[8])">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Review Pending Event Proposals
+                                    </button>
+                                    <button class="btn btn-outline" style="text-align:left; justify-content:flex-start; gap:8px;" onclick="switchAdminSection('clubs', document.querySelectorAll('.admin-nav-item')[9])">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                        Manage Campus Clubs &amp; Student Leaders
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                                    Platform System Status
+                                </h3>
+                                <div style="color:var(--muted); font-size:0.9rem; line-height:1.7;">
+                                    <div>Database: <strong>MySQL 8.0 (campus_connect_db)</strong></div>
+                                    <div>Platform Architecture: <strong>Spring Boot 3 + Java 17</strong></div>
+                                    <div>Security: <strong>SHA-256 Salted Hashing &amp; RBAC Guard</strong></div>
+                                    <div>Status: <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700;">SYSTEM OPERATIONAL</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION: Student Directory -->
+                    <section id="section-students" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                                        Student Enrollment &amp; Directory
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Manage student admissions, PRN identifiers, degree programs, and academic records</p>
+                                </div>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <input type="text" id="admin-student-search" class="form-control" placeholder="Search name, PRN, email..." style="width:220px; padding:6px 12px; font-size:0.88rem;" oninput="filterAdminStudents()">
+                                    <button class="btn btn-primary" onclick="openAddStudentModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        <span>+ Add Student</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>PRN / Roll No</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Program &amp; Class</th>
+                                            <th>Status</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-students-tbody">
+                                        <tr><td colspan="7" style="text-align:center; padding:30px;">Loading students...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION: Faculty & Leadership -->
+                    <section id="section-faculty" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        Faculty Members &amp; Academic Leadership
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Manage faculty staff, employee codes, designate HODs and institutional Deans</p>
+                                </div>
+                                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                    <input type="text" id="admin-faculty-search" class="form-control" placeholder="Search faculty name, emp ID..." style="width:200px; padding:6px 12px; font-size:0.88rem;" oninput="filterAdminFaculty()">
+                                    <button class="btn btn-primary" onclick="openAddFacultyModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        <span>+ Add Faculty</span>
+                                    </button>
+                                    <button class="btn btn-outline" onclick="openAssignHodModal()" style="font-weight:700; color:#0369a1; border-color:#0284c7;">
+                                        Appoint HOD
+                                    </button>
+                                    <button class="btn btn-outline" onclick="openAssignDeanModal()" style="font-weight:700; color:#b45309; border-color:#f59e0b;">
+                                        Appoint Dean
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Faculty Name</th>
+                                            <th>Employee ID</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Designation</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-faculty-tbody">
+                                        <tr><td colspan="8" style="text-align:center; padding:30px;">Loading faculty...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 2: User Directory -->
+                    <section id="section-users" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                        Registered Campus Directory
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Manage student PRNs, faculty employee credentials, and role privileges</p>
+                                </div>
+                                <div style="display:flex; gap:10px;">
+                                    <select id="user-role-filter" class="form-control" style="width:140px; padding:6px 10px;" onchange="loadAdminUsers()">
+                                        <option value="ALL">All Roles</option>
+                                        <option value="STUDENT">Students</option>
+                                        <option value="FACULTY">Faculty</option>
+                                        <option value="ADMIN">Admins</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Identifier / PRN</th>
+                                            <th>Email</th>
+                                            <th>Department</th>
+                                            <th>Role</th>
+                                            <th>Status</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-users-tbody">
+                                        <tr><td colspan="7" style="text-align:center; padding:30px;">Loading users...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 3: Departments -->
+                    <section id="section-departments" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+                                        Academic Departments
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Manage departments, assigned HODs, and academic managers</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openAddDeptModal()">+ Add Department</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Code</th>
+                                            <th>Department Name</th>
+                                            <th>Head of Department (HOD)</th>
+                                            <th>Manager</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-depts-tbody">
+                                        <tr><td colspan="5" style="text-align:center; padding:30px;">Loading departments...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 4: Subjects -->
+                    <section id="section-subjects" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                        Curriculum Subjects
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Manage courses, semester schemes, and faculty allotments</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openAddSubjectModal()">+ Add Subject</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject Code</th>
+                                            <th>Subject Name</th>
+                                            <th>Semester</th>
+                                            <th>Department</th>
+                                            <th>Allocated Faculty</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-subjects-tbody">
+                                        <tr><td colspan="6" style="text-align:center; padding:30px;">Loading subjects...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 5: Official Notices -->
+                    <section id="section-notices" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                        Institutional Notice Management
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Audit, publish, and delete official campus announcements</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openPublishNoticeModal()">+ Publish Notice</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Audience</th>
+                                            <th>Category</th>
+                                            <th>Priority</th>
+                                            <th>Date</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-notices-tbody">
+                                        <tr><td colspan="6" style="text-align:center; padding:30px;">Loading notices...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 6: Forum Moderation -->
+                    <section id="section-moderation" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                        Discussion Forum Moderation
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Monitor forum threads, close resolved topics, or flag inappropriate content</p>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Topic</th>
+                                            <th>Author</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Activity</th>
+                                            <th style="text-align:right;">Moderation Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-forum-tbody">
+                                        <tr><td colspan="6" style="text-align:center; padding:30px;">Loading discussions...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Moderation Reports Card -->
+                        <div class="card" style="margin-top:20px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <div>
+                                    <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                                        Reported Content Queue
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Flagged discussions and replies submitted by community members for review</p>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Target Type</th>
+                                            <th>Reported Item</th>
+                                            <th>Reporter</th>
+                                            <th>Reason</th>
+                                            <th>Status</th>
+                                            <th>Reported Date</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-reports-tbody">
+                                        <tr><td colspan="7" style="text-align:center; padding:30px;">Loading reports...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 7: Event Approvals -->
+                    <section id="section-events" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0; display:flex; align-items:center; gap:8px;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Campus Event Review &amp; Approvals
+                                    </h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Approve or reject events proposed by faculty and student clubs</p>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Event Title</th>
+                                            <th>Date &amp; Venue</th>
+                                            <th>Category</th>
+                                            <th>Organized By</th>
+                                            <th>Status</th>
+                                            <th style="text-align:right;">Decision</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-events-tbody">
+                                        <tr><td colspan="6" style="text-align:center; padding:30px;">Loading events...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- SECTION 8: Campus Clubs & Student Leaders -->
+                    <section id="section-clubs" style="display:none;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                                <div>
+                                    <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin:0;">Campus Clubs &amp; Student Leaders</h3>
+                                    <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Recognized student clubs, scope, and appointed student leadership directory</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="openAddClubModal()">+ Create New Club</button>
+                            </div>
+                            <div class="table-container">
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Club Name</th>
+                                            <th>Department / Scope</th>
+                                            <th>Appointed Student Leader</th>
+                                            <th>Description</th>
+                                            <th style="text-align:right;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-clubs-tbody">
+                                        <tr><td colspan="5" style="text-align:center; padding:30px;">Loading clubs...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add/Edit Student -->
+    <div class="modal-backdrop" id="student-modal">
+        <div class="modal-content" style="max-width:620px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="student-modal-title">Enroll New Student</h3>
+                <button class="modal-close" onclick="closeStudentModal()">&times;</button>
+            </div>
+            <form id="student-form" onsubmit="handleSaveStudent(event)">
+                <input type="hidden" id="student-edit-id">
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="student-name" class="form-control" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" id="student-email" class="form-control" placeholder="e.g. john@college.ac.in" required>
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">PRN / Roll Number *</label>
+                        <input type="text" id="student-prn" class="form-control" placeholder="e.g. PRN2024001" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" id="student-phone" class="form-control" placeholder="e.g. +91 9876543210">
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Department *</label>
+                        <select id="student-dept" class="form-control" required>
+                            <option value="">-- Select Department --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Degree Course</label>
+                        <input type="text" id="student-course" class="form-control" placeholder="e.g. B.Tech" value="B.Tech">
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Academic Year *</label>
+                        <select id="student-year" class="form-control" required onchange="handleAdminStudentYearChange(this.value)">
+                            <option value="First Year">First Year (F.Y.)</option>
+                            <option value="Second Year">Second Year (S.Y.)</option>
+                            <option value="Third Year" selected>Third Year (T.Y.)</option>
+                            <option value="Final Year">Final Year (Final Yr)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Academic Semester *</label>
+                        <select id="student-semester" class="form-control" required>
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5" selected>Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                            <option value="Semester 7">Semester 7</option>
+                            <option value="Semester 8">Semester 8</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Class Division</label>
+                        <select id="student-div" class="form-control">
+                            <option value="A" selected>Division A</option>
+                            <option value="B">Division B</option>
+                            <option value="C">Division C</option>
+                            <option value="D">Division D</option>
+                        </select>
+                    </div>
+                    <div></div>
+                </div>
+                <div class="form-group" id="student-pass-group">
+                    <label class="form-label">Initial Password *</label>
+                    <input type="password" id="student-pass" class="form-control" placeholder="Default: Student@123" value="Student@123">
+                    <small style="color:var(--muted); font-size:0.75rem;">Default temporary password. The student can change it upon sign-in.</small>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeStudentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-student">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add/Edit Faculty -->
+    <div class="modal-backdrop" id="faculty-modal">
+        <div class="modal-content" style="max-width:620px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="faculty-modal-title">Register Faculty Member</h3>
+                <button class="modal-close" onclick="closeFacultyModal()">&times;</button>
+            </div>
+            <form id="faculty-form" onsubmit="handleSaveFaculty(event)">
+                <input type="hidden" id="faculty-edit-id">
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Full Name *</label>
+                        <input type="text" id="faculty-name" class="form-control" placeholder="e.g. Dr. Robert Vance" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address *</label>
+                        <input type="email" id="faculty-email" class="form-control" placeholder="e.g. rvance@college.ac.in" required>
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Employee ID *</label>
+                        <input type="text" id="faculty-empid" class="form-control" placeholder="e.g. EMP1004" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="tel" id="faculty-phone" class="form-control" placeholder="e.g. +91 9876543211">
+                    </div>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Academic Department *</label>
+                        <select id="faculty-dept" class="form-control" required>
+                            <option value="">-- Select Department --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Faculty Designation</label>
+                        <select id="faculty-designation" class="form-control">
+                            <option value="Assistant Professor" selected>Assistant Professor</option>
+                            <option value="Associate Professor">Associate Professor</option>
+                            <option value="Professor">Professor</option>
+                            <option value="Senior Professor">Senior Professor</option>
+                            <option value="Adjunct Faculty">Adjunct Faculty</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="faculty-pass-group">
+                    <label class="form-label">Initial Password *</label>
+                    <input type="password" id="faculty-pass" class="form-control" placeholder="Default: Faculty@123" value="Faculty@123">
+                    <small style="color:var(--muted); font-size:0.75rem;">Default temporary password. The faculty member can update it anytime.</small>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeFacultyModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-faculty">Save Faculty</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Assign HOD -->
+    <div class="modal-backdrop" id="assign-hod-modal">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Appoint Head of Department (HOD)</h3>
+                <button class="modal-close" onclick="closeAssignHodModal()">&times;</button>
+            </div>
+            <form id="assign-hod-form" onsubmit="handleAssignHod(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Faculty Member *</label>
+                    <select id="assign-hod-faculty" class="form-control" required>
+                        <option value="">-- Select Faculty --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department to Lead *</label>
+                    <select id="assign-hod-dept" class="form-control" required>
+                        <option value="">-- Select Department --</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAssignHodModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background:#0284c7; border-color:#0284c7;">Appoint as HOD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Assign Dean -->
+    <div class="modal-backdrop" id="assign-dean-modal">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Appoint Institutional Dean</h3>
+                <button class="modal-close" onclick="closeAssignDeanModal()">&times;</button>
+            </div>
+            <form id="assign-dean-form" onsubmit="handleAssignDean(event)">
+                <div class="form-group">
+                    <label class="form-label">Select Faculty Member *</label>
+                    <select id="assign-dean-faculty" class="form-control" required>
+                        <option value="">-- Select Faculty --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Dean Role / Title *</label>
+                    <input type="text" id="assign-dean-title" class="form-control" placeholder="e.g. Dean of Academics" value="Dean of Academics" required>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAssignDeanModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="background:#d97706; border-color:#d97706;">Designate as Dean</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Department -->
+    <div class="modal-backdrop" id="dept-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="dept-modal-title">Add Academic Department</h3>
+                <button class="modal-close" onclick="closeAddDeptModal()">&times;</button>
+            </div>
+            <form id="dept-form" onsubmit="handleSaveDepartment(event)">
+                <input type="hidden" id="dept-edit-id">
+                <div class="form-group">
+                    <label class="form-label">Department Name *</label>
+                    <input type="text" id="dept-name" class="form-control" placeholder="e.g. Information Technology" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department Code *</label>
+                    <input type="text" id="dept-code" class="form-control" placeholder="e.g. IT" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="dept-desc" class="form-control" style="min-height:80px;" placeholder="Brief details about the department..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Head of Department (Faculty)</label>
+                    <select id="dept-hod" class="form-control">
+                        <option value="">-- Select Faculty --</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAddDeptModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-dept">Save Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Subject -->
+    <div class="modal-backdrop" id="subject-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Curriculum Subject</h3>
+                <button class="modal-close" onclick="closeAddSubjectModal()">&times;</button>
+            </div>
+            <form id="subject-form" onsubmit="handleSaveSubject(event)">
+                <div class="form-group">
+                    <label class="form-label">Subject Name *</label>
+                    <input type="text" id="subject-name" class="form-control" placeholder="e.g. Data Structures and Algorithms" required>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Subject Code *</label>
+                        <input type="text" id="subject-code" class="form-control" placeholder="e.g. CS201" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Semester *</label>
+                        <select id="subject-sem" class="form-control" required>
+                            <option value="Semester 1">Semester 1</option>
+                            <option value="Semester 2">Semester 2</option>
+                            <option value="Semester 3">Semester 3</option>
+                            <option value="Semester 4">Semester 4</option>
+                            <option value="Semester 5">Semester 5</option>
+                            <option value="Semester 6">Semester 6</option>
+                            <option value="Semester 7">Semester 7</option>
+                            <option value="Semester 8">Semester 8</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department *</label>
+                    <select id="subject-dept" class="form-control" required>
+                        <option value="">-- Select Department --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assigned Faculty (Optional)</label>
+                    <select id="subject-faculty" class="form-control">
+                        <option value="">-- Select Faculty --</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAddSubjectModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-subject">Save Subject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Create Notice -->
+    <div class="modal-backdrop" id="publish-notice-modal">
+        <div class="modal-content" style="max-width:650px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Publish Institutional Notice</h3>
+                <button class="modal-close" onclick="closePublishNoticeModal()">&times;</button>
+            </div>
+            <form id="admin-notice-form" onsubmit="handlePublishAdminNotice(event)">
+                <div class="form-group">
+                    <label class="form-label">Notice Title *</label>
+                    <input type="text" id="anotice-title" class="form-control" placeholder="e.g. End Semester Theory Examination Timetable Schedule" required>
+                </div>
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label">Target Audience *</label>
+                        <select id="anotice-dept" class="form-control">
+                            <option value="">All Departments (College Wide)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority *</label>
+                        <select id="anotice-priority" class="form-control" required>
+                            <option value="NORMAL">Normal</option>
+                            <option value="IMPORTANT">Important</option>
+                            <option value="URGENT">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select id="anotice-category" class="form-control" required>
+                        <option value="Academic">Academic</option>
+                        <option value="Examination">Examination</option>
+                        <option value="Administrative">Administrative</option>
+                        <option value="Campus Events">Campus Events</option>
+                        <option value="Training &amp; Placement">Training &amp; Placement</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notice Circular Content *</label>
+                    <textarea id="anotice-content" class="form-control" style="min-height:130px;" placeholder="Full official circular details..." required></textarea>
+                </div>
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; background:var(--bg); padding:10px; border-radius:var(--radius);">
+                    <input type="checkbox" id="anotice-ack" style="width:18px; height:18px;">
+                    <label for="anotice-ack" style="font-weight:600; font-size:0.88rem; margin:0;">Requires Student Acknowledgement</label>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closePublishNoticeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-anotice">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Club -->
+    <div class="modal-backdrop" id="club-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create Campus Club</h3>
+                <button class="modal-close" onclick="closeAddClubModal()">&times;</button>
+            </div>
+            <form id="club-form" onsubmit="handleSaveClub(event)">
+                <div class="form-group">
+                    <label class="form-label">Club Name *</label>
+                    <input type="text" id="club-name" class="form-control" placeholder="e.g. Coding Club" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description *</label>
+                    <textarea id="club-desc" class="form-control" style="min-height:90px;" placeholder="Purpose, activities, and goals..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department Scope</label>
+                    <select id="club-dept" class="form-control">
+                        <option value="">Campus Wide (All Departments)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Appoint Initial Club Leader (Optional)</label>
+                    <select id="club-leader" class="form-control">
+                        <option value="">-- No Leader Now (Can Appoint Later) --</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAddClubModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Club</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Appoint Club Leader (Admin) -->
+    <div class="modal-backdrop" id="appoint-leader-modal-admin">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Appoint Club Leader</h3>
+                <button class="modal-close" onclick="closeAppointLeaderModalAdmin()">&times;</button>
+            </div>
+            <form id="appoint-leader-form-admin" onsubmit="handleAppointLeaderAdmin(event)">
+                <input type="hidden" id="al-admin-club-id">
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:0.85rem; color:var(--muted);">Selected Club:</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--dark);" id="al-admin-club-name">--</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="al-admin-student-select">Select Student from College *</label>
+                    <select id="al-admin-student-select" class="form-control" required>
+                        <option value="">-- Choose Student --</option>
+                    </select>
+                    <small style="color:var(--muted); font-size:0.8rem; margin-top:4px; display:block;">The appointed student will automatically receive <strong>CLUB_LEADER</strong> privileges and the Club Leadership Desk on their student portal.</small>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAppointLeaderModalAdmin()">Cancel</button>
+                    <button type="submit" id="btn-admin-appoint-confirm" class="btn btn-primary">Appoint Leader</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; Secure Administration Console
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let adminUser = null;
+        let departmentsList = [];
+        let facultyList = [];
+        let adminStudentsList = [];
+        let adminFacultyList = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            adminUser = App.currentUser;
+
+            if (!adminUser || adminUser.role !== 'ADMIN') {
+                document.getElementById('admin-unauthorized').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('admin-content').style.display = 'block';
+            loadAdminOverview();
+            loadAuxiliaryData();
+        });
+
+        async function loadAdminOverview() {
+            try {
+                const res = await fetch('/api/admin/stats');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const s = json.data;
+                    document.getElementById('kpi-students').textContent = s.totalStudents || 0;
+                    document.getElementById('kpi-faculty').textContent = s.totalFaculty || 0;
+                    if (document.getElementById('kpi-hods')) document.getElementById('kpi-hods').textContent = s.totalHods || 0;
+                    if (document.getElementById('kpi-deans')) document.getElementById('kpi-deans').textContent = s.totalDeans || 0;
+                    document.getElementById('kpi-depts').textContent = s.totalDepartments || 0;
+                    document.getElementById('kpi-notices').textContent = s.totalNotices || 0;
+
+                    if (s.pendingEvents > 0) {
+                        const b = document.getElementById('badge-pending-events');
+                        b.textContent = s.pendingEvents;
+                        b.style.display = 'inline-block';
+                    }
+                    const bClubs = document.getElementById('badge-pending-clubs');
+                    if (bClubs) {
+                        bClubs.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load stats', e);
+            }
+        }
+
+        async function loadAuxiliaryData() {
+            try {
+                const [dRes, fRes] = await Promise.all([
+                    fetch('/api/departments'),
+                    fetch('/api/admin/users?role=FACULTY')
+                ]);
+                const dJson = await dRes.json();
+                const fJson = await fRes.json();
+
+                if (dJson.success) departmentsList = dJson.data || [];
+                if (fJson.success) facultyList = fJson.data || [];
+
+                populateDropdowns();
+            } catch (ignored) {}
+        }
+
+        function populateDropdowns() {
+            const deptSelects = [
+                document.getElementById('subject-dept'),
+                document.getElementById('anotice-dept'),
+                document.getElementById('student-dept'),
+                document.getElementById('faculty-dept'),
+                document.getElementById('assign-hod-dept')
+            ];
+            deptSelects.forEach(sel => {
+                if (!sel) return;
+                const keepFirst = sel.firstElementChild ? sel.firstElementChild.outerHTML : '';
+                sel.innerHTML = keepFirst + departmentsList.map(d => `<option value="${d.id}">${d.name} (${d.code})</option>`).join('');
+            });
+
+            const facultySelects = [
+                document.getElementById('dept-hod'),
+                document.getElementById('subject-faculty'),
+                document.getElementById('assign-hod-faculty'),
+                document.getElementById('assign-dean-faculty')
+            ];
+            facultySelects.forEach(sel => {
+                if (!sel) return;
+                const keepFirst = sel.firstElementChild ? sel.firstElementChild.outerHTML : '';
+                sel.innerHTML = keepFirst + facultyList.map(f => `<option value="${f.id}">${f.fullName} (${f.employeeId || 'ID'} - ${f.designation || 'Faculty'})</option>`).join('');
+            });
+        }
+
+        function switchAdminSection(sectionId, navEl) {
+            document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
+            if (navEl) navEl.classList.add('active');
+
+            ['dashboard', 'students', 'faculty', 'users', 'departments', 'subjects', 'notices', 'moderation', 'events', 'clubs'].forEach(id => {
+                const el = document.getElementById('section-' + id);
+                if (el) el.style.display = (id === sectionId) ? 'block' : 'none';
+            });
+
+            if (sectionId === 'students') loadAdminStudents();
+            if (sectionId === 'faculty') loadAdminFaculty();
+            if (sectionId === 'users') loadAdminUsers();
+            if (sectionId === 'departments') loadAdminDepartments();
+            if (sectionId === 'subjects') loadAdminSubjects();
+            if (sectionId === 'notices') loadAdminNotices();
+            if (sectionId === 'moderation') { loadAdminModeration(); loadAdminReports(); }
+            if (sectionId === 'events') loadAdminEvents();
+            if (sectionId === 'clubs') loadAdminClubs();
+        }
+
+        // ================= STUDENT MANAGEMENT =================
+        async function loadAdminStudents() {
+            const tbody = document.getElementById('admin-students-tbody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px;">Loading students...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/students');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    adminStudentsList = json.data;
+                    renderStudentsTable(adminStudentsList);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--danger); padding:30px;">Failed to load students.</td></tr>';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--danger); padding:30px;">Error loading students.</td></tr>';
+            }
+        }
+
+        function renderStudentsTable(list) {
+            const tbody = document.getElementById('admin-students-tbody');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--muted);">No students registered yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(s => `
+                <tr>
+                    <td><strong>${s.fullName}</strong></td>
+                    <td><code>${s.prnRollNo || 'N/A'}</code></td>
+                    <td>${s.email}</td>
+                    <td>${s.department ? s.department.name : '<span style="color:var(--muted);">General</span>'}</td>
+                    <td><span class="badge" style="background:#f1f5f9; color:var(--dark);">${s.course || 'B.Tech'} - ${s.year || 'N/A'}${s.semester ? ' &bull; ' + s.semester : ''} (${s.division || 'A'})</span></td>
+                    <td><span class="badge" style="${s.status === 'ACTIVE' ? 'background:#ecfdf5; color:#047857;' : 'background:#fee2e2; color:#b91c1c;'}">${s.status || 'ACTIVE'}</span></td>
+                    <td style="text-align:right;">
+                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="openEditStudentModal(${s.id})">Edit</button>
+                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="toggleUserStatus(${s.id}, 'student')">
+                            ${s.status === 'INACTIVE' ? 'Activate' : 'Deactivate'}
+                        </button>
+                        <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteStudent(${s.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterAdminStudents() {
+            const query = (document.getElementById('admin-student-search').value || '').toLowerCase().trim();
+            if (!query) {
+                renderStudentsTable(adminStudentsList);
+                return;
+            }
+            const filtered = adminStudentsList.filter(s =>
+                (s.fullName && s.fullName.toLowerCase().includes(query)) ||
+                (s.prnRollNo && s.prnRollNo.toLowerCase().includes(query)) ||
+                (s.email && s.email.toLowerCase().includes(query)) ||
+                (s.department && s.department.name.toLowerCase().includes(query))
+            );
+            renderStudentsTable(filtered);
+        }
+
+        function handleAdminStudentYearChange(year) {
+            const semSelect = document.getElementById('student-semester');
+            if (year === 'First Year') semSelect.value = 'Semester 1';
+            else if (year === 'Second Year') semSelect.value = 'Semester 3';
+            else if (year === 'Third Year') semSelect.value = 'Semester 5';
+            else if (year === 'Final Year') semSelect.value = 'Semester 7';
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('student-form').reset();
+            document.getElementById('student-edit-id').value = '';
+            document.getElementById('student-year').value = 'Third Year';
+            document.getElementById('student-semester').value = 'Semester 5';
+            document.getElementById('student-modal-title').textContent = 'Enroll New Student';
+            document.getElementById('student-pass-group').style.display = 'block';
+            document.getElementById('student-pass').required = true;
+            App.openModal('student-modal');
+        }
+
+        function openEditStudentModal(id) {
+            const s = adminStudentsList.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('student-edit-id').value = s.id;
+            document.getElementById('student-name').value = s.fullName || '';
+            document.getElementById('student-email').value = s.email || '';
+            document.getElementById('student-prn').value = s.prnRollNo || '';
+            document.getElementById('student-phone').value = s.phone || '';
+            document.getElementById('student-dept').value = s.department ? s.department.id : '';
+            document.getElementById('student-course').value = s.course || 'B.Tech';
+            document.getElementById('student-year').value = s.year || 'Third Year';
+            document.getElementById('student-semester').value = s.semester || 'Semester 5';
+            document.getElementById('student-div').value = s.division || 'A';
+            document.getElementById('student-pass-group').style.display = 'none';
+            document.getElementById('student-pass').required = false;
+
+            document.getElementById('student-modal-title').textContent = 'Edit Student Profile';
+            App.openModal('student-modal');
+        }
+
+        function closeStudentModal() {
+            App.closeModal('student-modal');
+        }
+
+        async function handleSaveStudent(e) {
+            e.preventDefault();
+            const editId = document.getElementById('student-edit-id').value;
+            const payload = {
+                fullName: document.getElementById('student-name').value.trim(),
+                email: document.getElementById('student-email').value.trim(),
+                prnRollNo: document.getElementById('student-prn').value.trim(),
+                phone: document.getElementById('student-phone').value.trim(),
+                departmentId: document.getElementById('student-dept').value || null,
+                course: document.getElementById('student-course').value.trim(),
+                year: document.getElementById('student-year').value,
+                semester: document.getElementById('student-semester').value,
+                division: document.getElementById('student-div').value
+            };
+
+            try {
+                let url = '/api/admin/students';
+                let method = 'POST';
+                if (editId) {
+                    url += `/${editId}`;
+                    method = 'PUT';
+                } else {
+                    payload.password = document.getElementById('student-pass').value.trim() || 'Student@123';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast(editId ? 'Student updated successfully!' : 'Student enrolled successfully!', 'success');
+                    closeStudentModal();
+                    loadAdminStudents();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Operation failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving student', 'error');
+            }
+        }
+
+        async function deleteStudent(id) {
+            if (!confirm('Are you sure you want to permanently delete this student record?')) return;
+            try {
+                const res = await fetch(`/api/admin/students/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Student deleted.', 'success');
+                    loadAdminStudents();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to delete student', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= FACULTY MANAGEMENT =================
+        async function loadAdminFaculty() {
+            const tbody = document.getElementById('admin-faculty-tbody');
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px;">Loading faculty...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/faculty');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    adminFacultyList = json.data;
+                    facultyList = json.data;
+                    populateDropdowns();
+                    renderFacultyTable(adminFacultyList);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--danger); padding:30px;">Failed to load faculty.</td></tr>';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--danger); padding:30px;">Error loading faculty.</td></tr>';
+            }
+        }
+
+        function renderFacultyTable(list) {
+            const tbody = document.getElementById('admin-faculty-tbody');
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--muted);">No faculty registered yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(f => {
+                let roleBadge = `<span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">FACULTY</span>`;
+                if (f.role === 'HOD') roleBadge = `<span class="badge badge-hod" style="background:#dbeafe; color:#1d4ed8; font-weight:700;">HOD</span>`;
+                if (f.role === 'DEAN') roleBadge = `<span class="badge badge-dean" style="background:#fef3c7; color:#b45309; font-weight:700;">DEAN</span>`;
+
+                return `
+                    <tr>
+                        <td><strong>${f.fullName}</strong></td>
+                        <td><code>${f.employeeId || 'N/A'}</code></td>
+                        <td>${f.email}</td>
+                        <td>${f.department ? f.department.name : '<span style="color:var(--muted);">None</span>'}</td>
+                        <td>${f.designation || 'Professor'}</td>
+                        <td>${roleBadge}</td>
+                        <td><span class="badge" style="${f.status === 'ACTIVE' ? 'background:#ecfdf5; color:#047857;' : 'background:#fee2e2; color:#b91c1c;'}">${f.status || 'ACTIVE'}</span></td>
+                        <td style="text-align:right;">
+                            <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="openEditFacultyModal(${f.id})">Edit</button>
+                            ${f.role === 'HOD' ? `
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px; color:#0284c7; border-color:#0284c7;" onclick="handleRemoveHod(${f.id})">Remove HOD</button>
+                            ` : ''}
+                            ${f.role === 'DEAN' ? `
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px; color:#b45309; border-color:#f59e0b;" onclick="handleRemoveDean(${f.id})">Remove Dean</button>
+                            ` : ''}
+                            <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="toggleUserStatus(${f.id}, 'faculty')">
+                                ${f.status === 'INACTIVE' ? 'Activate' : 'Deactivate'}
+                            </button>
+                            <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteFaculty(${f.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterAdminFaculty() {
+            const query = (document.getElementById('admin-faculty-search').value || '').toLowerCase().trim();
+            if (!query) {
+                renderFacultyTable(adminFacultyList);
+                return;
+            }
+            const filtered = adminFacultyList.filter(f =>
+                (f.fullName && f.fullName.toLowerCase().includes(query)) ||
+                (f.employeeId && f.employeeId.toLowerCase().includes(query)) ||
+                (f.email && f.email.toLowerCase().includes(query)) ||
+                (f.designation && f.designation.toLowerCase().includes(query)) ||
+                (f.department && f.department.name.toLowerCase().includes(query))
+            );
+            renderFacultyTable(filtered);
+        }
+
+        function openAddFacultyModal() {
+            document.getElementById('faculty-form').reset();
+            document.getElementById('faculty-edit-id').value = '';
+            document.getElementById('faculty-modal-title').textContent = 'Register Faculty Member';
+            document.getElementById('faculty-pass-group').style.display = 'block';
+            document.getElementById('faculty-pass').required = true;
+            App.openModal('faculty-modal');
+        }
+
+        function openEditFacultyModal(id) {
+            const f = adminFacultyList.find(item => item.id === id);
+            if (!f) return;
+
+            document.getElementById('faculty-edit-id').value = f.id;
+            document.getElementById('faculty-name').value = f.fullName || '';
+            document.getElementById('faculty-email').value = f.email || '';
+            document.getElementById('faculty-empid').value = f.employeeId || '';
+            document.getElementById('faculty-phone').value = f.phone || '';
+            document.getElementById('faculty-dept').value = f.department ? f.department.id : '';
+            document.getElementById('faculty-designation').value = f.designation || 'Assistant Professor';
+            document.getElementById('faculty-pass-group').style.display = 'none';
+            document.getElementById('faculty-pass').required = false;
+
+            document.getElementById('faculty-modal-title').textContent = 'Edit Faculty Details';
+            App.openModal('faculty-modal');
+        }
+
+        function closeFacultyModal() {
+            App.closeModal('faculty-modal');
+        }
+
+        async function handleSaveFaculty(e) {
+            e.preventDefault();
+            const editId = document.getElementById('faculty-edit-id').value;
+            const payload = {
+                fullName: document.getElementById('faculty-name').value.trim(),
+                email: document.getElementById('faculty-email').value.trim(),
+                employeeId: document.getElementById('faculty-empid').value.trim(),
+                phone: document.getElementById('faculty-phone').value.trim(),
+                departmentId: document.getElementById('faculty-dept').value || null,
+                designation: document.getElementById('faculty-designation').value
+            };
+
+            try {
+                let url = '/api/admin/faculty';
+                let method = 'POST';
+                if (editId) {
+                    url += `/${editId}`;
+                    method = 'PUT';
+                } else {
+                    payload.password = document.getElementById('faculty-pass').value.trim() || 'Faculty@123';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast(editId ? 'Faculty updated successfully!' : 'Faculty registered successfully!', 'success');
+                    closeFacultyModal();
+                    loadAdminFaculty();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Operation failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving faculty', 'error');
+            }
+        }
+
+        async function deleteFaculty(id) {
+            if (!confirm('Are you sure you want to permanently delete this faculty member?')) return;
+            try {
+                const res = await fetch(`/api/admin/faculty/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Faculty member deleted.', 'success');
+                    loadAdminFaculty();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to delete faculty member', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= ASSIGN HOD & DEAN =================
+        function openAssignHodModal() {
+            document.getElementById('assign-hod-form').reset();
+            populateDropdowns();
+            App.openModal('assign-hod-modal');
+        }
+
+        function closeAssignHodModal() {
+            App.closeModal('assign-hod-modal');
+        }
+
+        async function handleAssignHod(e) {
+            e.preventDefault();
+            const facultyId = document.getElementById('assign-hod-faculty').value;
+            const departmentId = document.getElementById('assign-hod-dept').value;
+
+            try {
+                const res = await fetch('/api/admin/assign-hod', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ facultyId, departmentId })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('HOD appointed successfully!', 'success');
+                    closeAssignHodModal();
+                    loadAdminFaculty();
+                    loadAdminDepartments();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to appoint HOD', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while appointing HOD', 'error');
+            }
+        }
+
+        async function handleRemoveHod(facultyId) {
+            if (!confirm('Are you sure you want to remove HOD designation from this faculty member?')) return;
+            try {
+                const res = await fetch('/api/admin/remove-hod', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ facultyId })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('HOD designation removed.', 'info');
+                    loadAdminFaculty();
+                    loadAdminDepartments();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to remove HOD', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        function openAssignDeanModal() {
+            document.getElementById('assign-dean-form').reset();
+            populateDropdowns();
+            App.openModal('assign-dean-modal');
+        }
+
+        function closeAssignDeanModal() {
+            App.closeModal('assign-dean-modal');
+        }
+
+        async function handleAssignDean(e) {
+            e.preventDefault();
+            const facultyId = document.getElementById('assign-dean-faculty').value;
+            const deanTitle = document.getElementById('assign-dean-title').value.trim();
+
+            try {
+                const res = await fetch('/api/admin/assign-dean', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ facultyId, deanTitle })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Dean appointed successfully!', 'success');
+                    closeAssignDeanModal();
+                    loadAdminFaculty();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to appoint Dean', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while appointing Dean', 'error');
+            }
+        }
+
+        async function handleRemoveDean(facultyId) {
+            if (!confirm('Are you sure you want to remove Dean role from this faculty member?')) return;
+            try {
+                const res = await fetch('/api/admin/remove-dean', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ facultyId })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Dean role removed.', 'info');
+                    loadAdminFaculty();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to remove Dean', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= USERS =================
+        async function loadAdminUsers() {
+            const tbody = document.getElementById('admin-users-tbody');
+            const role = document.getElementById('user-role-filter').value;
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Loading users...</td></tr>';
+
+            try {
+                const res = await fetch(`/api/admin/users?role=${role}`);
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const users = json.data;
+                    if (users.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">No users found.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = users.map(u => `
+                        <tr>
+                            <td><strong>${u.fullName}</strong></td>
+                            <td><code>${u.prnRollNo || u.employeeId || 'N/A'}</code></td>
+                            <td>${u.email}</td>
+                            <td>${u.department ? u.department.name : 'None'}</td>
+                            <td><span class="badge ${u.role === 'ADMIN' ? 'urgent' : (u.role === 'FACULTY' ? 'important' : '')}" style="${u.role === 'STUDENT' ? 'background:#e0f2fe; color:#0369a1;' : ''}">${u.role}</span></td>
+                            <td><span class="badge" style="${u.status === 'ACTIVE' ? 'background:#ecfdf5; color:#047857;' : 'background:#fee2e2; color:#b91c1c;'}">${u.status || 'ACTIVE'}</span></td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="toggleUserStatus(${u.id})">
+                                    ${u.status === 'INACTIVE' ? 'Activate' : 'Deactivate'}
+                                </button>
+                                ${u.role !== 'ADMIN' ? `
+                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteUserFromAllUsers(${u.id})">Delete</button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--danger); padding:20px;">Error loading users.</td></tr>';
+            }
+        }
+
+        async function deleteUserFromAllUsers(id) {
+            if (!confirm('Are you sure you want to permanently delete this user account?')) return;
+            try {
+                const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('User deleted successfully.', 'success');
+                    loadAdminUsers();
+                    loadAdminStudents();
+                    loadAdminFaculty();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to delete user', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function toggleUserStatus(id, source) {
+            try {
+                const res = await fetch(`/api/admin/users/${id}/status`, { method: 'PUT' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('User status updated.', 'info');
+                    if (source === 'student') loadAdminStudents();
+                    else if (source === 'faculty') loadAdminFaculty();
+                    else loadAdminUsers();
+                } else {
+                    App.showToast(json.message || 'Status update failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= DEPARTMENTS =================
+        async function loadAdminDepartments() {
+            const tbody = document.getElementById('admin-depts-tbody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Loading departments...</td></tr>';
+
+            try {
+                const res = await fetch('/api/departments');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    departmentsList = json.data;
+                    populateDropdowns();
+
+                    if (departmentsList.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No departments found.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = departmentsList.map(d => `
+                        <tr>
+                            <td><span class="badge" style="background:#e2e8f0; color:var(--dark); font-weight:700;">${d.code || 'DEPT'}</span></td>
+                            <td><strong>${d.name}</strong></td>
+                            <td>${d.hod ? d.hod.fullName : '<span style="color:var(--muted);">None</span>'}</td>
+                            <td>${d.manager ? d.manager.fullName : '<span style="color:var(--muted);">None</span>'}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="openEditDeptModal(${d.id})">Edit</button>
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteDepartment(${d.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger); padding:20px;">Error loading departments.</td></tr>';
+            }
+        }
+
+        function openAddDeptModal() {
+            document.getElementById('dept-form').reset();
+            document.getElementById('dept-edit-id').value = '';
+            document.getElementById('dept-modal-title').textContent = 'Add Academic Department';
+            document.getElementById('btn-save-dept').textContent = 'Save Department';
+            App.openModal('dept-modal');
+        }
+
+        function openEditDeptModal(id) {
+            const d = departmentsList.find(item => item.id === id);
+            if (!d) return;
+            document.getElementById('dept-form').reset();
+            document.getElementById('dept-edit-id').value = d.id;
+            document.getElementById('dept-name').value = d.name || '';
+            document.getElementById('dept-code').value = d.code || '';
+            document.getElementById('dept-desc').value = d.description || '';
+            document.getElementById('dept-hod').value = d.hod ? d.hod.id : '';
+            document.getElementById('dept-modal-title').textContent = 'Edit Department & HOD';
+            document.getElementById('btn-save-dept').textContent = 'Update Department';
+            App.openModal('dept-modal');
+        }
+
+        function closeAddDeptModal() {
+            App.closeModal('dept-modal');
+        }
+
+        async function handleSaveDepartment(e) {
+            e.preventDefault();
+            const editId = document.getElementById('dept-edit-id').value;
+            const payload = {
+                name: document.getElementById('dept-name').value.trim(),
+                code: document.getElementById('dept-code').value.trim().toUpperCase(),
+                description: document.getElementById('dept-desc').value.trim(),
+                hodId: document.getElementById('dept-hod').value || null
+            };
+
+            try {
+                let url = '/api/departments';
+                let method = 'POST';
+                if (editId) {
+                    url += `/${editId}`;
+                    method = 'PUT';
+                }
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast(editId ? 'Department & HOD updated successfully!' : 'Department created successfully!', 'success');
+                    closeAddDeptModal();
+                    loadAdminDepartments();
+                } else {
+                    App.showToast(json.message || 'Operation failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving department', 'error');
+            }
+        }
+
+        async function deleteDepartment(id) {
+            if (!confirm('Are you sure you want to delete this department?')) return;
+            try {
+                const res = await fetch(`/api/departments/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Department removed.', 'success');
+                    loadAdminDepartments();
+                } else {
+                    App.showToast(json.message || 'Deletion failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= SUBJECTS =================
+        async function loadAdminSubjects() {
+            const tbody = document.getElementById('admin-subjects-tbody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">Loading subjects...</td></tr>';
+
+            try {
+                const res = await fetch('/api/subjects');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const subjects = json.data;
+                    if (subjects.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No curriculum subjects added yet.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = subjects.map(s => `
+                        <tr>
+                            <td><code>${s.subjectCode || 'SUB'}</code></td>
+                            <td><strong>${s.subjectName}</strong></td>
+                            <td>${s.semester || 'All'}</td>
+                            <td>${s.department ? s.department.name : 'General'}</td>
+                            <td>${s.faculty ? s.faculty.fullName : '<span style="color:var(--muted);">TBA</span>'}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteSubject(${s.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Error loading subjects.</td></tr>';
+            }
+        }
+
+        function openAddSubjectModal() {
+            document.getElementById('subject-form').reset();
+            App.openModal('subject-modal');
+        }
+
+        function closeAddSubjectModal() {
+            App.closeModal('subject-modal');
+        }
+
+        async function handleSaveSubject(e) {
+            e.preventDefault();
+            const payload = {
+                subjectName: document.getElementById('subject-name').value.trim(),
+                subjectCode: document.getElementById('subject-code').value.trim().toUpperCase(),
+                semester: document.getElementById('subject-sem').value,
+                departmentId: document.getElementById('subject-dept').value,
+                facultyId: document.getElementById('subject-faculty').value || null
+            };
+
+            try {
+                const res = await fetch('/api/subjects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Subject created successfully!', 'success');
+                    closeAddSubjectModal();
+                    loadAdminSubjects();
+                } else {
+                    App.showToast(json.message || 'Failed to create subject', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving subject', 'error');
+            }
+        }
+
+        async function deleteSubject(id) {
+            if (!confirm('Are you sure you want to delete this subject?')) return;
+            try {
+                const res = await fetch(`/api/subjects/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Subject deleted.', 'success');
+                    loadAdminSubjects();
+                } else {
+                    App.showToast(json.message || 'Deletion failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= NOTICES =================
+        async function loadAdminNotices() {
+            const tbody = document.getElementById('admin-notices-tbody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">Loading notices...</td></tr>';
+
+            try {
+                const res = await fetch('/api/notices');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const notices = json.data;
+                    if (notices.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No notices published.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = notices.map(n => `
+                        <tr>
+                            <td><strong>${n.title}</strong></td>
+                            <td>${n.department ? n.department.name : '<span class="badge" style="background:#e0f2fe; color:#0369a1;">College Wide</span>'}</td>
+                            <td><span class="badge" style="background:#f1f5f9; color:var(--muted);">${n.category ? n.category.name : 'Notice'}</span></td>
+                            <td><span class="badge ${n.priority === 'URGENT' ? 'urgent' : (n.priority === 'IMPORTANT' ? 'important' : '')}" style="${n.priority === 'NORMAL' ? 'background:#e2e8f0; color:var(--dark);' : ''}">${n.priority}</span></td>
+                            <td>${new Date(n.createdAt).toLocaleDateString()}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteAdminNotice(${n.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Error loading notices.</td></tr>';
+            }
+        }
+
+        function openPublishNoticeModal() {
+            App.openModal('publish-notice-modal');
+        }
+
+        function closePublishNoticeModal() {
+            App.closeModal('publish-notice-modal');
+        }
+
+        async function handlePublishAdminNotice(e) {
+            e.preventDefault();
+            const payload = {
+                title: document.getElementById('anotice-title').value.trim(),
+                content: document.getElementById('anotice-content').value.trim(),
+                category: document.getElementById('anotice-category').value,
+                priority: document.getElementById('anotice-priority').value,
+                departmentId: document.getElementById('anotice-dept').value || null,
+                requiresAcknowledgement: document.getElementById('anotice-ack').checked
+            };
+
+            try {
+                const res = await fetch('/api/notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Official notice published successfully!', 'success');
+                    closePublishNoticeModal();
+                    loadAdminNotices();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to publish notice', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while publishing notice', 'error');
+            }
+        }
+
+        async function deleteAdminNotice(id) {
+            if (!confirm('Are you sure you want to permanently delete this notice?')) return;
+            try {
+                const res = await fetch(`/api/notices/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Notice deleted.', 'success');
+                    loadAdminNotices();
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= MODERATION =================
+        async function loadAdminModeration() {
+            const tbody = document.getElementById('admin-forum-tbody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">Loading discussions...</td></tr>';
+
+            try {
+                const res = await fetch('/api/forum/topics');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const topics = json.data;
+                    if (topics.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No discussions to moderate.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = topics.map(t => `
+                        <tr>
+                            <td><a href="/topic-detail?id=${t.id}" target="_blank" style="font-weight:700; color:var(--dark); text-decoration:none;">${t.title}</a></td>
+                            <td>${t.author ? t.author.fullName : 'Anonymous'}</td>
+                            <td>${t.category ? t.category.name : 'General'}</td>
+                            <td><span class="badge" style="${t.status === 'CLOSED' ? 'background:#fee2e2; color:#b91c1c;' : (t.status === 'FLAGGED' ? 'background:#fef3c7; color:#92400e;' : 'background:#ecfdf5; color:#047857;')}">${t.status}</span></td>
+                            <td>${t.replyCount || 0} replies &bull; ${t.likesCount || 0} upvotes</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="updateTopicStatus(${t.id}, '${t.status === 'OPEN' ? 'CLOSED' : 'OPEN'}')">
+                                    ${t.status === 'OPEN' ? 'Close' : 'Reopen'}
+                                </button>
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="deleteTopic(${t.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Error loading discussions.</td></tr>';
+            }
+        }
+
+        async function updateTopicStatus(id, status) {
+            try {
+                const res = await fetch(`/api/admin/topics/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast(`Discussion status updated to ${status}.`, 'info');
+                    loadAdminModeration();
+                }
+            } catch (e) {
+                App.showToast('Failed to update discussion status', 'error');
+            }
+        }
+
+        async function deleteTopic(id) {
+            if (!confirm('Are you sure you want to permanently delete this discussion?')) return;
+            try {
+                const res = await fetch(`/api/forum/topics/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Discussion deleted.', 'success');
+                    loadAdminModeration();
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        // ================= MODERATION REPORTS =================
+        async function loadAdminReports() {
+            const tbody = document.getElementById('admin-reports-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px;">Loading reports...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/reports');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const reports = json.data;
+                    if (reports.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">No reports logged. Content is clear.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = reports.map(r => `
+                        <tr>
+                            <td><span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">${r.targetType}</span></td>
+                            <td>
+                                ${r.targetType === 'TOPIC' 
+                                    ? `<a href="/topic-detail?id=${r.targetId}" target="_blank" style="font-weight:700; color:var(--dark);">Topic #${r.targetId}</a>` 
+                                    : `<span>Comment #${r.targetId}</span>`}
+                            </td>
+                            <td>${r.reporter ? r.reporter.fullName : 'Anonymous'}</td>
+                            <td><span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:600;">${r.reason}</span></td>
+                            <td><span class="badge" style="${r.status === 'PENDING' ? 'background:#fef3c7; color:#92400e;' : 'background:#ecfdf5; color:#047857;'}">${r.status}</span></td>
+                            <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                            <td style="text-align:right;">
+                                ${r.status === 'PENDING' ? `
+                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px; color:#15803d; border-color:#bbf7d0;" onclick="resolveAdminReport(${r.id})">
+                                        Resolve
+                                    </button>
+                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--muted); border-color:var(--border);" onclick="dismissAdminReport(${r.id})">
+                                        Dismiss
+                                    </button>
+                                ` : '<span style="color:var(--muted); font-size:0.8rem;">Resolved</span>'}
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--danger); padding:20px;">Error loading reports.</td></tr>';
+            }
+        }
+
+        async function resolveAdminReport(id) {
+            try {
+                const res = await fetch(`/api/admin/reports/${id}/resolve`, { method: 'PUT' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Report marked as resolved.', 'success');
+                    loadAdminReports();
+                } else {
+                    App.showToast(json.message || 'Operation failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while resolving report', 'error');
+            }
+        }
+
+        async function dismissAdminReport(id) {
+            try {
+                const res = await fetch(`/api/admin/reports/${id}/dismiss`, { method: 'PUT' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Report dismissed.', 'info');
+                    loadAdminReports();
+                } else {
+                    App.showToast(json.message || 'Operation failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while dismissing report', 'error');
+            }
+        }
+
+        // ================= EVENTS =================
+        async function loadAdminEvents() {
+            const tbody = document.getElementById('admin-events-tbody');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">Loading events...</td></tr>';
+
+            try {
+                const res = await fetch('/api/admin/events');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const events = json.data;
+                    if (events.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px;">No events registered.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = events.map(e => `
+                        <tr>
+                            <td><strong>${e.title}</strong></td>
+                            <td>${new Date(e.eventDate).toLocaleDateString()} (${e.location})</td>
+                            <td><span class="badge" style="background:#f1f5f9; color:var(--muted);">${e.category}</span></td>
+                            <td>${e.createdBy ? e.createdBy.fullName : 'Faculty/Club'}</td>
+                            <td><span class="badge" style="${e.status === 'APPROVED' ? 'background:#ecfdf5; color:#047857;' : (e.status === 'PENDING' ? 'background:#fef3c7; color:#92400e;' : 'background:#fee2e2; color:#b91c1c;')}">${e.status}</span></td>
+                            <td style="text-align:right; white-space:nowrap;">
+                                ${e.status === 'PENDING' ? `
+                                    <button class="btn btn-primary" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="approveEvent(${e.id})">Approve</button>
+                                    <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--muted); border-color:var(--border); margin-right:4px;" onclick="rejectEvent(${e.id})">Reject</button>
+                                ` : ''}
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:rgba(239,68,68,0.35);" onclick="deleteAdminEvent(${e.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Error loading events.</td></tr>';
+            }
+        }
+
+        async function approveEvent(id) {
+            try {
+                const res = await fetch(`/api/admin/events/${id}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event approved and published!', 'success');
+                    loadAdminEvents();
+                    loadAdminOverview();
+                }
+            } catch (e) {
+                App.showToast('Approval failed', 'error');
+            }
+        }
+
+        async function rejectEvent(id) {
+            try {
+                const res = await fetch(`/api/admin/events/${id}/reject`, { method: 'PUT' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event proposal rejected.', 'info');
+                    loadAdminEvents();
+                    loadAdminOverview();
+                }
+            } catch (e) {
+                App.showToast('Rejection failed', 'error');
+            }
+        }
+
+        async function deleteAdminEvent(id) {
+            if (!confirm('Are you sure you want to permanently delete this event? This will remove all attendee registrations.')) return;
+            try {
+                const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event deleted successfully.', 'success');
+                    loadAdminEvents();
+                    if (typeof loadAdminOverview === 'function') loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to delete event.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting event.', 'error');
+            }
+        }
+
+        // ================= CAMPUS CLUBS & LEADERS =================
+        async function loadAdminClubs() {
+            const tbody = document.getElementById('admin-clubs-tbody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Loading clubs...</td></tr>';
+
+            try {
+                const res = await fetch('/api/clubs');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const clubs = json.data;
+                    if (clubs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No campus clubs created yet. Click "+ Create New Club" above.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = clubs.map(c => `
+                        <tr>
+                            <td><strong>${App.escapeHtml(c.clubName)}</strong></td>
+                            <td><span class="badge" style="background:#eff6ff; color:#1d4ed8;">${c.department ? App.escapeHtml(c.department.name) : 'Campus Wide'}</span></td>
+                            <td>
+                                ${c.leader ? `
+                                    <strong style="color:var(--dark);">${App.escapeHtml(c.leader.fullName)}</strong><br>
+                                    <small style="color:var(--muted);">${App.escapeHtml(c.leader.prnRollNo || c.leader.email)}</small>
+                                ` : `<span class="badge" style="background:#fee2e2; color:#b91c1c;">No Leader Appointed</span>`}
+                            </td>
+                            <td style="max-width:250px; font-size:0.85rem; color:var(--dark-muted);">${App.escapeHtml(c.description || 'No description')}</td>
+                            <td style="text-align:right;">
+                                <button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; margin-right:4px;" onclick="openAppointLeaderModalAdmin(${c.id}, '${App.escapeHtml(c.clubName)}')">Appoint / Change Leader</button>
+                                ${c.leader ? `<button class="btn btn-outline" style="font-size:0.75rem; padding:4px 8px; color:var(--danger); border-color:var(--border);" onclick="removeLeaderAdmin(${c.id})">Remove Leader</button>` : ''}
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger); padding:20px;">Error loading clubs.</td></tr>';
+            }
+        }
+
+        async function openAppointLeaderModalAdmin(clubId, clubName) {
+            document.getElementById('appoint-leader-form-admin').reset();
+            document.getElementById('al-admin-club-id').value = clubId;
+            document.getElementById('al-admin-club-name').textContent = clubName;
+
+            const select = document.getElementById('al-admin-student-select');
+            select.innerHTML = '<option value="">Loading students...</option>';
+
+            try {
+                const res = await fetch('/api/clubs/eligible-leaders');
+                const json = await res.json();
+                const students = json.data || [];
+                if (students.length === 0) {
+                    select.innerHTML = '<option value="">No eligible students found</option>';
+                    return;
+                }
+                select.innerHTML = '<option value="">-- Choose Student to Appoint as Club Leader --</option>' +
+                    students.map(s => `<option value="${s.id}">${App.escapeHtml(s.fullName)} (PRN: ${App.escapeHtml(s.prnRollNo || 'N/A')}, ${s.email} - Dept: ${s.department ? App.escapeHtml(s.department.name) : 'All'})</option>`).join('');
+            } catch (e) {
+                select.innerHTML = '<option value="">Failed to load students</option>';
+            }
+
+            App.openModal('appoint-leader-modal-admin');
+        }
+
+        function closeAppointLeaderModalAdmin() {
+            App.closeModal('appoint-leader-modal-admin');
+        }
+
+        async function handleAppointLeaderAdmin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-admin-appoint-confirm');
+            btn.disabled = true;
+            btn.textContent = 'Appointing...';
+
+            const clubId = document.getElementById('al-admin-club-id').value;
+            const studentId = document.getElementById('al-admin-student-select').value;
+
+            try {
+                const res = await fetch(`/api/clubs/${clubId}/appoint-leader`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId: studentId })
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Club leader appointed successfully!', 'success');
+                    closeAppointLeaderModalAdmin();
+                    loadAdminClubs();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Appointment failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while appointing leader', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Appoint Leader';
+            }
+        }
+
+        async function removeLeaderAdmin(clubId) {
+            if (!confirm('Are you sure you want to remove the current leader from this club?')) return;
+            try {
+                const res = await fetch(`/api/clubs/${clubId}/remove-leader`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Club leader removed successfully.', 'info');
+                    loadAdminClubs();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to remove leader', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while removing leader', 'error');
+            }
+        }
+
+        async function openAddClubModal() {
+            document.getElementById('club-form').reset();
+
+            // Load departments into select
+            try {
+                const res = await fetch('/api/departments');
+                const json = await res.json();
+                const depts = json.data || [];
+                const dSelect = document.getElementById('club-dept');
+                dSelect.innerHTML = '<option value="">Campus Wide (All Departments)</option>' +
+                    depts.map(d => `<option value="${d.id}">${App.escapeHtml(d.name)} (${App.escapeHtml(d.code)})</option>`).join('');
+            } catch (ignored) {}
+
+            // Load eligible students for leader
+            const lSelect = document.getElementById('club-leader');
+            lSelect.innerHTML = '<option value="">-- No Leader Now (Can Appoint Later) --</option>';
+            try {
+                const res = await fetch('/api/clubs/eligible-leaders');
+                const json = await res.json();
+                const students = json.data || [];
+                lSelect.innerHTML = '<option value="">-- No Leader Now (Can Appoint Later) --</option>' +
+                    students.map(s => `<option value="${s.id}">${App.escapeHtml(s.fullName)} (PRN: ${App.escapeHtml(s.prnRollNo || 'N/A')}, Dept: ${s.department ? App.escapeHtml(s.department.name) : 'All'})</option>`).join('');
+            } catch (ignored) {}
+
+            App.openModal('club-modal');
+        }
+
+        function closeAddClubModal() {
+            App.closeModal('club-modal');
+        }
+
+        async function handleSaveClub(e) {
+            e.preventDefault();
+            const deptVal = document.getElementById('club-dept').value;
+            const leaderVal = document.getElementById('club-leader').value;
+
+            const payload = {
+                clubName: document.getElementById('club-name').value.trim(),
+                description: document.getElementById('club-desc').value.trim(),
+                departmentId: deptVal ? parseInt(deptVal) : null,
+                leaderId: leaderVal ? parseInt(leaderVal) : null
+            };
+
+            try {
+                const res = await fetch('/api/clubs', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Campus club created successfully!', 'success');
+                    closeAddClubModal();
+                    loadAdminClubs();
+                    loadAdminOverview();
+                } else {
+                    App.showToast(json.message || 'Failed to create club', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving club', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

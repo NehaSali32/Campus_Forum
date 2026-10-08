@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Resources | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .resource-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.15s, box-shadow 0.15s;
+            height: 100%;
+        }
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources" class="active">Resources</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+            <div>
+                <h1 style="font-size:1.75rem; font-weight:800; color:var(--dark); margin:0;">Academic Courseware &amp; Learning Resources</h1>
+                <p style="color:var(--muted); font-size:0.9rem; margin-top:4px;">Download syllabus copies, lab manuals, university question papers, and essential learning links</p>
+            </div>
+            <div id="add-resource-wrapper" style="display:none;">
+                <button class="btn btn-primary" onclick="openAddResourceModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Upload Resource</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filter-bar" style="margin-bottom:24px;">
+            <div class="category-pills" id="category-pills">
+                <button class="pill active" onclick="filterResources('All', this)">All Resources</button>
+                <button class="pill" onclick="filterResources('Syllabus', this)">Syllabus</button>
+                <button class="pill" onclick="filterResources('Lab Manuals', this)">Lab Manuals</button>
+                <button class="pill" onclick="filterResources('Question Papers', this)">Question Papers</button>
+                <button class="pill" onclick="filterResources('College Guidelines', this)">Guidelines &amp; Policies</button>
+                <button class="pill" onclick="filterResources('Tools & Software', this)">Tools &amp; Software</button>
+            </div>
+        </div>
+
+        <!-- Resources Grid -->
+        <div class="resource-grid" id="resources-grid-container">
+            <div style="text-align:center; padding:40px; color:var(--muted); grid-column:1/-1;">Loading college resources...</div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Add Resource -->
+    <div class="modal-backdrop" id="add-resource-modal">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Upload Academic Resource</h3>
+                <button class="modal-close" onclick="closeAddResourceModal()">&times;</button>
+            </div>
+            <form id="add-resource-form" onsubmit="handleSaveResource(event)">
+                <div class="form-group">
+                    <label class="form-label" for="res-title">Resource Title *</label>
+                    <input type="text" id="res-title" class="form-control" placeholder="e.g. Data Structures Lab Manual - Semester 4" required>
+                </div>
+
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label" for="res-category">Category *</label>
+                        <select id="res-category" class="form-control" required>
+                            <option value="Syllabus">Syllabus</option>
+                            <option value="Lab Manuals">Lab Manuals</option>
+                            <option value="Question Papers">Question Papers</option>
+                            <option value="College Guidelines">College Guidelines</option>
+                            <option value="Tools &amp; Software">Tools &amp; Software</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="res-type">Resource Type *</label>
+                        <select id="res-type" class="form-control" onchange="toggleResourceTypeFields(this.value)" required>
+                            <option value="FILE">Downloadable File (PDF, DOC)</option>
+                            <option value="LINK">External Web Link / Drive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="res-dept">Target Department</label>
+                    <select id="res-dept" class="form-control">
+                        <option value="">All Departments (General)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="res-desc">Description</label>
+                    <textarea id="res-desc" class="form-control" style="min-height:70px;" placeholder="Brief details about the resource and subjects covered..."></textarea>
+                </div>
+
+                <!-- File upload field -->
+                <div class="form-group" id="file-field-group">
+                    <label class="form-label" for="res-file">Upload Document *</label>
+                    <input type="file" id="res-file" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
+                </div>
+
+                <!-- Web link field -->
+                <div class="form-group" id="link-field-group" style="display:none;">
+                    <label class="form-label" for="res-link">External URL *</label>
+                    <input type="url" id="res-link" class="form-control" placeholder="https://example.com/materials">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAddResourceModal()">Cancel</button>
+                    <button type="submit" id="btn-save-res" class="btn btn-primary">Save Resource</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; Academic Resources Repository
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let allResources = [];
+        let currentFilter = 'All';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            if (App.currentUser && (App.currentUser.role === 'ADMIN' || App.currentUser.role === 'FACULTY' || App.currentUser.role === 'HOD' || App.currentUser.role === 'DEAN')) {
+                document.getElementById('add-resource-wrapper').style.display = 'block';
+            }
+            loadDepartmentsDropdown();
+            loadResources();
+        });
+
+        async function loadDepartmentsDropdown() {
+            try {
+                const res = await fetch('/api/departments');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const sel = document.getElementById('res-dept');
+                    json.data.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d.id;
+                        opt.textContent = `${d.name} (${d.code})`;
+                        sel.appendChild(opt);
+                    });
+                }
+            } catch (ignored) {}
+        }
+
+        async function loadResources() {
+            const container = document.getElementById('resources-grid-container');
+            try {
+                const res = await fetch('/api/resources');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    allResources = json.data;
+                    renderFilteredResources();
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger); grid-column:1/-1;">Error loading academic resources.</div>';
+            }
+        }
+
+        function filterResources(cat, pillEl) {
+            currentFilter = cat;
+            document.querySelectorAll('#category-pills .pill').forEach(p => p.classList.remove('active'));
+            if (pillEl) pillEl.classList.add('active');
+            renderFilteredResources();
+        }
+
+        function renderFilteredResources() {
+            const container = document.getElementById('resources-grid-container');
+            let list = allResources;
+            if (currentFilter !== 'All') {
+                list = list.filter(r => r.category && r.category.toLowerCase() === currentFilter.toLowerCase());
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:50px 20px; color:var(--muted); grid-column:1/-1; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);">
+                        <div style="margin-bottom:10px; display:flex; justify-content:center; color:var(--muted);">${App.icon('book', 44)}</div>
+                        <p style="font-weight:600; color:var(--dark);">No resources found for category "${currentFilter}".</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(r => `
+                <div class="resource-card">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                            <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700;">${r.category || 'General'}</span>
+                            <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--muted); font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">
+                                ${r.resourceType === 'FILE' ? `${App.icon('fileText', 12)} File` : `${App.icon('externalLink', 12)} Web Link`}
+                            </span>
+                        </div>
+                        <h4 style="font-size:1.08rem; font-weight:700; color:var(--dark); margin:0 0 8px; line-height:1.4;">${r.title}</h4>
+                        <p style="color:var(--dark-muted); font-size:0.88rem; line-height:1.55; margin-bottom:12px;">${r.description || 'Academic courseware material.'}</p>
+                        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:16px;">
+                            Department: <strong>${r.department ? r.department.name : 'All Departments'}</strong>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid var(--border);">
+                        ${r.resourceType === 'FILE' && r.filePath ? `
+                            <a href="${r.filePath}" target="_blank" download class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                                ${App.icon('download', 14)}
+                                <span>Download File</span>
+                            </a>
+                        ` : (r.linkUrl ? `
+                            <a href="${r.linkUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                                ${App.icon('externalLink', 14)}
+                                <span>Open Link</span>
+                            </a>
+                        ` : '<span style="color:var(--muted); font-size:0.8rem;">No link available</span>')}
+
+                        ${App.currentUser && (App.currentUser.role === 'ADMIN' || App.currentUser.role === 'FACULTY' || App.currentUser.role === 'HOD' || App.currentUser.role === 'DEAN') ? `
+                            <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--border); display:inline-flex; align-items:center; gap:4px;" onclick="deleteResource(${r.id})" title="Delete resource">
+                                ${App.icon('trash', 14)}
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteResource(id) {
+            if (!confirm('Are you sure you want to delete this resource?')) return;
+            try {
+                const res = await fetch(`/api/resources/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Resource deleted.', 'success');
+                    loadResources();
+                } else {
+                    App.showToast(json.message || 'Deletion failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        function openAddResourceModal() {
+            document.getElementById('add-resource-form').reset();
+            toggleResourceTypeFields('FILE');
+            App.openModal('add-resource-modal');
+        }
+
+        function closeAddResourceModal() {
+            App.closeModal('add-resource-modal');
+        }
+
+        function toggleResourceTypeFields(type) {
+            if (type === 'FILE') {
+                document.getElementById('file-field-group').style.display = 'block';
+                document.getElementById('link-field-group').style.display = 'none';
+            } else {
+                document.getElementById('file-field-group').style.display = 'none';
+                document.getElementById('link-field-group').style.display = 'block';
+            }
+        }
+
+        async function handleSaveResource(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-res');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const type = document.getElementById('res-type').value;
+            let filePath = null;
+
+            if (type === 'FILE') {
+                const fileInput = document.getElementById('res-file');
+                if (fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('file', fileInput.files[0]);
+                    try {
+                        const upRes = await fetch('/api/resources/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const upData = await upRes.json();
+                        if (upRes.ok && upData.success) {
+                            filePath = upData.data.filePath;
+                        }
+                    } catch (err) {
+                        App.showToast('File upload failed', 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Save Resource';
+                        return;
+                    }
+                }
+            }
+
+            const deptVal = document.getElementById('res-dept').value;
+
+            const payload = {
+                title: document.getElementById('res-title').value.trim(),
+                category: document.getElementById('res-category').value,
+                resourceType: type,
+                departmentId: deptVal ? parseInt(deptVal) : null,
+                description: document.getElementById('res-desc').value.trim(),
+                filePath: filePath,
+                linkUrl: type === 'LINK' ? document.getElementById('res-link').value.trim() : null
+            };
+
+            try {
+                const res = await fetch('/api/resources', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Academic resource published successfully!', 'success');
+                    closeAddResourceModal();
+                    loadResources();
+                } else {
+                    App.showToast(json.message || 'Failed to save resource', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving resource', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Save Resource';
+            }
+        }
+    </script>
+</body>
+</html>

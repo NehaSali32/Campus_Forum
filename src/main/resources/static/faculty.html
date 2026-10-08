@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty &amp; Academic Leadership Portal | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .portal-header-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 26px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .portal-user-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .portal-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--border);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .portal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .portal-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .portal-tab {
+            padding: 11px 18px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--muted);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .portal-tab:hover {
+            color: var(--navy);
+            background: var(--surface);
+        }
+        .portal-tab.active {
+            color: var(--navy);
+            border-bottom-color: var(--navy);
+            background: var(--surface);
+            font-weight: 700;
+        }
+        .badge-count {
+            background: var(--urgent);
+            color: #fff;
+            font-size: 0.72rem;
+            padding: 2px 7px;
+            border-radius: var(--radius-full);
+            font-weight: 800;
+        }
+        .subject-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .notice-action-row {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .club-manage-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .elevation-alert-box {
+            background: linear-gradient(135deg, #eff6ff, #f8fafc);
+            border: 1px solid #bfdbfe;
+            border-radius: var(--radius);
+            padding: 14px 20px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/faculty" class="active">Faculty Portal</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+        <!-- Role Elevation Notification Banner -->
+        <div id="role-elevation-banner" class="elevation-alert-box" style="display:none;">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:38px; height:38px; border-radius:50%; background:var(--primary); color:#ffffff; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                </div>
+                <div>
+                    <div style="font-weight:700; color:var(--elevation-title); font-size:0.95rem;" id="role-elevation-title">Elevated Administrative Authority Active</div>
+                    <div style="font-size:0.85rem; color:var(--elevation-desc);" id="role-elevation-msg">You have academic governance privileges integrated directly into this portal.</div>
+                </div>
+            </div>
+            <button id="role-elevation-btn" class="btn btn-sm btn-primary" onclick="jumpToGovernanceTab()">
+                Open Governance Desk &rarr;
+            </button>
+        </div>
+
+        <!-- Faculty Header Card -->
+        <section class="portal-header-card" id="faculty-header">
+            <div class="portal-user-meta">
+                <div class="portal-avatar" id="faculty-avatar">FC</div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+                        <h1 style="font-size:1.5rem; font-weight:800; color:var(--dark); margin:0;" id="faculty-name">Loading Faculty...</h1>
+                        <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;" id="faculty-designation-badge">FACULTY</span>
+                    </div>
+                    <div style="color:var(--muted); font-size:0.9rem;" id="faculty-academic-meta">
+                        Emp ID: -- &bull; Dept: --
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="openPublishModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Publish Notice</span>
+                </button>
+                <button class="btn btn-outline" onclick="switchFacultyTab('events', document.querySelectorAll('.portal-tab')[3])" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Propose Event</span>
+                </button>
+                <a href="/profile" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span>Profile</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Metrics Grid -->
+        <section class="stats-grid" style="margin-bottom:24px;">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-taught-subjects">0</div>
+                    <div class="stat-label">Assigned Subjects</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-published-notices">0</div>
+                    <div class="stat-label">Notices Published</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-forum-topics">0</div>
+                    <div class="stat-label">Recent Questions</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-events-count">0</div>
+                    <div class="stat-label">Upcoming Events</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="portal-tabs" id="portal-tab-bar">
+            <div class="portal-tab active" onclick="switchFacultyTab('notices', this)">Department Notices</div>
+            <div class="portal-tab" onclick="switchFacultyTab('subjects', this)">My Assigned Subjects</div>
+            <div class="portal-tab" onclick="switchFacultyTab('resources', this)">Academic Resources Desk</div>
+            <div class="portal-tab" onclick="switchFacultyTab('discussions', this)">Student Academic Q&amp;A</div>
+            <div class="portal-tab" onclick="switchFacultyTab('events', this)">Organize Campus Event</div>
+            <div class="portal-tab" id="tab-btn-hod" style="display:none;" onclick="switchFacultyTab('hod-governance', this)">
+                <span>Department Governance (HOD)</span>
+                <span class="badge-count" id="hod-tab-badge" style="display:none;">0</span>
+            </div>
+            <div class="portal-tab" id="tab-btn-dean" style="display:none;" onclick="switchFacultyTab('dean-governance', this)">
+                <span>Institutional Governance (Dean)</span>
+                <span class="badge-count" id="dean-tab-badge" style="display:none;">0</span>
+            </div>
+        </div>
+
+        <!-- TAB 1: Department Notices -->
+        <section id="tab-notices">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">Official Circulars &amp; Directives</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Notices published for your department students and campus-wide</p>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="openPublishModal()">+ New Notice</button>
+                </div>
+                <div id="faculty-notices-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading notices...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: My Assigned Subjects -->
+        <section id="tab-subjects" style="display:none;">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">Course Allotment &amp; Curriculum</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Official academic subjects allocated to your instruction</p>
+                    </div>
+                </div>
+                <div id="faculty-subjects-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading subjects...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Academic Q&A -->
+        <section id="tab-discussions" style="display:none;">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">Student Academic Inquiries</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Recent questions posted by students. Your responses will display the <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700;">Verified Faculty</span> badge.</p>
+                    </div>
+                    <a href="/forum" class="btn btn-outline" style="font-size:0.85rem;">View Full Forum &rarr;</a>
+                </div>
+                <div id="faculty-discussions-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading questions...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: Academic Resources Desk -->
+        <section id="tab-resources" style="display:none;">
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Upload Academic Courseware &amp; Resources</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Upload syllabus copies, lecture notes, lab manuals, question banks, or links for students</p>
+                    </div>
+                </div>
+
+                <form id="faculty-upload-resource-form" onsubmit="handleFacultyUploadResource(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="fac-res-title">Resource Title *</label>
+                        <input type="text" id="fac-res-title" class="form-control" placeholder="e.g. Data Structures &amp; Algorithms - Semester 4 Question Bank" required>
+                    </div>
+
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="form-group">
+                            <label class="form-label" for="fac-res-category">Resource Category *</label>
+                            <select id="fac-res-category" class="form-control" required>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Lab Manuals">Lab Manuals</option>
+                                <option value="Question Papers">Question Papers</option>
+                                <option value="College Guidelines">College Guidelines</option>
+                                <option value="Tools &amp; Software">Tools &amp; Software</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="fac-res-type">Type *</label>
+                            <select id="fac-res-type" class="form-control" onchange="toggleFacResType(this.value)" required>
+                                <option value="FILE">Downloadable File Attachment</option>
+                                <option value="LINK">External Link / Drive URL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="fac-res-file-group" class="form-group">
+                        <label class="form-label" for="fac-res-file">Select Document / PDF File *</label>
+                        <input type="file" id="fac-res-file" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip">
+                    </div>
+
+                    <div id="fac-res-link-group" class="form-group" style="display:none;">
+                        <label class="form-label" for="fac-res-link">Resource Web Link *</label>
+                        <input type="url" id="fac-res-link" class="form-control" placeholder="https://drive.google.com/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="fac-res-desc">Description / Instructions</label>
+                        <textarea id="fac-res-desc" class="form-control" style="min-height:80px;" placeholder="Brief details about modules, topics covered, or instructions for students..."></textarea>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                        <button type="reset" class="btn btn-outline">Clear</button>
+                        <button type="submit" id="btn-fac-upload-res" class="btn btn-primary">Upload &amp; Publish Resource</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Published Resources Roster -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0;">Department &amp; Campus Resources Roster</h4>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Currently published materials accessible to students</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadFacultyResources()">Refresh Resources</button>
+                </div>
+                <div id="faculty-resources-list-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading published materials...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: Organize Campus Event -->
+        <section id="tab-events" style="display:none;">
+            <div class="card" style="max-width:750px; margin:0 auto;">
+                <h3 style="font-size:1.2rem; font-weight:700; color:var(--dark); margin-bottom:6px;">Organize Official Campus Event</h3>
+                <p style="color:var(--muted); font-size:0.88rem; margin-bottom:20px;">Organize official campus symposiums, workshops, seminars, and club events. As a faculty member or department leadership, your event is directly published and approved immediately without requiring permission.</p>
+
+                <form id="propose-event-form" onsubmit="handleProposeEvent(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="event-title">Event Title *</label>
+                        <input type="text" id="event-title" class="form-control" placeholder="e.g. National Level Technical Symposium &amp; Hackathon" required>
+                    </div>
+
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="form-group">
+                            <label class="form-label" for="event-category">Category *</label>
+                            <select id="event-category" class="form-control" required>
+                                <option value="Academic">Academic / Seminar</option>
+                                <option value="Workshop">Workshop &amp; Training</option>
+                                <option value="Cultural">Cultural Fest</option>
+                                <option value="Sports">Sports Meet</option>
+                                <option value="Placement">Placement Drive</option>
+                                <option value="Hackathon">Hackathon / Coding</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="event-location">Venue / Location *</label>
+                            <input type="text" id="event-location" class="form-control" placeholder="e.g. Main Auditorium / Lab 3" required>
+                        </div>
+                    </div>
+
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="form-group">
+                            <label class="form-label" for="event-date">Date *</label>
+                            <input type="date" id="event-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="event-time">Time</label>
+                            <input type="text" id="event-time" class="form-control" placeholder="e.g. 10:00 AM - 04:00 PM">
+                        </div>
+                    </div>
+
+                    <div class="grid-2col" style="margin-bottom:0;">
+                        <div class="form-group">
+                            <label class="form-label" for="event-eligibility">Registration Eligibility *</label>
+                            <select id="event-eligibility" class="form-control" required>
+                                <option value="OPEN_TO_ALL">Open to All Students (Campus Wide)</option>
+                                <option value="DEPARTMENT_ONLY">My Department Students Only</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="event-max-participants">Max Registration Capacity (0 for Unlimited)</label>
+                            <input type="number" id="event-max-participants" class="form-control" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="event-description">Event Description &amp; Schedule *</label>
+                        <textarea id="event-description" class="form-control" style="min-height:100px;" placeholder="Details about registration, guest speakers, eligibility..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="event-rules">Event Guidelines &amp; Rules</label>
+                        <input type="text" id="event-rules" class="form-control" placeholder="e.g. College ID card mandatory, bring laptops...">
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                        <button type="reset" class="btn btn-outline">Clear Form</button>
+                        <button type="submit" id="btn-submit-event" class="btn btn-primary">Organize &amp; Publish Event</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 5: HOD Governance Desk -->
+        <section id="tab-hod-governance" style="display:none;">
+            <!-- HOD Department Banner -->
+            <div style="background:linear-gradient(135deg, var(--navy), #1e3a8a); color:#fff; padding:24px 26px; border-radius:var(--radius-lg); margin-bottom:20px; box-shadow:var(--shadow-sm); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+                <div>
+                    <div style="font-size:1.35rem; font-weight:800; margin-bottom:4px;">Head of Department (HOD) Governance Desk</div>
+                    <div style="font-size:0.9rem; opacity:0.9;" id="hod-dept-subtitle">Academic Supervision &bull; Department Event Approvals &bull; Student Club Leadership</div>
+                </div>
+                <div id="hod-dept-badge" style="background:rgba(255,255,255,0.2); padding:6px 16px; border-radius:var(--radius-full); font-weight:700; font-size:0.85rem; border:1px solid rgba(255,255,255,0.3);">
+                    Department Head
+                </div>
+            </div>
+
+            <!-- HOD Metric Cards -->
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom:24px;">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="hod-kpi-students">0</div>
+                        <div class="stat-label">Department Students</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="hod-kpi-faculty">0</div>
+                        <div class="stat-label">Department Faculty</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-left:4px solid var(--urgent);">
+                    <div class="stat-icon amber">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="hod-kpi-events" style="color:var(--urgent);">0</div>
+                        <div class="stat-label">Pending Event Proposals</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-left:4px solid var(--forest);">
+                    <div class="stat-icon green">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="hod-kpi-clubs" style="color:var(--forest);">0</div>
+                        <div class="stat-label">Department Clubs</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 1: Event Proposals Review Desk -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Department Event Proposals for Sanction</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Review, approve or reject event proposals submitted by students, club leaders, and faculty</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadHodEvents()">Refresh Proposals</button>
+                </div>
+                <div id="hod-events-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading proposals...</div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 2: Department Student Clubs & Appointed Leaders -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Department Clubs &amp; Student Leaders</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">As HOD, you can create new departmental clubs and appoint any student as the official Club Leader.</p>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="openCreateClubModal('HOD')">+ Create Department Club</button>
+                </div>
+                <div id="hod-clubs-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading clubs...</div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 3: Department Students Roster -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Department Students Roster</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Enrolled students under your academic department</p>
+                    </div>
+                    <input type="text" id="hod-student-search" class="form-control" placeholder="Search by name, roll no, email..." style="max-width:280px;" onkeyup="filterHodStudentsTable()">
+                </div>
+                <div class="table-container">
+                    <table class="custom-table" id="hod-students-table">
+                        <thead>
+                            <tr>
+                                <th>PRN / Roll No</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Year &amp; Div</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hod-students-tbody">
+                            <tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading students...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 4: Department Faculty Directory -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Department Faculty Directory</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Teaching faculty and instructors in this department</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadHodFaculty()">Refresh</button>
+                </div>
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Emp ID</th>
+                                <th>Full Name</th>
+                                <th>Designation</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hod-faculty-tbody">
+                            <tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Loading faculty...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: Dean Governance Desk -->
+        <section id="tab-dean-governance" style="display:none;">
+            <!-- Dean Banner -->
+            <div style="background:linear-gradient(135deg, #1e293b, #334155); color:#fff; padding:24px 26px; border-radius:var(--radius-lg); margin-bottom:20px; box-shadow:var(--shadow-sm); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+                <div>
+                    <div style="font-size:1.35rem; font-weight:800; margin-bottom:4px;">Dean of Academics Governance Console</div>
+                    <div style="font-size:0.9rem; opacity:0.9;">Institutional Oversight &bull; Inter-Departmental Leadership &bull; Collegiate Event Sanctions</div>
+                </div>
+                <div style="background:rgba(245,158,11,0.25); color:#fbbf24; padding:6px 16px; border-radius:var(--radius-full); font-weight:700; font-size:0.85rem; border:1px solid rgba(245,158,11,0.4);">
+                    Office of Academic Affairs
+                </div>
+            </div>
+
+            <!-- Dean Metrics Grid -->
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom:24px;">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-students">0</div>
+                        <div class="stat-label">Total Students</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-faculty">0</div>
+                        <div class="stat-label">Total Faculty</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-hods">0</div>
+                        <div class="stat-label">Appointed HODs</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-depts">0</div>
+                        <div class="stat-label">Departments</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-left:4px solid var(--urgent);">
+                    <div class="stat-icon amber">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-events" style="color:var(--urgent);">0</div>
+                        <div class="stat-label">Pending Events</div>
+                    </div>
+                </div>
+                <div class="stat-card" style="border-left:4px solid var(--forest);">
+                    <div class="stat-icon green">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="dean-kpi-clubs" style="color:var(--forest);">0</div>
+                        <div class="stat-label">Recognized Clubs</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 1: College-wide Event Approvals Desk -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">College-wide Event Proposals Requiring Sanction</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Academic conferences, technical symposiums, hackathons and club activities across all departments</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadDeanEvents()">Refresh Events</button>
+                </div>
+                <div id="dean-events-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading proposals...</div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 2: College Student Clubs & Leadership Oversight -->
+            <div class="card" style="margin-bottom:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Institutional Student Clubs &amp; Leadership Oversight</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">As Dean, you can sanction new college-wide clubs and appoint student leaders from any department.</p>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="openCreateClubModal('DEAN')">+ Create Campus Club</button>
+                </div>
+                <div id="dean-clubs-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading clubs...</div>
+                </div>
+            </div>
+
+            <!-- SUB-SECTION 3: Institutional Faculty & HOD Directory -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Institutional Faculty &amp; Department Heads Directory</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Complete register of professors, assistant professors, and HODs across the institution</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadDeanFaculty()">Refresh Directory</button>
+                </div>
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Emp ID</th>
+                                <th>Full Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dean-faculty-tbody">
+                            <tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Loading faculty...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Publish Notice -->
+    <div class="modal-backdrop" id="publish-notice-modal">
+        <div class="modal-content" style="max-width:650px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Publish Official Notice</h3>
+                <button class="modal-close" onclick="closePublishModal()">&times;</button>
+            </div>
+            <form id="publish-notice-form" onsubmit="handlePublishNotice(event)">
+                <div class="form-group">
+                    <label class="form-label" for="pub-title">Notice Title *</label>
+                    <input type="text" id="pub-title" class="form-control" placeholder="e.g. Department Unit Test Schedule & Syllabus" required>
+                </div>
+
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label" for="pub-audience">Target Audience *</label>
+                        <select id="pub-audience" class="form-control" required>
+                            <option value="dept">My Department Students &amp; Faculty</option>
+                            <option value="all">College Wide (All Departments)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pub-priority">Priority *</label>
+                        <select id="pub-priority" class="form-control" required>
+                            <option value="NORMAL">Normal Priority</option>
+                            <option value="IMPORTANT">Important</option>
+                            <option value="URGENT">Urgent / Immediate Action</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pub-category">Category *</label>
+                    <select id="pub-category" class="form-control" required>
+                        <option value="Academic">Academic</option>
+                        <option value="Examination">Examination</option>
+                        <option value="Department">Department</option>
+                        <option value="Campus Events">Campus Events</option>
+                        <option value="Training &amp; Placement">Training &amp; Placement</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pub-content">Circular Details / Content *</label>
+                    <textarea id="pub-content" class="form-control" style="min-height:130px;" placeholder="Write official announcement details..." required></textarea>
+                </div>
+
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; background:var(--bg); padding:10px; border-radius:var(--radius);">
+                    <input type="checkbox" id="pub-ack" style="width:18px; height:18px; cursor:pointer;">
+                    <label for="pub-ack" style="cursor:pointer; font-weight:600; font-size:0.88rem; margin:0;">
+                        Mandatory Acknowledgement (Requires students to click "I Understand / Acknowledge")
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="pub-file">Attachment (PDF or Image, max 10MB)</label>
+                    <input type="file" id="pub-file" class="form-control" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+                    <button type="button" class="btn btn-outline" onclick="closePublishModal()">Cancel</button>
+                    <button type="submit" id="btn-submit-notice" class="btn btn-primary">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Decline Proposal Reason -->
+    <div class="modal-backdrop" id="reject-proposal-modal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reject-modal-title">Decline Proposal</h3>
+                <button class="modal-close" onclick="closeRejectModal()">&times;</button>
+            </div>
+            <div style="padding:16px 0;">
+                <p style="font-size:0.88rem; color:var(--muted); margin-bottom:12px;">Please provide an academic or operational reason for declining this proposal so the organizer is informed.</p>
+                <label class="form-label" for="reject-reason-input">Reason for Rejection / Feedback *</label>
+                <textarea id="reject-reason-input" class="form-control" rows="4" placeholder="e.g. Schedule conflict with examinations, venue unavailable, missing event schedule..." required></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border); padding-top:14px;">
+                <button type="button" class="btn btn-outline" onclick="closeRejectModal()">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-reject-btn" onclick="submitEventRejection()">Confirm Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Create Student Club (HOD or Dean) -->
+    <div class="modal-backdrop" id="create-club-modal">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="create-club-modal-title">Create Student Club</h3>
+                <button class="modal-close" onclick="closeCreateClubModal()">&times;</button>
+            </div>
+            <form id="create-club-form" onsubmit="handleCreateClub(event)">
+                <input type="hidden" id="cc-caller-role" value="HOD">
+                <div class="form-group">
+                    <label class="form-label" for="cc-name">Club Name *</label>
+                    <input type="text" id="cc-name" class="form-control" placeholder="e.g. Coding Ninjas Club, Robotics Society" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="cc-desc">Description &amp; Objectives *</label>
+                    <textarea id="cc-desc" class="form-control" rows="3" placeholder="Mission, activities, and domain of the club..." required></textarea>
+                </div>
+                <div class="form-group" id="cc-dept-group" style="display:none;">
+                    <label class="form-label" for="cc-dept">Department Scope</label>
+                    <select id="cc-dept" class="form-control">
+                        <option value="">Campus Wide (All Departments)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="cc-leader">Appoint Initial Club Leader (Optional)</label>
+                    <select id="cc-leader" class="form-control">
+                        <option value="">-- No Leader Now (Can Appoint Later) --</option>
+                    </select>
+                    <small style="color:var(--muted); font-size:0.8rem; margin-top:4px; display:block;">Select any eligible enrolled student from the college.</small>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeCreateClubModal()">Cancel</button>
+                    <button type="submit" id="btn-save-club" class="btn btn-primary">Create Club</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Appoint Club Leader -->
+    <div class="modal-backdrop" id="appoint-leader-modal">
+        <div class="modal-content" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Appoint Club Leader</h3>
+                <button class="modal-close" onclick="closeAppointLeaderModal()">&times;</button>
+            </div>
+            <form id="appoint-leader-form" onsubmit="handleAppointLeader(event)">
+                <input type="hidden" id="al-club-id">
+                <input type="hidden" id="al-caller-role" value="HOD">
+                <div style="margin-bottom:16px;">
+                    <div style="font-size:0.85rem; color:var(--muted);">Selected Club:</div>
+                    <div style="font-size:1.1rem; font-weight:700; color:var(--dark);" id="al-club-name">--</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="al-student-select">Select Student from College *</label>
+                    <select id="al-student-select" class="form-control" required>
+                        <option value="">-- Choose Student --</option>
+                    </select>
+                    <small style="color:var(--muted); font-size:0.8rem; margin-top:4px; display:block;">The appointed student will automatically receive <strong>CLUB_LEADER</strong> privileges and the Club Leadership Desk on their student portal.</small>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="closeAppointLeaderModal()">Cancel</button>
+                    <button type="submit" id="btn-confirm-appoint" class="btn btn-primary">Appoint Leader</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Club Members Roster -->
+    <div class="modal-backdrop" id="club-members-modal">
+        <div class="modal-content" style="max-width:700px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="cm-modal-title">Club Members Roster</h3>
+                    <div style="font-size:0.85rem; color:var(--muted);" id="cm-modal-subtitle">--</div>
+                </div>
+                <button class="modal-close" onclick="closeClubMembersModal()">&times;</button>
+            </div>
+            <div style="margin-top:16px;">
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Email</th>
+                                <th>PRN / Roll No</th>
+                                <th>Status</th>
+                                <th>Joined / Applied</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cm-members-tbody">
+                            <tr><td colspan="5" style="text-align:center; padding:20px;">Loading members...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; Faculty Academic &amp; Instruction Portal
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let facultyUser = null;
+        let hodStudentsList = [];
+        let rejectModalState = { eventId: null, role: 'HOD' };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            facultyUser = App.currentUser;
+
+            if (!facultyUser) {
+                window.location.replace('/login');
+                return;
+            }
+
+            if (facultyUser.role !== 'FACULTY' && facultyUser.role !== 'ADMIN' && facultyUser.role !== 'HOD' && facultyUser.role !== 'DEAN') {
+                App.showToast('Access restricted to faculty members.', 'error');
+                setTimeout(() => window.location.replace('/'), 1500);
+                return;
+            }
+
+            renderFacultyHeader();
+            loadFacultyData();
+
+            // Setup Governance features based on user role
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+
+            if (facultyUser.role === 'HOD' || facultyUser.role === 'ADMIN') {
+                const btnHod = document.getElementById('tab-btn-hod');
+                if (btnHod) btnHod.style.display = 'flex';
+
+                if (facultyUser.role === 'HOD') {
+                    const banner = document.getElementById('role-elevation-banner');
+                    if (banner) {
+                        banner.style.display = 'flex';
+                        document.getElementById('role-elevation-icon').innerHTML = App.icon('shield', 26);
+                        document.getElementById('role-elevation-title').textContent = 'Head of Department (HOD) Administrative Role Active';
+                        const deptName = facultyUser.department ? facultyUser.department.name : 'your department';
+                        document.getElementById('role-elevation-msg').textContent = `You have full governance authority over the ${deptName}: event sanctioning, club leadership appointments, and student supervision.`;
+                    }
+                }
+
+                loadHodGovernanceData();
+
+                if (viewParam === 'hod' || (facultyUser.role === 'HOD' && !viewParam)) {
+                    switchFacultyTab('hod-governance', btnHod);
+                }
+            }
+
+            if (facultyUser.role === 'DEAN' || facultyUser.role === 'ADMIN') {
+                const btnDean = document.getElementById('tab-btn-dean');
+                if (btnDean) btnDean.style.display = 'flex';
+
+                if (facultyUser.role === 'DEAN') {
+                    const banner = document.getElementById('role-elevation-banner');
+                    if (banner) {
+                        banner.style.display = 'flex';
+                        document.getElementById('role-elevation-icon').innerHTML = App.icon('institution', 26);
+                        document.getElementById('role-elevation-title').textContent = 'Dean of Academics Institutional Role Active';
+                        document.getElementById('role-elevation-msg').textContent = 'You have institutional authority: college-wide event sanctioning, student club leadership oversight, and faculty administration.';
+                    }
+                }
+
+                loadDeanGovernanceData();
+
+                if (viewParam === 'dean' || (facultyUser.role === 'DEAN' && !viewParam)) {
+                    switchFacultyTab('dean-governance', btnDean);
+                }
+            }
+        });
+
+        function jumpToGovernanceTab() {
+            if (facultyUser.role === 'HOD') {
+                switchFacultyTab('hod-governance', document.getElementById('tab-btn-hod'));
+            } else if (facultyUser.role === 'DEAN') {
+                switchFacultyTab('dean-governance', document.getElementById('tab-btn-dean'));
+            }
+        }
+
+        function renderFacultyHeader() {
+            document.getElementById('faculty-name').textContent = facultyUser.fullName || 'Faculty Member';
+            
+            const deptName = facultyUser.department ? facultyUser.department.name : 'Unassigned Department';
+            const empId = facultyUser.employeeId ? `Emp ID: ${facultyUser.employeeId}` : 'Emp ID: --';
+            document.getElementById('faculty-academic-meta').innerHTML = `${empId} &bull; Dept: <strong>${deptName}</strong>`;
+
+            const designationBadge = document.getElementById('faculty-designation-badge');
+            if (facultyUser.role === 'HOD') {
+                designationBadge.textContent = 'HEAD OF DEPARTMENT (HOD)';
+                designationBadge.style.background = '#eff6ff';
+                designationBadge.style.color = '#1d4ed8';
+            } else if (facultyUser.role === 'DEAN') {
+                designationBadge.textContent = 'DEAN OF ACADEMICS';
+                designationBadge.style.background = '#fef3c7';
+                designationBadge.style.color = '#92400e';
+            } else {
+                designationBadge.textContent = facultyUser.designation || 'PROFESSOR';
+            }
+
+            const avatarEl = document.getElementById('faculty-avatar');
+            if (facultyUser.profileImage) {
+                avatarEl.innerHTML = `<img src="${facultyUser.profileImage}" alt="${facultyUser.fullName}">`;
+            } else {
+                avatarEl.textContent = (facultyUser.fullName || 'FC').substring(0, 2).toUpperCase();
+            }
+        }
+
+        async function loadFacultyData() {
+            loadDepartmentNotices();
+            loadAssignedSubjects();
+            loadRecentDiscussions();
+            loadEventsCount();
+        }
+
+        async function loadDepartmentNotices() {
+            const container = document.getElementById('faculty-notices-container');
+            const deptId = facultyUser.department ? facultyUser.department.id : null;
+
+            try {
+                let url = '/api/notices';
+                if (deptId) {
+                    url += `?departmentId=${deptId}`;
+                }
+                const res = await fetch(url);
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const notices = json.data;
+                    document.getElementById('stat-published-notices').textContent = notices.length;
+
+                    if (notices.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:35px 20px; color:var(--muted);">
+                                <div style="margin-bottom:8px; display:flex; justify-content:center;">${App.icon('fileText', 36, 'text-muted')}</div>
+                                <p style="font-weight:600; color:var(--dark);">No department notices published yet.</p>
+                                <button class="btn btn-primary" style="margin-top:10px; font-size:0.85rem;" onclick="openPublishModal()">+ Publish First Notice</button>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = notices.map(n => `
+                        <div class="notice-action-row">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                                    <span class="badge ${n.priority === 'URGENT' ? 'urgent' : (n.priority === 'IMPORTANT' ? 'important' : '')}" style="${n.priority === 'NORMAL' ? 'background:#e2e8f0; color:var(--dark);' : ''}">${n.priority}</span>
+                                    <span class="badge" style="background:#f1f5f9; color:var(--muted);">${n.category ? n.category.name : 'Notice'}</span>
+                                    <span style="font-size:0.8rem; color:var(--muted);">${new Date(n.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <div style="font-size:1rem; font-weight:700; color:var(--dark); margin-bottom:2px;">${n.title}</div>
+                                <div style="font-size:0.82rem; color:var(--muted);">
+                                    Views: <strong>${n.viewsCount || 0}</strong> &bull; Acknowledgements: <strong>${n.ackCount || 0}</strong>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <a href="/notices" class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px;">View Live Board</a>
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px; color:var(--danger); border-color:var(--border);" onclick="handleDeleteNotice(${n.id})">${App.icon('trash', 12)} Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Error loading department notices.</div>';
+            }
+        }
+
+        async function handleDeleteNotice(id) {
+            if (!confirm('Are you sure you want to delete this notice?')) return;
+            try {
+                const res = await fetch(`/api/notices/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Notice deleted successfully.', 'success');
+                    loadDepartmentNotices();
+                } else {
+                    App.showToast(json.message || 'Failed to delete notice.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting notice.', 'error');
+            }
+        }
+
+        async function loadAssignedSubjects() {
+            const container = document.getElementById('faculty-subjects-container');
+            try {
+                const res = await fetch(`/api/subjects/faculty/${facultyUser.id}`);
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const subjects = json.data;
+                    document.getElementById('stat-taught-subjects').textContent = subjects.length;
+
+                    if (subjects.length === 0) {
+                        container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted);">No subjects officially allotted yet. Contact administrator for allotment.</div>';
+                        return;
+                    }
+
+                    container.innerHTML = subjects.map(s => `
+                        <div class="subject-card">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="badge" style="background:#e2e8f0; color:var(--dark); font-weight:700;">${s.subjectCode || 'SUB'}</span>
+                                    <h4 style="font-size:1rem; font-weight:700; color:var(--dark); margin:0;">${s.subjectName}</h4>
+                                </div>
+                                <div style="color:var(--muted); font-size:0.85rem; margin-top:6px;">
+                                    Semester: ${s.semester || 'All'} &bull; Department: ${s.department ? s.department.name : 'College'}
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700;">ACTIVE INSTRUCTION</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Failed to load subjects.</div>';
+            }
+        }
+
+        async function loadRecentDiscussions() {
+            const container = document.getElementById('faculty-discussions-container');
+            try {
+                const res = await fetch('/api/forum/topics');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const topics = json.data.slice(0, 5);
+                    document.getElementById('stat-forum-topics').textContent = topics.length;
+
+                    if (topics.length === 0) {
+                        container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted);">No active student questions.</div>';
+                        return;
+                    }
+
+                    container.innerHTML = topics.map(t => `
+                        <div class="notice-action-row">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                                    <span class="badge" style="background:#e0f2fe; color:#0369a1;">${t.category ? t.category.name : 'General'}</span>
+                                    <span style="font-size:0.8rem; color:var(--muted);">Posted by ${t.author ? t.author.fullName : 'Student'} &bull; ${new Date(t.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <a href="/topic-detail?id=${t.id}" style="font-size:0.95rem; font-weight:700; color:var(--dark); text-decoration:none;">
+                                    ${t.title}
+                                </a>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <a href="/topic-detail?id=${t.id}" class="btn btn-primary" style="font-size:0.8rem; padding:6px 12px;">Answer as Verified Faculty</a>
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px; color:var(--danger); border-color:var(--border);" onclick="handleDeleteDiscussion(${t.id})">${App.icon('trash', 12)} Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Error loading student questions.</div>';
+            }
+        }
+
+        async function handleDeleteDiscussion(id) {
+            if (!confirm('Are you sure you want to delete this discussion thread?')) return;
+            try {
+                const res = await fetch(`/api/forum/topics/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Discussion thread deleted successfully.', 'success');
+                    loadRecentDiscussions();
+                } else {
+                    App.showToast(json.message || 'Failed to delete discussion.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting discussion.', 'error');
+            }
+        }
+
+        async function loadEventsCount() {
+            try {
+                const res = await fetch('/api/events');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    document.getElementById('stat-events-count').textContent = json.data.length;
+                }
+            } catch (ignored) {}
+        }
+
+        function switchFacultyTab(tabId, tabEl) {
+            document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+            if (tabEl) tabEl.classList.add('active');
+
+            ['notices', 'subjects', 'resources', 'discussions', 'events', 'hod-governance', 'dean-governance'].forEach(id => {
+                const el = document.getElementById('tab-' + id);
+                if (el) el.style.display = (id === tabId) ? 'block' : 'none';
+            });
+
+            if (tabId === 'resources') {
+                loadFacultyResources();
+            }
+        }
+
+        // ==========================================
+        // ACADEMIC RESOURCES HANDLERS
+        // ==========================================
+        function toggleFacResType(type) {
+            if (type === 'FILE') {
+                document.getElementById('fac-res-file-group').style.display = 'block';
+                document.getElementById('fac-res-link-group').style.display = 'none';
+            } else {
+                document.getElementById('fac-res-file-group').style.display = 'none';
+                document.getElementById('fac-res-link-group').style.display = 'block';
+            }
+        }
+
+        async function handleFacultyUploadResource(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-fac-upload-res');
+            btn.disabled = true;
+            btn.textContent = 'Uploading Resource...';
+
+            const type = document.getElementById('fac-res-type').value;
+            let filePath = null;
+
+            if (type === 'FILE') {
+                const fileInput = document.getElementById('fac-res-file');
+                if (fileInput.files.length > 0) {
+                    const formData = new FormData();
+                    formData.append('file', fileInput.files[0]);
+                    try {
+                        const upRes = await fetch('/api/resources/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const upData = await upRes.json();
+                        if (upRes.ok && upData.success) {
+                            filePath = upData.data.filePath;
+                        } else {
+                            App.showToast(upData.message || 'File upload failed', 'error');
+                            btn.disabled = false;
+                            btn.textContent = 'Upload & Publish Resource';
+                            return;
+                        }
+                    } catch (err) {
+                        App.showToast('Network error during file upload', 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Upload & Publish Resource';
+                        return;
+                    }
+                } else {
+                    App.showToast('Please select a file to upload.', 'warning');
+                    btn.disabled = false;
+                    btn.textContent = 'Upload & Publish Resource';
+                    return;
+                }
+            } else {
+                const linkVal = document.getElementById('fac-res-link').value.trim();
+                if (!linkVal) {
+                    App.showToast('Please provide a valid resource link URL.', 'warning');
+                    btn.disabled = false;
+                    btn.textContent = 'Upload & Publish Resource';
+                    return;
+                }
+            }
+
+            const deptId = facultyUser && facultyUser.department ? facultyUser.department.id : null;
+
+            const payload = {
+                title: document.getElementById('fac-res-title').value.trim(),
+                category: document.getElementById('fac-res-category').value,
+                resourceType: type,
+                departmentId: deptId,
+                description: document.getElementById('fac-res-desc').value.trim(),
+                filePath: filePath,
+                linkUrl: type === 'LINK' ? document.getElementById('fac-res-link').value.trim() : null
+            };
+
+            try {
+                const res = await fetch('/api/resources', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Academic resource published successfully!', 'success');
+                    document.getElementById('faculty-upload-resource-form').reset();
+                    toggleFacResType('FILE');
+                    loadFacultyResources();
+                } else {
+                    App.showToast(json.message || 'Failed to publish resource', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while saving resource', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Upload & Publish Resource';
+            }
+        }
+
+        async function loadFacultyResources() {
+            const container = document.getElementById('faculty-resources-list-container');
+            if (!container) return;
+            try {
+                const res = await fetch('/api/resources');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const list = json.data;
+                    if (list.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:35px 20px; color:var(--muted);">
+                                <div style="margin-bottom:8px; display:flex; justify-content:center; color:var(--muted);">${App.icon('book', 36)}</div>
+                                <p style="font-weight:600; color:var(--dark);">No academic courseware published yet.</p>
+                                <p style="font-size:0.85rem;">Use the form above to upload notes, manuals, or question papers.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = `
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Title &amp; Category</th>
+                                        <th>Department</th>
+                                        <th>Format</th>
+                                        <th>Uploaded By</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${list.map(r => `
+                                        <tr>
+                                            <td>
+                                                <div style="font-weight:700; color:var(--dark);">${App.escapeHtml(r.title)}</div>
+                                                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700; font-size:0.75rem; margin-top:2px;">${App.escapeHtml(r.category || 'General')}</span>
+                                            </td>
+                                            <td>${r.department ? App.escapeHtml(r.department.name) : '<span style="color:var(--muted);">College-Wide</span>'}</td>
+                                            <td>
+                                                <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--muted);">
+                                                    ${r.resourceType === 'FILE' ? 'Downloadable File' : 'External Link'}
+                                                </span>
+                                            </td>
+                                            <td><span style="font-size:0.85rem; color:var(--dark-muted);">${r.uploadedBy ? App.escapeHtml(r.uploadedBy.fullName) : 'Faculty'}</span></td>
+                                            <td>
+                                                <div style="display:flex; gap:6px; align-items:center;">
+                                                    ${r.resourceType === 'FILE' && r.filePath ? `
+                                                        <a href="${r.filePath}" target="_blank" download class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:4px 8px;">
+                                                            Download
+                                                        </a>
+                                                    ` : (r.linkUrl ? `
+                                                        <a href="${r.linkUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="font-size:0.75rem; padding:4px 8px;">
+                                                            Open Link
+                                                        </a>
+                                                    ` : '')}
+                                                    <button class="btn btn-sm btn-danger" style="font-size:0.75rem; padding:4px 8px;" onclick="deleteFacultyResource(${r.id})">
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger);">Error loading resources roster.</div>';
+            }
+        }
+
+        async function deleteFacultyResource(id) {
+            if (!confirm('Are you sure you want to delete this academic resource?')) return;
+            try {
+                const res = await fetch(`/api/resources/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Resource deleted successfully.', 'success');
+                    loadFacultyResources();
+                } else {
+                    App.showToast(json.message || 'Deletion failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting resource', 'error');
+            }
+        }
+
+        function openPublishModal() {
+            App.openModal('publish-notice-modal');
+        }
+
+        function closePublishModal() {
+            App.closeModal('publish-notice-modal');
+        }
+
+        async function handlePublishNotice(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-notice');
+            btn.disabled = true;
+            btn.textContent = 'Publishing Notice...';
+
+            let attachmentUrl = null;
+            let attachmentName = null;
+            const fileInput = document.getElementById('pub-file');
+
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                try {
+                    const uploadRes = await fetch('/api/notices/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const uploadJson = await uploadRes.json();
+                    if (uploadJson.success) {
+                        attachmentUrl = uploadJson.data.fileUrl;
+                        attachmentName = uploadJson.data.fileName;
+                    }
+                } catch (err) {
+                    App.showToast('Attachment upload failed, proceeding with text notice', 'warning');
+                }
+            }
+
+            const audience = document.getElementById('pub-audience').value;
+            const deptId = (audience === 'dept' && facultyUser.department) ? facultyUser.department.id : null;
+
+            const payload = {
+                title: document.getElementById('pub-title').value.trim(),
+                content: document.getElementById('pub-content').value.trim(),
+                category: document.getElementById('pub-category').value,
+                priority: document.getElementById('pub-priority').value,
+                departmentId: deptId,
+                requiresAcknowledgement: document.getElementById('pub-ack').checked,
+                attachmentUrl: attachmentUrl,
+                attachmentName: attachmentName
+            };
+
+            try {
+                const res = await fetch('/api/notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Notice published successfully!', 'success');
+                    closePublishModal();
+                    document.getElementById('publish-notice-form').reset();
+                    loadDepartmentNotices();
+                } else {
+                    App.showToast(json.message || 'Failed to publish notice', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while publishing notice', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Publish Notice';
+            }
+        }
+
+        async function handleProposeEvent(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-event');
+            btn.disabled = true;
+            btn.textContent = 'Organizing Event...';
+
+            const maxParticipantsVal = parseInt(document.getElementById('event-max-participants').value) || 0;
+
+            const payload = {
+                title: document.getElementById('event-title').value.trim(),
+                description: document.getElementById('event-description').value.trim(),
+                category: document.getElementById('event-category').value,
+                location: document.getElementById('event-location').value.trim(),
+                eventDate: document.getElementById('event-date').value,
+                eventTime: document.getElementById('event-time').value.trim(),
+                departmentId: facultyUser.department ? facultyUser.department.id : null,
+                eligibility: document.getElementById('event-eligibility').value,
+                maxParticipants: maxParticipantsVal,
+                rules: document.getElementById('event-rules').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event organized and published immediately!', 'success');
+                    document.getElementById('propose-event-form').reset();
+                    switchFacultyTab('notices', document.querySelectorAll('.portal-tab')[0]);
+                } else {
+                    App.showToast(json.message || 'Failed to organize event', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while organizing event', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Organize & Publish Event';
+            }
+        }
+
+        // ==========================================
+        // HOD GOVERNANCE METHODS
+        // ==========================================
+        async function loadHodGovernanceData() {
+            try {
+                const res = await fetch('/api/hod/profile');
+                if (res.ok) {
+                    const json = await res.json();
+                    const d = json.data || {};
+                    const dept = d.department;
+
+                    if (dept) {
+                        document.getElementById('hod-dept-subtitle').textContent = `Academic Supervision &bull; Department of ${dept.name} (${dept.code || 'DEPT'})`;
+                        document.getElementById('hod-dept-badge').textContent = `HOD &bull; ${dept.name}`;
+                    }
+
+                    document.getElementById('hod-kpi-students').textContent = d.studentCount || 0;
+                    document.getElementById('hod-kpi-faculty').textContent = d.facultyCount || 0;
+                    document.getElementById('hod-kpi-events').textContent = d.pendingEventsCount || 0;
+
+                    const pendingBadge = document.getElementById('hod-tab-badge');
+                    if (d.pendingEventsCount > 0) {
+                        pendingBadge.textContent = d.pendingEventsCount;
+                        pendingBadge.style.display = 'inline-block';
+                    } else {
+                        pendingBadge.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
+            loadHodEvents();
+            loadHodClubs();
+            loadHodStudents();
+            loadHodFaculty();
+        }
+
+        async function loadHodEvents() {
+            const container = document.getElementById('hod-events-container');
+            try {
+                const res = await fetch('/api/hod/events');
+                const json = await res.json();
+                const events = json.data || [];
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:var(--muted);">
+                            <div style="margin-bottom:8px; display:flex; justify-content:center; color:var(--success);">${App.icon('checkCircle', 36)}</div>
+                            <div style="font-weight:700; color:var(--dark);">No pending departmental event proposals.</div>
+                            <div style="font-size:0.85rem; margin-top:2px;">All student, club and faculty proposals have been reviewed.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = events.map(ev => `
+                    <div class="card" style="margin-bottom:14px; border-left:4px solid var(--urgent); background:var(--bg);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                            <div style="flex:1; min-width:280px;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px; flex-wrap:wrap;">
+                                    <span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">AWAITING HOD SANCTION</span>
+                                    <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700;">${App.escapeHtml(ev.category)}</span>
+                                    ${ev.club ? `<span class="badge" style="background:#f3e8ff; color:#7c3aed; font-weight:700;">Club: ${App.escapeHtml(ev.club.clubName)}</span>` : ''}
+                                    <span class="badge" style="background:#f1f5f9; color:var(--dark);">Eligibility: ${ev.eligibility || 'OPEN_TO_ALL'}</span>
+                                </div>
+                                <h4 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin-bottom:6px;">${App.escapeHtml(ev.title)}</h4>
+                                <p style="font-size:0.88rem; color:var(--dark-muted); line-height:1.55; margin-bottom:10px;">${App.escapeHtml(ev.description)}</p>
+                                
+                                <div style="display:flex; gap:18px; flex-wrap:wrap; font-size:0.82rem; color:var(--muted);">
+                                    <span><strong>Date:</strong> ${ev.eventDate} at ${App.escapeHtml(ev.eventTime || 'TBA')}</span>
+                                    <span><strong>Location:</strong> ${App.escapeHtml(ev.location)}</span>
+                                    <span><strong>Organizer:</strong> ${App.escapeHtml(ev.organizer || (ev.createdBy ? ev.createdBy.fullName : 'Faculty/Student'))}</span>
+                                    ${ev.maxParticipants ? `<span><strong>Capacity:</strong> ${ev.maxParticipants}</span>` : ''}
+                                </div>
+                                ${ev.rules ? `<div style="margin-top:8px; font-size:0.82rem; background:var(--surface); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border);"><strong>Rules:</strong> ${App.escapeHtml(ev.rules)}</div>` : ''}
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <button class="btn btn-sm btn-primary" onclick="approveHodEvent(${ev.id})" style="background:var(--forest); border-color:var(--forest);">
+                                    Approve &amp; Sanction
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="openRejectModal(${ev.id}, '${App.escapeHtml(ev.title)}', 'HOD')">
+                                    Decline Proposal
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="deleteFacultyEvent(${ev.id})" style="color:var(--danger); border-color:rgba(239,68,68,0.35);">
+                                    Delete Proposal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:20px; text-align:center;">Failed to load event proposals.</div>';
+            }
+        }
+
+        async function approveHodEvent(id) {
+            if (!confirm('Are you sure you want to officially sanction and approve this event? It will be published immediately on the Campus Events board.')) return;
+            try {
+                const res = await fetch(`/api/hod/events/${id}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Event sanctioned and published successfully!', 'success');
+                    loadHodGovernanceData();
+                } else {
+                    App.showToast(json.message || 'Approval failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while approving event', 'error');
+            }
+        }
+
+        async function loadHodClubs() {
+            const container = document.getElementById('hod-clubs-container');
+            try {
+                const res = await fetch('/api/hod/clubs');
+                const json = await res.json();
+                const clubs = json.data || [];
+
+                document.getElementById('hod-kpi-clubs').textContent = clubs.length;
+
+                if (clubs.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:var(--muted);">
+                            <div style="margin-bottom:8px; display:flex; justify-content:center; color:var(--muted);">${App.icon('shield', 36)}</div>
+                            <div style="font-weight:700; color:var(--dark);">No clubs created under your department yet.</div>
+                            <button class="btn btn-primary" style="margin-top:12px; font-size:0.85rem;" onclick="openCreateClubModal('HOD')">+ Create First Department Club</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = clubs.map(c => `
+                    <div class="club-manage-card">
+                        <div style="flex:1; min-width:280px;">
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+                                <h4 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">${App.escapeHtml(c.clubName)}</h4>
+                                <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">ACTIVE CLUB</span>
+                            </div>
+                            <p style="font-size:0.88rem; color:var(--dark-muted); margin-bottom:8px; line-height:1.5;">${App.escapeHtml(c.description || 'No description provided.')}</p>
+                            
+                            <div style="display:flex; align-items:center; gap:16px; font-size:0.85rem; flex-wrap:wrap;">
+                                <div>
+                                    <strong style="color:var(--dark);">Assigned Student Leader:</strong>
+                                    ${c.leader ? `
+                                        <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">
+                                            ${App.escapeHtml(c.leader.fullName)} (${App.escapeHtml(c.leader.prnRollNo || c.leader.email)})
+                                        </span>
+                                    ` : `
+                                        <span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">No Leader Appointed</span>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-outline" onclick="openClubMembersModal(${c.id}, '${App.escapeHtml(c.clubName)}')">
+                                View Members
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="openAppointLeaderModal(${c.id}, '${App.escapeHtml(c.clubName)}', 'HOD')">
+                                ${c.leader ? 'Change Leader' : 'Appoint Leader'}
+                            </button>
+                            ${c.leader ? `
+                                <button class="btn btn-sm btn-danger" onclick="handleRemoveClubLeader(${c.id}, 'HOD')">
+                                    Remove Leader
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:20px; text-align:center;">Failed to load clubs.</div>';
+            }
+        }
+
+        async function loadHodStudents() {
+            const tbody = document.getElementById('hod-students-tbody');
+            try {
+                const res = await fetch('/api/hod/students');
+                const json = await res.json();
+                hodStudentsList = json.data || [];
+                renderHodStudentsTable(hodStudentsList);
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--danger); padding:20px;">Failed to load students.</td></tr>';
+            }
+        }
+
+        function renderHodStudentsTable(students) {
+            const tbody = document.getElementById('hod-students-tbody');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">No students registered in this department.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td><strong>${App.escapeHtml(s.prnRollNo || 'N/A')}</strong></td>
+                    <td><strong>${App.escapeHtml(s.fullName)}</strong></td>
+                    <td><a href="mailto:${s.email}" style="color:var(--primary); text-decoration:none;">${s.email}</a></td>
+                    <td>${App.escapeHtml(s.course || 'B.Tech')}</td>
+                    <td>${App.escapeHtml(s.academicYear || '')} ${s.division ? 'Div ' + s.division : ''}</td>
+                    <td>${App.escapeHtml(s.phoneNumber || '-')}</td>
+                    <td>
+                        <span class="badge" style="background:#ecfdf5; color:#047857; font-weight:700;">
+                            ${s.role === 'CLUB_LEADER' ? 'CLUB LEADER' : (s.accountStatus || 'ACTIVE')}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterHodStudentsTable() {
+            const q = document.getElementById('hod-student-search').value.toLowerCase().trim();
+            if (!q) {
+                renderHodStudentsTable(hodStudentsList);
+                return;
+            }
+            const filtered = hodStudentsList.filter(s => 
+                (s.fullName && s.fullName.toLowerCase().includes(q)) ||
+                (s.email && s.email.toLowerCase().includes(q)) ||
+                (s.prnRollNo && s.prnRollNo.toLowerCase().includes(q))
+            );
+            renderHodStudentsTable(filtered);
+        }
+
+        async function loadHodFaculty() {
+            const tbody = document.getElementById('hod-faculty-tbody');
+            try {
+                const res = await fetch('/api/hod/faculty');
+                const json = await res.json();
+                const faculty = json.data || [];
+                if (faculty.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">No faculty listed in this department.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = faculty.map(f => `
+                    <tr>
+                        <td><strong>${App.escapeHtml(f.employeeId || 'N/A')}</strong></td>
+                        <td><strong>${App.escapeHtml(f.fullName)}</strong></td>
+                        <td>${App.escapeHtml(f.designation || 'Professor')}</td>
+                        <td>${f.email}</td>
+                        <td><span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">${f.role}</span></td>
+                        <td><span class="badge" style="background:#ecfdf5; color:#047857;">ACTIVE</span></td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Failed to load faculty.</td></tr>';
+            }
+        }
+
+        // ==========================================
+        // DEAN GOVERNANCE METHODS
+        // ==========================================
+        async function loadDeanGovernanceData() {
+            try {
+                const res = await fetch('/api/dean/overview');
+                if (res.ok) {
+                    const json = await res.json();
+                    const d = json.data || {};
+                    document.getElementById('dean-kpi-students').textContent = d.totalStudents || 0;
+                    document.getElementById('dean-kpi-faculty').textContent = d.totalFaculty || 0;
+                    document.getElementById('dean-kpi-hods').textContent = d.totalHods || 0;
+                    document.getElementById('dean-kpi-depts').textContent = d.totalDepartments || 0;
+                    document.getElementById('dean-kpi-events').textContent = d.pendingEventsCount || 0;
+                    document.getElementById('dean-kpi-clubs').textContent = d.totalClubs || 0;
+
+                    const pendingBadge = document.getElementById('dean-tab-badge');
+                    if (d.pendingEventsCount > 0) {
+                        pendingBadge.textContent = d.pendingEventsCount;
+                        pendingBadge.style.display = 'inline-block';
+                    } else {
+                        pendingBadge.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
+            loadDeanEvents();
+            loadDeanClubs();
+            loadDeanFaculty();
+        }
+
+        async function loadDeanEvents() {
+            const container = document.getElementById('dean-events-container');
+            try {
+                const res = await fetch('/api/dean/events');
+                const json = await res.json();
+                const events = json.data || [];
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:var(--muted);">
+                            <div style="margin-bottom:8px; display:flex; justify-content:center; color:var(--success);">${App.icon('checkCircle', 36)}</div>
+                            <div style="font-weight:700; color:var(--dark);">No pending institutional event proposals.</div>
+                            <div style="font-size:0.85rem; margin-top:2px;">All campus-wide and departmental proposals are clear.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = events.map(ev => `
+                    <div class="card" style="margin-bottom:14px; border-left:4px solid var(--urgent); background:var(--bg);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                            <div style="flex:1; min-width:280px;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px; flex-wrap:wrap;">
+                                    <span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">AWAITING DEAN SANCTION</span>
+                                    <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700;">${App.escapeHtml(ev.category)}</span>
+                                    ${ev.department ? `<span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:700;">Dept: ${App.escapeHtml(ev.department.name)}</span>` : '<span class="badge" style="background:#f1f5f9; color:var(--dark);">College-Wide</span>'}
+                                    ${ev.club ? `<span class="badge" style="background:#f3e8ff; color:#7c3aed; font-weight:700;">Club: ${App.escapeHtml(ev.club.clubName)}</span>` : ''}
+                                    <span class="badge" style="background:#f1f5f9; color:var(--dark);">Eligibility: ${ev.eligibility || 'OPEN_TO_ALL'}</span>
+                                </div>
+                                <h4 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin-bottom:6px;">${App.escapeHtml(ev.title)}</h4>
+                                <p style="font-size:0.88rem; color:var(--dark-muted); line-height:1.55; margin-bottom:10px;">${App.escapeHtml(ev.description)}</p>
+                                
+                                <div style="display:flex; gap:18px; flex-wrap:wrap; font-size:0.82rem; color:var(--muted);">
+                                    <span><strong>Date:</strong> ${ev.eventDate} at ${App.escapeHtml(ev.eventTime || 'TBA')}</span>
+                                    <span><strong>Location:</strong> ${App.escapeHtml(ev.location)}</span>
+                                    <span><strong>Organizer:</strong> ${App.escapeHtml(ev.organizer || (ev.createdBy ? ev.createdBy.fullName : 'Faculty/Student'))}</span>
+                                    ${ev.maxParticipants ? `<span><strong>Capacity:</strong> ${ev.maxParticipants}</span>` : ''}
+                                </div>
+                                ${ev.rules ? `<div style="margin-top:8px; font-size:0.82rem; background:var(--surface); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border);"><strong>Rules:</strong> ${App.escapeHtml(ev.rules)}</div>` : ''}
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <button class="btn btn-sm btn-primary" onclick="approveDeanEvent(${ev.id})" style="background:var(--forest); border-color:var(--forest);">
+                                    Approve &amp; Sanction
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="openRejectModal(${ev.id}, '${App.escapeHtml(ev.title)}', 'DEAN')">
+                                    Decline Proposal
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="deleteFacultyEvent(${ev.id})" style="color:var(--danger); border-color:rgba(239,68,68,0.35);">
+                                    Delete Proposal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:20px; text-align:center;">Failed to load events.</div>';
+            }
+        }
+
+        async function approveDeanEvent(id) {
+            if (!confirm('Are you sure you want to sanction and approve this event as Dean of Academics? It will be published immediately on the Campus Events board.')) return;
+            try {
+                const res = await fetch(`/api/dean/events/${id}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Event officially sanctioned and published!', 'success');
+                    loadDeanGovernanceData();
+                } else {
+                    App.showToast(json.message || 'Approval failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while approving event', 'error');
+            }
+        }
+
+        async function deleteFacultyEvent(id) {
+            if (!confirm('Permanently delete this event proposal? All attendee registrations will be cleared.')) return;
+            try {
+                const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event proposal deleted successfully.', 'success');
+                    if (typeof loadHodGovernanceData === 'function') loadHodGovernanceData();
+                    if (typeof loadDeanGovernanceData === 'function') loadDeanGovernanceData();
+                } else {
+                    App.showToast(json.message || 'Failed to delete event.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting event.', 'error');
+            }
+        }
+
+        async function loadDeanClubs() {
+            const container = document.getElementById('dean-clubs-container');
+            try {
+                const res = await fetch('/api/dean/clubs');
+                const json = await res.json();
+                const clubs = json.data || [];
+
+                if (clubs.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:var(--muted);">
+                            <div style="margin-bottom:8px; display:flex; justify-content:center; color:var(--muted);">${App.icon('institution', 36)}</div>
+                            <div style="font-weight:700; color:var(--dark);">No student clubs registered in the institution yet.</div>
+                            <button class="btn btn-primary" style="margin-top:12px; font-size:0.85rem;" onclick="openCreateClubModal('DEAN')">+ Create Institutional Club</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = clubs.map(c => `
+                    <div class="club-manage-card">
+                        <div style="flex:1; min-width:280px;">
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+                                <h4 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">${App.escapeHtml(c.clubName)}</h4>
+                                <span class="badge" style="background:${c.department ? '#eff6ff' : '#fef3c7'}; color:${c.department ? '#1d4ed8' : '#92400e'}; font-weight:700;">
+                                    ${c.department ? c.department.name : 'Campus Wide'}
+                                </span>
+                            </div>
+                            <p style="font-size:0.88rem; color:var(--dark-muted); margin-bottom:8px; line-height:1.5;">${App.escapeHtml(c.description || 'No description provided.')}</p>
+                            
+                            <div style="display:flex; align-items:center; gap:16px; font-size:0.85rem; flex-wrap:wrap;">
+                                <div>
+                                    <strong style="color:var(--dark);">Appointed Student Leader:</strong>
+                                    ${c.leader ? `
+                                        <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">
+                                            ${App.escapeHtml(c.leader.fullName)} (${App.escapeHtml(c.leader.prnRollNo || c.leader.email)})
+                                        </span>
+                                    ` : `
+                                        <span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">No Leader Appointed</span>
+                                    `}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-outline" onclick="openClubMembersModal(${c.id}, '${App.escapeHtml(c.clubName)}')">
+                                View Members
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="openAppointLeaderModal(${c.id}, '${App.escapeHtml(c.clubName)}', 'DEAN')">
+                                ${c.leader ? 'Change Leader' : 'Appoint Leader'}
+                            </button>
+                            ${c.leader ? `
+                                <button class="btn btn-sm btn-danger" onclick="handleRemoveClubLeader(${c.id}, 'DEAN')">
+                                    Remove Leader
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:20px; text-align:center;">Failed to load clubs.</div>';
+            }
+        }
+
+        async function loadDeanFaculty() {
+            const tbody = document.getElementById('dean-faculty-tbody');
+            try {
+                const res = await fetch('/api/dean/faculty-directory');
+                const json = await res.json();
+                const faculty = json.data || [];
+                if (faculty.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">No faculty registered.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = faculty.map(f => `
+                    <tr>
+                        <td><strong>${App.escapeHtml(f.employeeId || 'N/A')}</strong></td>
+                        <td><strong>${App.escapeHtml(f.fullName)}</strong></td>
+                        <td>${f.department ? App.escapeHtml(f.department.name) : '<span style="color:var(--muted);">Unassigned</span>'}</td>
+                        <td>${App.escapeHtml(f.designation || 'Professor')}</td>
+                        <td>
+                            <span class="badge" style="${f.role === 'HOD' ? 'background:#eff6ff; color:#1d4ed8; font-weight:700;' : (f.role === 'DEAN' ? 'background:#fef3c7; color:#92400e; font-weight:700;' : 'background:#e0e7ff; color:#3730a3;')}">
+                                ${f.role}
+                            </span>
+                        </td>
+                        <td><span class="badge" style="background:#ecfdf5; color:#047857;">ACTIVE</span></td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--danger); padding:20px;">Failed to load directory.</td></tr>';
+            }
+        }
+
+        // ==========================================
+        // SHARED CLUB & LEADER GOVERNANCE ACTIONS
+        // ==========================================
+        async function openCreateClubModal(callerRole) {
+            document.getElementById('create-club-form').reset();
+            document.getElementById('cc-caller-role').value = callerRole;
+
+            const deptGroup = document.getElementById('cc-dept-group');
+            if (callerRole === 'DEAN') {
+                deptGroup.style.display = 'block';
+                // Load departments
+                try {
+                    const dRes = await fetch('/api/departments');
+                    const dJson = await dRes.json();
+                    const depts = dJson.data || [];
+                    const dSelect = document.getElementById('cc-dept');
+                    dSelect.innerHTML = '<option value="">Campus Wide (All Departments)</option>' +
+                        depts.map(d => `<option value="${d.id}">${App.escapeHtml(d.name)} (${App.escapeHtml(d.code)})</option>`).join('');
+                } catch (ignored) {}
+            } else {
+                deptGroup.style.display = 'none';
+            }
+
+            // Load eligible students for leader dropdown
+            const leaderSelect = document.getElementById('cc-leader');
+            leaderSelect.innerHTML = '<option value="">Loading eligible students...</option>';
+            try {
+                const sRes = await fetch('/api/clubs/eligible-leaders');
+                const sJson = await sRes.json();
+                const students = sJson.data || [];
+                leaderSelect.innerHTML = '<option value="">-- No Leader Now (Can Appoint Later) --</option>' +
+                    students.map(s => `<option value="${s.id}">${App.escapeHtml(s.fullName)} (PRN: ${App.escapeHtml(s.prnRollNo || 'N/A')}, Dept: ${s.department ? App.escapeHtml(s.department.name) : 'All'})</option>`).join('');
+            } catch (e) {
+                leaderSelect.innerHTML = '<option value="">-- No Leader Now (Can Appoint Later) --</option>';
+            }
+
+            App.openModal('create-club-modal');
+        }
+
+        function closeCreateClubModal() {
+            App.closeModal('create-club-modal');
+        }
+
+        async function handleCreateClub(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-club');
+            btn.disabled = true;
+            btn.textContent = 'Creating Club...';
+
+            const callerRole = document.getElementById('cc-caller-role').value;
+            const payload = {
+                clubName: document.getElementById('cc-name').value.trim(),
+                description: document.getElementById('cc-desc').value.trim(),
+                leaderId: document.getElementById('cc-leader').value || null
+            };
+
+            if (callerRole === 'DEAN') {
+                payload.departmentId = document.getElementById('cc-dept').value || null;
+            }
+
+            const endpoint = (callerRole === 'DEAN') ? '/api/dean/clubs' : '/api/hod/clubs';
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Club created successfully!', 'success');
+                    closeCreateClubModal();
+                    if (callerRole === 'DEAN') {
+                        loadDeanGovernanceData();
+                    } else {
+                        loadHodGovernanceData();
+                    }
+                } else {
+                    App.showToast(json.message || 'Failed to create club', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while creating club', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Create Club';
+            }
+        }
+
+        async function openAppointLeaderModal(clubId, clubName, callerRole) {
+            document.getElementById('appoint-leader-form').reset();
+            document.getElementById('al-club-id').value = clubId;
+            document.getElementById('al-caller-role').value = callerRole;
+            document.getElementById('al-club-name').textContent = clubName;
+
+            const select = document.getElementById('al-student-select');
+            select.innerHTML = '<option value="">Loading eligible students from college...</option>';
+
+            try {
+                const res = await fetch('/api/clubs/eligible-leaders');
+                const json = await res.json();
+                const students = json.data || [];
+                if (students.length === 0) {
+                    select.innerHTML = '<option value="">No eligible students found</option>';
+                    return;
+                }
+                select.innerHTML = '<option value="">-- Choose Student to Appoint as Club Leader --</option>' +
+                    students.map(s => `<option value="${s.id}">${App.escapeHtml(s.fullName)} (PRN: ${App.escapeHtml(s.prnRollNo || 'N/A')}, ${s.email} - Dept: ${s.department ? App.escapeHtml(s.department.name) : 'College'})</option>`).join('');
+            } catch (e) {
+                select.innerHTML = '<option value="">Failed to load students</option>';
+            }
+
+            App.openModal('appoint-leader-modal');
+        }
+
+        function closeAppointLeaderModal() {
+            App.closeModal('appoint-leader-modal');
+        }
+
+        async function handleAppointLeader(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-confirm-appoint');
+            btn.disabled = true;
+            btn.textContent = 'Appointing Leader...';
+
+            const clubId = document.getElementById('al-club-id').value;
+            const callerRole = document.getElementById('al-caller-role').value;
+            const studentId = document.getElementById('al-student-select').value;
+
+            const endpoint = (callerRole === 'DEAN') 
+                ? `/api/dean/clubs/${clubId}/appoint-leader`
+                : `/api/hod/clubs/${clubId}/appoint-leader`;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId: studentId })
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Club leader appointed successfully! Student account elevated.', 'success');
+                    closeAppointLeaderModal();
+                    if (callerRole === 'DEAN') {
+                        loadDeanGovernanceData();
+                    } else {
+                        loadHodGovernanceData();
+                    }
+                } else {
+                    App.showToast(json.message || 'Appointment failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while appointing leader', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Appoint Leader';
+            }
+        }
+
+        async function handleRemoveClubLeader(clubId, callerRole) {
+            if (!confirm('Are you sure you want to remove the current leader from this club? The student will return to regular permissions.')) return;
+
+            const endpoint = (callerRole === 'DEAN') 
+                ? `/api/dean/clubs/${clubId}/remove-leader`
+                : `/api/hod/clubs/${clubId}/remove-leader`;
+
+            try {
+                const res = await fetch(endpoint, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Club leader removed successfully.', 'info');
+                    if (callerRole === 'DEAN') {
+                        loadDeanGovernanceData();
+                    } else {
+                        loadHodGovernanceData();
+                    }
+                } else {
+                    App.showToast(json.message || 'Failed to remove leader', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while removing leader', 'error');
+            }
+        }
+
+        async function openClubMembersModal(clubId, clubName) {
+            document.getElementById('cm-modal-title').textContent = `${clubName} - Members Roster`;
+            document.getElementById('cm-modal-subtitle').textContent = 'Official registered student members and pending join requests';
+            const tbody = document.getElementById('cm-members-tbody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Loading members...</td></tr>';
+
+            App.openModal('club-members-modal');
+
+            try {
+                const res = await fetch(`/api/clubs/${clubId}/members`);
+                const json = await res.json();
+                const members = (json.data && json.data.members) ? json.data.members : [];
+
+                if (members.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">No student members joined this club yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = members.map(m => `
+                    <tr>
+                        <td><strong>${App.escapeHtml(m.student ? m.student.fullName : 'Student')}</strong></td>
+                        <td>${m.student ? m.student.email : '-'}</td>
+                        <td>${m.student ? App.escapeHtml(m.student.prnRollNo || '-') : '-'}</td>
+                        <td>
+                            <span class="badge" style="${m.status === 'APPROVED' ? 'background:#ecfdf5; color:#047857;' : (m.status === 'PENDING' ? 'background:#fef3c7; color:#92400e;' : 'background:#fee2e2; color:#b91c1c;')} font-weight:700;">
+                                ${m.status}
+                            </span>
+                        </td>
+                        <td>${m.joinedAt ? new Date(m.joinedAt).toLocaleDateString() : (m.createdAt ? new Date(m.createdAt).toLocaleDateString() : '-')}</td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger); padding:20px;">Failed to load club members.</td></tr>';
+            }
+        }
+
+        function closeClubMembersModal() {
+            App.closeModal('club-members-modal');
+        }
+
+        // ==========================================
+        // PROPOSAL REJECTION MODAL LOGIC
+        // ==========================================
+        function openRejectModal(eventId, eventTitle, role) {
+            rejectModalState = { eventId, role };
+            document.getElementById('reject-modal-title').textContent = `Decline: "${eventTitle}"`;
+            document.getElementById('reject-reason-input').value = '';
+            App.openModal('reject-proposal-modal');
+        }
+
+        function closeRejectModal() {
+            App.closeModal('reject-proposal-modal');
+        }
+
+        async function submitEventRejection() {
+            const reason = document.getElementById('reject-reason-input').value.trim();
+            if (!reason) {
+                App.showToast('Please specify a reason for decline.', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('confirm-reject-btn');
+            btn.disabled = true;
+            btn.textContent = 'Declining...';
+
+            const endpoint = (rejectModalState.role === 'DEAN')
+                ? `/api/dean/events/${rejectModalState.eventId}/reject`
+                : `/api/hod/events/${rejectModalState.eventId}/reject`;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: reason })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Proposal declined with feedback.', 'info');
+                    closeRejectModal();
+                    if (rejectModalState.role === 'DEAN') {
+                        loadDeanGovernanceData();
+                    } else {
+                        loadHodGovernanceData();
+                    }
+                } else {
+                    App.showToast(json.message || 'Decline failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while declining proposal', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Confirm Decline';
+            }
+        }
+    </script>
+</body>
+</html>

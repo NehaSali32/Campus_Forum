@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "▶ Run Campus Forum (Instant Demo Mode)",
+            "type": "shell",
+            "command": ".\\mvnw.cmd spring-boot:run \"-Dspring-boot.run.profiles=demo\"",
+            "options": {
+                "env": {
+                    "JAVA_HOME": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2"
+                }
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            }
+        },
+        {
+            "label": "▶ Run Campus Forum (MySQL Mode)",
+            "type": "shell",
+            "command": ".\\mvnw.cmd spring-boot:run",
+            "options": {
+                "env": {
+                    "JAVA_HOME": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2"
+                }
+            },
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new",
+                "clear": true
+            }
+        },
+        {
+            "label": "🌐 Open Website in Browser",
+            "type": "shell",
+            "command": "powershell -Command \"Start-Process 'http://localhost:8080'\"",
+            "problemMatcher": []
+        }
+    ]
+}

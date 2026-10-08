@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In &amp; Register | Campus Forum</title>
+    <meta name="description" content="Secure access to Campus Forum academic discussions, official collegiate notices, and verified departmental resources.">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .auth-container-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 140px);
+            padding: 40px 20px;
+        }
+        .auth-wrapper {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+        .auth-tabs {
+            display: flex;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.92rem;
+        }
+        .auth-tab.active {
+            color: var(--navy);
+            background: var(--card-bg);
+            border-bottom-color: var(--navy);
+        }
+        .auth-body {
+            padding: 32px 28px;
+        }
+        .auth-security-notice {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Minimal Header with Theme Switcher -->
+    <header class="navbar" style="border-bottom:1px solid var(--border);">
+        <div class="nav-brand">
+            <a href="/" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit;">
+                <div class="brand-icon">CF</div>
+                <div>
+                    <div class="brand-title">Campus Forum</div>
+                    <div class="brand-subtitle">Academic Discussion &amp; Campus Communication Platform</div>
+                </div>
+            </a>
+        </div>
+        <div class="nav-right-actions">
+            <a href="/" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                <span>Back to Home</span>
+            </a>
+            <button id="theme-toggle-btn" class="theme-toggle-btn" onclick="App.toggleTheme()" title="Toggle Theme">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <span>Dark</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Auth Center Card -->
+    <main class="auth-container-center">
+        <div class="auth-wrapper">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+                <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Student Registration</div>
+            </div>
+
+            <div class="auth-body">
+                <!-- Login View -->
+                <div id="login-view">
+                    <div style="margin-bottom:24px; text-align:center;">
+                        <h2 style="font-size:1.35rem; font-weight:800; color:var(--dark);">Sign In to Campus Forum</h2>
+                        <p style="font-size:0.88rem; color:var(--muted); margin-top:4px;">Enter your Institutional Email, Student PRN, or Employee ID</p>
+                    </div>
+
+                    <form id="login-form" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="login-identifier">Email / PRN / Employee ID *</label>
+                            <input type="text" id="login-identifier" class="form-control" placeholder="e.g., student@college.ac.in or 251109047" required autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="login-password">Password *</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter account password" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" id="btn-login-submit" class="btn btn-primary btn-block" style="margin-top:16px; font-weight:700; padding:12px;">
+                            Sign In to Portal
+                        </button>
+                    </form>
+
+                    <div class="auth-security-notice">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px; color:var(--primary);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        <span>Official academic portal. All accounts and sessions are protected with industry-standard bcrypt encryption and audit logging.</span>
+                    </div>
+                </div>
+
+                <!-- Registration View -->
+                <div id="register-view" style="display:none;">
+                    <div style="margin-bottom:24px; text-align:center;">
+                        <h2 style="font-size:1.35rem; font-weight:800; color:var(--dark);">Create Student Account</h2>
+                        <p style="font-size:0.88rem; color:var(--muted); margin-top:4px;">Register with your college credentials to participate in academic discussions</p>
+                    </div>
+
+                    <form id="register-form" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="reg-name">Full Name *</label>
+                            <input type="text" id="reg-name" class="form-control" placeholder="e.g., Nandini D. Suryawanshi" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-email">College Email Address *</label>
+                            <input type="email" id="reg-email" class="form-control" placeholder="e.g., student@college.ac.in" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-prn">Permanent Registration Number (PRN) / Roll No *</label>
+                            <input type="text" id="reg-prn" class="form-control" placeholder="e.g., 251109047" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-dept">Academic Department *</label>
+                            <select id="reg-dept" class="form-control" required>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Electronics & Telecommunication">Electronics &amp; Telecommunication</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            </select>
+                        </div>
+                        <div class="grid-2col" style="margin-bottom:0; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div class="form-group">
+                                <label class="form-label" for="reg-year">Academic Year *</label>
+                                <select id="reg-year" class="form-control" required onchange="handleRegisterYearChange(this.value)">
+                                    <option value="First Year">First Year (F.Y.)</option>
+                                    <option value="Second Year">Second Year (S.Y.)</option>
+                                    <option value="Third Year" selected>Third Year (T.Y.)</option>
+                                    <option value="Final Year">Final Year (Final Yr)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="reg-semester">Academic Semester *</label>
+                                <select id="reg-semester" class="form-control" required>
+                                    <option value="Semester 1">Semester 1</option>
+                                    <option value="Semester 2">Semester 2</option>
+                                    <option value="Semester 3">Semester 3</option>
+                                    <option value="Semester 4">Semester 4</option>
+                                    <option value="Semester 5" selected>Semester 5</option>
+                                    <option value="Semester 6">Semester 6</option>
+                                    <option value="Semester 7">Semester 7</option>
+                                    <option value="Semester 8">Semester 8</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-password">Create Password * (min. 6 characters)</label>
+                            <input type="password" id="reg-password" class="form-control" placeholder="Create a secure password" minlength="6" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-block" style="margin-top:16px; font-weight:700; padding:12px;">
+                            Complete Registration
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div>&copy; 2026 Campus Forum &bull; Academic Discussion &amp; Campus Communication Platform</div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        function switchAuthTab(tab) {
+            const loginTab = document.getElementById('tab-login');
+            const regTab = document.getElementById('tab-register');
+            const loginView = document.getElementById('login-view');
+            const regView = document.getElementById('register-view');
+
+            if (tab === 'login') {
+                loginTab.classList.add('active');
+                regTab.classList.remove('active');
+                loginView.style.display = 'block';
+                regView.style.display = 'none';
+            } else {
+                regTab.classList.add('active');
+                loginTab.classList.remove('active');
+                loginView.style.display = 'none';
+                regView.style.display = 'block';
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login-submit');
+            btn.disabled = true;
+            btn.innerText = 'Authenticating...';
+
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    const u = data.data;
+                    let dest = '/';
+                    if (u && u.role === 'ADMIN') dest = '/admin';
+                    else if (u && u.role === 'DEAN') dest = '/faculty?view=dean';
+                    else if (u && u.role === 'HOD') dest = '/faculty?view=hod';
+                    else if (u && u.role === 'FACULTY') dest = '/faculty';
+                    else if (u && (u.role === 'STUDENT' || u.role === 'CLUB_LEADER' || u.role === 'EVENT_LEADER')) dest = '/student';
+
+                    App.showToast(`Login successful. Welcome back, ${u.fullName}.`, 'success');
+                    setTimeout(() => window.location.replace(dest), 500);
+                } else {
+                    App.showToast(data.message || 'Login failed. Please check your credentials.', 'error');
+                    btn.disabled = false;
+                    btn.innerText = 'Sign In to Portal';
+                }
+            } catch (err) {
+                App.showToast('Connection error. Please ensure the backend is running.', 'error');
+                btn.disabled = false;
+                btn.innerText = 'Sign In to Portal';
+            }
+        }
+
+        function handleRegisterYearChange(year) {
+            const semSelect = document.getElementById('reg-semester');
+            if (year === 'First Year') semSelect.value = 'Semester 1';
+            else if (year === 'Second Year') semSelect.value = 'Semester 3';
+            else if (year === 'Third Year') semSelect.value = 'Semester 5';
+            else if (year === 'Final Year') semSelect.value = 'Semester 7';
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-reg-submit');
+            btn.disabled = true;
+            btn.innerText = 'Registering...';
+
+            const payload = {
+                fullName: document.getElementById('reg-name').value.trim(),
+                email: document.getElementById('reg-email').value.trim(),
+                prnRollNo: document.getElementById('reg-prn').value.trim(),
+                department: document.getElementById('reg-dept').value,
+                year: document.getElementById('reg-year').value,
+                semester: document.getElementById('reg-semester').value,
+                password: document.getElementById('reg-password').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    App.showToast('Registration successful! Welcome to Campus Forum.', 'success');
+                    setTimeout(() => window.location.replace('/'), 700);
+                } else {
+                    App.showToast(data.message || 'Registration failed.', 'error');
+                    btn.disabled = false;
+                    btn.innerText = 'Complete Registration';
+                }
+            } catch (err) {
+                App.showToast('Connection error during registration.', 'error');
+                btn.disabled = false;
+                btn.innerText = 'Complete Registration';
+            }
+        }
+    </script>
+</body>
+</html>

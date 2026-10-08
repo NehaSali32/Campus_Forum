@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "▶ Run Website (Instant Demo Mode - F5)",
+            "request": "launch",
+            "mainClass": "com.campusforum.CampusForumApplication",
+            "projectName": "campus-forum",
+            "vmArgs": "-Dspring.profiles.active=demo",
+            "env": {
+                "JAVA_HOME": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2"
+            }
+        },
+        {
+            "type": "java",
+            "name": "▶ Run Website (MySQL Mode)",
+            "request": "launch",
+            "mainClass": "com.campusforum.CampusForumApplication",
+            "projectName": "campus-forum",
+            "env": {
+                "JAVA_HOME": "C:\\Users\\hp\\AppData\\Local\\jdks\\jdk-25.0.2"
+            }
+        }
+    ]
+}

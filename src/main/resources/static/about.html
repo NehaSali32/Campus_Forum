@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Campus Forum | Platform &amp; Architecture</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: var(--radius-lg);
+            padding: 48px 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .about-hero h1, .about-hero h2, .about-hero h3 {
+            color: #ffffff !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .about-hero p {
+            color: #f1f5f9 !important;
+            opacity: 1 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .arch-badge {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #ffffff !important;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 4px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .team-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .team-avatar-wrapper {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--navy), var(--terracotta));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--surface);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-avatar-inner svg, .team-avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">About Platform &amp; Engineering Architecture</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/about" class="active">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+        <!-- Hero Banner -->
+        <section class="about-hero">
+            <h1 class="hero-title" style="font-size:2.2rem; font-weight:800; margin-bottom:12px; color:#ffffff !important;">Campus Forum Platform</h1>
+            <p class="hero-desc" style="font-size:1.05rem; max-width:680px; margin:0 auto 20px; line-height:1.6; color:#f1f5f9 !important;">
+                A secure digital communication, academic discussion, official notice dissemination, and resource sharing ecosystem engineered for modern higher education institutions.
+            </p>
+            <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:8px;">
+                <span class="arch-badge">Java 17</span>
+                <span class="arch-badge">Spring Boot 3</span>
+                <span class="arch-badge">MySQL 8.0</span>
+                <span class="arch-badge">BCrypt Security</span>
+                <span class="arch-badge">Hibernate JPA</span>
+                <span class="arch-badge">Vanilla JavaScript (ES6+)</span>
+                <span class="arch-badge">Dual Light / Dark Theming</span>
+                <span class="arch-badge">Role-Based Access Control</span>
+            </div>
+        </section>
+
+        <!-- Platform Architecture & Highlights -->
+        <div class="grid-2col" style="margin-bottom:36px;">
+            <div class="card">
+                <h3 style="font-size:1.25rem; font-weight:700; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    Project Mission &amp; Purpose
+                </h3>
+                <p style="color:var(--muted); font-size:0.92rem; line-height:1.7; margin-bottom:12px;">
+                    Conventional college communication relies on scattered notice boards, fragmented messaging groups, and ad-hoc emails. <strong>Campus Forum</strong> unifies institutional communication into a structured, verified, and accessible digital portal.
+                </p>
+                <ul style="color:var(--muted); font-size:0.9rem; line-height:1.8; padding-left:20px;">
+                    <li><strong>Verified Notices:</strong> Urgent, important, and departmental circulars with mandatory student acknowledgment tracking.</li>
+                    <li><strong>Academic Forum:</strong> Peer discussion boards with <em>Verified Faculty</em> answer badges.</li>
+                    <li><strong>Centralized Resources:</strong> Downloadable syllabi, previous exam papers, and laboratory manuals.</li>
+                    <li><strong>Document Locker:</strong> Private, secure student certificate and marksheet storage.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 style="font-size:1.25rem; font-weight:700; color:var(--dark); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Engineering Architecture
+                </h3>
+                <p style="color:var(--muted); font-size:0.92rem; line-height:1.7; margin-bottom:12px;">
+                    Constructed following enterprise clean architecture patterns without bloated heavy frameworks:
+                </p>
+                <div style="display:flex; flex-direction:column; gap:10px; font-size:0.88rem; color:var(--muted);">
+                    <div style="padding:10px 14px; background:var(--bg); border-radius:var(--radius); border-left:4px solid var(--navy);">
+                        <strong>Robust Backend:</strong> Spring Boot 3.2 Web MVC, Spring Data JPA with transactional relational constraints in MySQL.
+                    </div>
+                    <div style="padding:10px 14px; background:var(--bg); border-radius:var(--radius); border-left:4px solid var(--terracotta);">
+                        <strong>Zero-Bloat Frontend:</strong> Pure semantic HTML5, CSS custom properties, and native asynchronous JavaScript Fetch API.
+                    </div>
+                    <div style="padding:10px 14px; background:var(--bg); border-radius:var(--radius); border-left:4px solid #059669;">
+                        <strong>Security Foundation:</strong> Server-side HTTP session tracking with SHA-256 cryptographic salted hashing and strict role verification.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Engineering Team Section -->
+        <section style="margin-bottom:40px;">
+            <div style="text-align:center; margin-bottom:28px;">
+                <h2 style="font-size:1.8rem; font-weight:800; color:var(--dark); margin-bottom:6px; display:inline-flex; align-items:center; gap:8px;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Project Engineering Team
+                </h2>
+                <p style="color:var(--muted); font-size:0.95rem;">Department of Information Technology &bull; Campus Forum Engineering Project</p>
+            </div>
+
+            <div class="team-grid" id="team-cards-container">
+                <!-- Pre-rendered team members -->
+                <div class="team-card">
+                    <div class="team-avatar-wrapper">
+                        <div class="team-avatar-inner">
+                            <img src="/images/Nandini.jpeg" alt="Nandini D. Suryawanshi">
+                        </div>
+                    </div>
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0 0 4px;">Nandini D. Suryawanshi</h3>
+                    <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">Roll No: IT036</div>
+                    <p style="color:var(--muted); font-size:0.82rem; line-height:1.5;">Frontend &amp; UI/UX Architecture, Academic Theming, Responsive Layouts</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar-wrapper">
+                        <div class="team-avatar-inner">
+                            <img src="/images/Vaibhavi Patil.jpeg" alt="Vaibhavi Patil">
+                        </div>
+                    </div>
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0 0 4px;">Vaibhavi Patil</h3>
+                    <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">Roll No: IT051</div>
+                    <p style="color:var(--muted); font-size:0.82rem; line-height:1.5;">Backend API &amp; Database Architecture, Spring Services, ORM Modeling</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar-wrapper">
+                        <div class="team-avatar-inner">
+                            <img src="/images/Dimpal Patil.jpeg" alt="Dimpal Patil">
+                        </div>
+                    </div>
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0 0 4px;">Dimpal Patil</h3>
+                    <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">Roll No: IT073</div>
+                    <p style="color:var(--muted); font-size:0.82rem; line-height:1.5;">Authentication, Password Hashing, RBAC Guard &amp; Session Management</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar-wrapper">
+                        <div class="team-avatar-inner">
+                            <img src="/images/Neha.jpeg" alt="Neha Jagdish Sali">
+                        </div>
+                    </div>
+                    <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0 0 4px;">Neha Jagdish Sali</h3>
+                    <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">Roll No: IT040</div>
+                    <p style="color:var(--muted); font-size:0.82rem; line-height:1.5;">System Integration, Notice Workflow, Event Module &amp; Quality Testing</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; Department of Information Technology
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            loadDynamicTeam();
+        });
+
+        async function loadDynamicTeam() {
+            try {
+                const res = await fetch('/api/team');
+                const json = await res.json();
+                if (json.success && json.data && json.data.length > 0) {
+                    const container = document.getElementById('team-cards-container');
+                    container.innerHTML = json.data.map(m => `
+                        <div class="team-card">
+                            <div class="team-avatar-wrapper">
+                                <div class="team-avatar-inner">
+                                    ${m.image && m.image.startsWith('<svg') 
+                                        ? m.image 
+                                        : (m.image ? `<img src="${m.image}" alt="${m.name}">` : `<div style="font-weight:700; font-size:1.5rem; color:var(--navy);">${m.name.substring(0, 2)}</div>`)}
+                                </div>
+                            </div>
+                            <h3 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin:0 0 4px;">${m.name}</h3>
+                            <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">${m.role}</div>
+                            <p style="color:var(--muted); font-size:0.82rem; line-height:1.5;">${m.bio || 'Engineering contributor to Campus Forum.'}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (ignored) {}
+        }
+    </script>
+</body>
+</html>

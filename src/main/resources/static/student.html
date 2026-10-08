@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .portal-header-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .portal-user-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .portal-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--navy), #254b77);
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--border);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .portal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .portal-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .portal-tab {
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 0.92rem;
+            color: var(--muted);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .portal-tab:hover {
+            color: var(--navy);
+            background: var(--surface);
+        }
+        .portal-tab.active {
+            color: var(--navy);
+            border-bottom-color: var(--navy);
+            background: var(--surface);
+            font-weight: 700;
+        }
+        .subject-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .saved-item-row {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .club-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/student" class="active">Student Portal</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container"></div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+
+        <!-- Student Profile Header Card -->
+        <section class="portal-header-card" id="student-header">
+            <div class="portal-user-meta">
+                <div class="portal-avatar" id="student-avatar">ST</div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+                        <h1 style="font-size:1.5rem; font-weight:800; color:var(--dark); margin:0;" id="student-name">Loading Student...</h1>
+                        <span class="badge" style="background:#e0f2fe; color:#0369a1; font-weight:700;">STUDENT</span>
+                    </div>
+                    <div style="color:var(--muted); font-size:0.9rem;" id="student-academic-meta">
+                        PRN: -- &bull; Dept: -- &bull; Semester: --
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <a href="/profile" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <span>Edit Profile</span>
+                </a>
+                <a href="/documents" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span>Document Locker</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Quick Metrics Grid -->
+        <section class="stats-grid" style="margin-bottom:24px;">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-subjects">0</div>
+                    <div class="stat-label">Enrolled Subjects</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-saved-notices">0</div>
+                    <div class="stat-label">Saved Notices</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-my-discussions">0</div>
+                    <div class="stat-label">My Discussions</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div>
+                    <div class="stat-value" id="stat-documents">0</div>
+                    <div class="stat-label">Stored Documents</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="portal-tabs">
+            <div class="portal-tab active" onclick="switchStudentTab('department', this)">My Department &amp; Curriculum</div>
+            <div class="portal-tab" onclick="switchStudentTab('saved-notices', this)">Bookmarked Notices</div>
+            <div class="portal-tab" onclick="switchStudentTab('saved-discussions', this)">Saved Discussions</div>
+            <div class="portal-tab" onclick="switchStudentTab('my-discussions', this)">My Discussion Threads</div>
+            <div class="portal-tab" onclick="switchStudentTab('clubs', this)">Campus Clubs</div>
+            <div class="portal-tab" onclick="switchStudentTab('leadership', this)" id="tab-btn-leadership" style="display:none; color:var(--primary); font-weight:700;">Club Leadership Desk</div>
+        </div>
+
+        <!-- TAB 1: Department & Subjects -->
+        <section id="tab-department">
+            <div class="grid-2col" style="margin-bottom:24px;">
+                <div class="card">
+                    <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:12px;">Department Information</h3>
+                    <div id="dept-info-box" style="color:var(--muted); font-size:0.92rem; line-height:1.7;">
+                        Loading departmental records...
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:12px;">Head of Department (HOD)</h3>
+                    <div id="dept-hod-box" style="color:var(--muted); font-size:0.92rem; line-height:1.7;">
+                        Loading HOD information...
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">Enrolled Curriculum Subjects</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Academic courses for your current semester curriculum</p>
+                    </div>
+                    <span class="badge" style="background:#f1f5f9; color:var(--muted);" id="subject-count-badge">0 Subjects</span>
+                </div>
+                <div id="subjects-list-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading curriculum courses...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Bookmarked Notices -->
+        <section id="tab-saved-notices" style="display:none;">
+            <div class="card">
+                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:16px;">Saved Official Circulars</h3>
+                <div id="saved-notices-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading saved circulars...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Saved Discussions -->
+        <section id="tab-saved-discussions" style="display:none;">
+            <div class="card">
+                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:16px;">Saved Discussion Threads</h3>
+                <div id="saved-discussions-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading bookmarked discussions...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: My Discussions -->
+        <section id="tab-my-discussions" style="display:none;">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">My Discussion Posts</h3>
+                    <a href="/forum" class="btn btn-sm btn-primary">Start New Thread</a>
+                </div>
+                <div id="my-discussions-container">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading your posts...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: Clubs -->
+        <section id="tab-clubs" style="display:none;">
+            <div class="card" style="margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">Active Student Organizations &amp; Clubs</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Join student clubs and participate in specialized technical, cultural, and sports activities</p>
+                    </div>
+                </div>
+            </div>
+            <div id="clubs-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                <div style="text-align:center; padding:30px; color:var(--muted); grid-column:1/-1;">Loading campus clubs...</div>
+            </div>
+        </section>
+
+        <!-- TAB 6: Club Leadership Desk -->
+        <section id="tab-leadership" style="display:none;">
+            <!-- Club Leadership Status Card -->
+            <div class="card" style="margin-bottom:20px; border-left:4px solid var(--forest);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <div>
+                        <span class="badge badge-club-leader" style="margin-bottom:6px;">OFFICIAL CLUB LEADER</span>
+                        <h3 style="font-size:1.25rem; font-weight:800; color:var(--dark); margin:0;" id="led-clubs-title">My Club Operations</h3>
+                        <p style="color:var(--muted); font-size:0.88rem; margin-top:4px;" id="led-clubs-subtitle">Manage memberships, review student applications, and organize sanctioned campus events</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openProposeEventModal()" style="display:inline-flex; align-items:center; gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Organize Club Event</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student Membership Applications -->
+            <div class="card" style="margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Student Membership Applications</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Students requesting to join your club. Review their statement and approve or decline admission.</p>
+                    </div>
+                </div>
+                <div id="leader-join-requests-container">
+                    <div style="text-align:center; padding:20px; color:var(--muted);">Loading membership requests...</div>
+                </div>
+            </div>
+
+            <!-- Approved Members Roster -->
+            <div class="card" style="margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Active Club Members</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Official approved members enrolled in your club</p>
+                    </div>
+                </div>
+                <div id="club-members-roster-container">
+                    <div style="text-align:center; padding:20px; color:var(--muted);">Loading member roster...</div>
+                </div>
+            </div>
+
+            <!-- Organized Events & Attendee Management -->
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:18px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin:0;">Club Organized Events &amp; Attendee Rosters</h3>
+                        <p style="color:var(--muted); font-size:0.85rem; margin-top:4px;">Sanctioned and pending events organized by your club</p>
+                    </div>
+                </div>
+                <div id="my-organized-events-list">
+                    <div style="text-align:center; padding:20px; color:var(--muted);">Loading organized events...</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Join Club Modal -->
+    <div class="modal-backdrop" id="join-club-modal">
+        <div class="modal-content" style="max-width:640px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="join-club-modal-title">Student Club Application</h3>
+                    <p style="font-size:0.82rem; color:var(--muted); margin-top:2px;">Submit your academic profile and statement of purpose to the Club Leader</p>
+                </div>
+                <button class="modal-close" onclick="closeJoinClubModal()">&times;</button>
+            </div>
+            <form id="join-club-form" onsubmit="submitJoinClub(event)">
+                <input type="hidden" id="join-club-id">
+                <div class="form-group">
+                    <label class="form-label">Applying for Club</label>
+                    <input type="text" id="join-club-name" class="form-control" readonly style="background:var(--border-subtle); font-weight:700;">
+                </div>
+
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label" for="join-student-name">Full Name *</label>
+                        <input type="text" id="join-student-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="join-student-email">Email Address *</label>
+                        <input type="email" id="join-student-email" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="grid-2col" style="margin-bottom:0;">
+                    <div class="form-group">
+                        <label class="form-label" for="join-student-prn">PRN / Roll Number *</label>
+                        <input type="text" id="join-student-prn" class="form-control" placeholder="e.g. PRN20240101" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="join-student-dept">Academic Department *</label>
+                        <input type="text" id="join-student-dept" class="form-control" placeholder="e.g. Computer Engineering" required>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-bottom:18px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="join-student-course">Course / Class *</label>
+                        <input type="text" id="join-student-course" class="form-control" placeholder="e.g. B.Tech" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="join-student-year">Academic Year *</label>
+                        <input type="text" id="join-student-year" class="form-control" placeholder="e.g. Third Year" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="join-student-division">Division / Section *</label>
+                        <input type="text" id="join-student-division" class="form-control" placeholder="e.g. Division A" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="join-student-phone">Contact Phone Number</label>
+                    <input type="tel" id="join-student-phone" class="form-control" placeholder="e.g. +91 9876543210">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="join-club-reason">Statement of Purpose / Why do you wish to join? *</label>
+                    <textarea id="join-club-reason" class="form-control" style="min-height:90px;" placeholder="Describe your technical background, skills, and why you are interested in this club..." required></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px; border-top:1px solid var(--border); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" onclick="closeJoinClubModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-join">Submit Join Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Propose Club Event Modal -->
+    <div class="modal-backdrop" id="propose-event-modal">
+        <div class="modal-content" style="max-width:680px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Propose Campus Event</h3>
+                <button class="modal-close" onclick="App.closeModal('propose-event-modal')">&times;</button>
+            </div>
+            <form id="propose-event-form" onsubmit="submitProposeEvent(event)">
+                <div class="form-group">
+                    <label class="form-label" for="pe-title">Event Title *</label>
+                    <input type="text" id="pe-title" class="form-control" placeholder="e.g. Annual Code Marathon 2026" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pe-desc">Event Description *</label>
+                    <textarea id="pe-desc" class="form-control" rows="3" placeholder="Provide full event overview, objectives, and schedule..." required></textarea>
+                </div>
+                <div class="grid-2col" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="form-group">
+                        <label class="form-label" for="pe-date">Event Date *</label>
+                        <input type="date" id="pe-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pe-time">Start Time *</label>
+                        <input type="text" id="pe-time" class="form-control" placeholder="e.g. 10:00 AM" required>
+                    </div>
+                </div>
+                <div class="grid-2col" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="form-group">
+                        <label class="form-label" for="pe-location">Location / Venue *</label>
+                        <input type="text" id="pe-location" class="form-control" placeholder="e.g. Lab 304, IT Block" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pe-category">Category *</label>
+                        <select id="pe-category" class="form-control" required>
+                            <option value="Technical">Technical</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Hackathon">Hackathon</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Seminar">Seminar</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2col" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+                    <div class="form-group">
+                        <label class="form-label" for="pe-club">Organizing Club</label>
+                        <select id="pe-club" class="form-control">
+                            <option value="">Select Club (Optional)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="pe-eligibility">Registration Eligibility *</label>
+                        <select id="pe-eligibility" class="form-control" required>
+                            <option value="OPEN_TO_ALL">Open to All Campus Students</option>
+                            <option value="MEMBERS_ONLY">Restricted to Club Members Only</option>
+                            <option value="DEPARTMENT_ONLY">Restricted to My Department Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pe-max-participants">Max Participants (Capacity Limit)</label>
+                    <input type="number" id="pe-max-participants" class="form-control" value="60" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pe-rules">Rules &amp; Guidelines</label>
+                    <textarea id="pe-rules" class="form-control" rows="2" placeholder="Eligibility criteria, team size, equipment required..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="pe-contact">Contact Info</label>
+                    <input type="text" id="pe-contact" class="form-control" placeholder="e.g. club@college.ac.in">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border); padding-top:14px;">
+                    <button type="button" class="btn btn-outline" onclick="App.closeModal('propose-event-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-propose-submit">Submit Proposal to Faculty/HOD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attendee Roster Modal -->
+    <div class="modal-backdrop" id="attendee-roster-modal">
+        <div class="modal-content" style="max-width:850px;">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="roster-modal-title">Registered Attendees Roster</h3>
+                    <p style="font-size:0.82rem; color:var(--muted); margin-top:2px;">Complete list of students registered for this event</p>
+                </div>
+                <button class="modal-close" onclick="App.closeModal('attendee-roster-modal')">&times;</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="roster-search-input" class="form-control" placeholder="Search by PRN, Name, Email..." style="max-width:300px;" onkeyup="filterAttendeesTable()">
+                <button type="button" class="btn btn-sm btn-outline" onclick="downloadAttendeesCSV()" style="display:inline-flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>Export to CSV</span>
+                </button>
+            </div>
+            <div class="table-responsive" style="max-height:400px; overflow-y:auto;">
+                <table class="data-table" id="roster-table">
+                    <thead>
+                        <tr>
+                            <th>PRN / Roll No</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Class / Year</th>
+                            <th>Division</th>
+                            <th>Registration Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roster-table-body">
+                        <tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading roster...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; border-top:1px solid var(--border); padding-top:12px;">
+                <div style="font-size:0.85rem; color:var(--muted);" id="roster-count-label">0 Attendees Registered</div>
+                <button type="button" class="btn btn-outline" onclick="App.closeModal('attendee-roster-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/notices">Notices</a>
+            <a href="/forum">Discussions</a>
+            <a href="/events">Events</a>
+            <a href="/resources">Resources</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div style="margin-top:8px;">
+            &copy; 2026 Campus Forum &bull; Student Academic &amp; Activity Portal
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let studentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await App.init();
+            // Real-time refresh of student user data from database to capture any updates immediately
+            try {
+                const meRes = await fetch('/api/auth/me', { cache: 'no-store' });
+                if (meRes.ok) {
+                    const meJson = await meRes.json();
+                    if (meJson.success && meJson.data) {
+                        App.currentUser = meJson.data;
+                    }
+                }
+            } catch(e) {
+                console.warn('Real-time session refresh fallback:', e);
+            }
+            studentUser = App.currentUser;
+
+            if (!studentUser) {
+                window.location.replace('/login');
+                return;
+            }
+
+            renderStudentHeader();
+            loadStudentData();
+        });
+
+        function renderStudentHeader() {
+            try {
+                document.getElementById('student-name').textContent = studentUser.fullName || 'Student';
+                
+                const deptName = studentUser.department ? (studentUser.department.name || studentUser.department.code || 'Unassigned Department') : 'Unassigned Department';
+                const prn = studentUser.prnRollNo ? `PRN: ${studentUser.prnRollNo}` : 'PRN: Not Assigned';
+                const yr = studentUser.year ? `${studentUser.year} &bull; ` : '';
+                const sem = studentUser.semester ? `${studentUser.semester}` : 'Semester: Not Set';
+                document.getElementById('student-academic-meta').innerHTML = `${prn} &bull; Dept: <strong>${deptName}</strong> &bull; ${yr}${sem}`;
+
+                if (studentUser.role === 'CLUB_LEADER') {
+                    const nameContainer = document.getElementById('student-name').parentElement;
+                    let leadBadge = nameContainer.querySelector('.badge-club-leader');
+                    if (!leadBadge) {
+                        leadBadge = document.createElement('span');
+                        leadBadge.className = 'badge badge-club-leader';
+                        leadBadge.innerText = 'CLUB LEADER';
+                        nameContainer.appendChild(leadBadge);
+                    }
+                }
+
+                const avatarEl = document.getElementById('student-avatar');
+                if (studentUser.profileImage) {
+                    avatarEl.innerHTML = `<img src="${studentUser.profileImage}" alt="${App.escapeHtml(studentUser.fullName)}">`;
+                } else {
+                    avatarEl.textContent = (studentUser.fullName || 'ST').substring(0, 2).toUpperCase();
+                }
+            } catch (err) {
+                console.error("Error rendering student header:", err);
+            }
+        }
+
+        async function loadStudentData() {
+            loadDepartmentAndSubjects();
+            loadSavedNotices();
+            loadSavedDiscussions();
+            loadMyDiscussions();
+            loadDocumentsCount();
+            loadClubs();
+            loadLeadershipDesk();
+        }
+
+        async function loadDepartmentAndSubjects() {
+            const deptBox = document.getElementById('dept-info-box');
+            const hodBox = document.getElementById('dept-hod-box');
+            const subjectsContainer = document.getElementById('subjects-list-container');
+
+            if (!studentUser.department || !studentUser.department.id) {
+                deptBox.innerHTML = '<p style="color:var(--muted); font-size:0.95rem;">No department is currently linked to your student account. Please update your profile or contact university administration.</p>';
+                hodBox.innerHTML = '<p style="color:var(--muted); font-size:0.95rem;">No departmental HOD assigned.</p>';
+                subjectsContainer.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted);">No subjects found.</div>';
+                return;
+            }
+
+            let dept = studentUser.department;
+            try {
+                const resDept = await fetch(`/api/departments/${dept.id}`, { cache: 'no-store' });
+                const jsonDept = await resDept.json();
+                if (jsonDept.success && jsonDept.data) {
+                    dept = jsonDept.data;
+                }
+            } catch (e) {
+                console.warn('Could not load full department details:', e);
+            }
+
+            deptBox.innerHTML = `
+                <div style="font-size:1.05rem; font-weight:700; color:var(--navy); margin-bottom:6px;">${App.escapeHtml(dept.name)} (${App.escapeHtml(dept.code || 'DEPT')})</div>
+                <p style="margin-bottom:8px; line-height:1.6; color:var(--dark-muted);">${App.escapeHtml(dept.description || 'Department dedicated to excellence in technical education and research.')}</p>
+                <div style="font-size:0.85rem; color:var(--muted);">Academic Code: <strong>${App.escapeHtml(dept.code || '')}</strong></div>
+            `;
+
+            if (dept.hod) {
+                hodBox.innerHTML = `
+                    <div style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:4px;">${App.escapeHtml(dept.hod.fullName)}</div>
+                    <div style="color:var(--terracotta); font-weight:600; font-size:0.85rem; margin-bottom:8px;">Head of Department (HOD)</div>
+                    <div style="font-size:0.85rem; color:var(--muted);">Email: <a href="mailto:${App.escapeHtml(dept.hod.email)}" style="color:var(--navy); font-weight:600;">${App.escapeHtml(dept.hod.email)}</a></div>
+                    ${dept.hod.phone ? `<div style="font-size:0.85rem; color:var(--muted); margin-top:3px;">Contact: <strong>${App.escapeHtml(dept.hod.phone)}</strong></div>` : ''}
+                    ${dept.hod.employeeId ? `<div style="font-size:0.85rem; color:var(--muted); margin-top:3px;">Faculty ID: <strong>${App.escapeHtml(dept.hod.employeeId)}</strong></div>` : ''}
+                `;
+            } else {
+                hodBox.innerHTML = '<p style="color:var(--muted); font-size:0.95rem;">HOD assignment currently in progress by university administration.</p>';
+            }
+
+            // Fetch Subjects for Department
+            try {
+                const res = await fetch(`/api/subjects/department/${dept.id}`, { cache: 'no-store' });
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const subjects = json.data;
+                    document.getElementById('stat-subjects').textContent = subjects.length;
+                    document.getElementById('subject-count-badge').textContent = `${subjects.length} Subjects`;
+
+                    if (subjects.length === 0) {
+                        subjectsContainer.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted);">No curriculum subjects registered yet for this department.</div>';
+                        return;
+                    }
+
+                    subjectsContainer.innerHTML = subjects.map(sub => `
+                        <div class="subject-card">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span class="badge" style="background:#e2e8f0; color:var(--dark); font-weight:700;">${App.escapeHtml(sub.subjectCode || 'SUB')}</span>
+                                    <h4 style="font-size:1rem; font-weight:700; color:var(--dark); margin:0;">${App.escapeHtml(sub.subjectName)}</h4>
+                                </div>
+                                <div style="color:var(--muted); font-size:0.85rem; margin-top:6px;">
+                                    Semester: ${App.escapeHtml(sub.semester || 'All')} &bull; Department: ${App.escapeHtml(dept.name)}
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:0.82rem; color:var(--muted);">Course Faculty</div>
+                                <div style="font-size:0.9rem; font-weight:600; color:var(--navy);">
+                                    ${sub.faculty ? App.escapeHtml(sub.faculty.fullName) : 'TBA'}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                subjectsContainer.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Failed to load subjects.</div>';
+            }
+        }
+
+        async function loadSavedNotices() {
+            const container = document.getElementById('saved-notices-container');
+            try {
+                const res = await fetch('/api/notices/saved');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const notices = json.data;
+                    document.getElementById('stat-saved-notices').textContent = notices.length;
+
+                    if (notices.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:40px 20px; color:var(--muted);">
+                                <div style="margin-bottom:8px; display:flex; justify-content:center;">${App.icon('bookmark', 36, 'text-muted')}</div>
+                                <p style="font-weight:600; color:var(--dark);">No saved notices yet.</p>
+                                <p style="font-size:0.85rem; margin-bottom:14px;">Click the bookmark icon on any notice on the notice board to pin it here.</p>
+                                <a href="/notices" class="btn btn-outline" style="font-size:0.85rem;">Browse Notices</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = notices.map(n => `
+                        <div class="saved-item-row">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                                    <span class="badge ${n.priority === 'URGENT' ? 'urgent' : (n.priority === 'IMPORTANT' ? 'important' : '')}" style="${n.priority === 'NORMAL' ? 'background:#e2e8f0; color:var(--dark);' : ''}">${n.priority}</span>
+                                    <span class="badge" style="background:#f1f5f9; color:var(--muted);">${n.category ? n.category.name : 'Notice'}</span>
+                                    <span style="font-size:0.8rem; color:var(--muted);">${new Date(n.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <a href="/notices" style="font-size:1rem; font-weight:700; color:var(--dark); text-decoration:none;">
+                                    ${n.title}
+                                </a>
+                            </div>
+                            <div>
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px; color:var(--danger); border-color:var(--border);" onclick="removeNoticeBookmark(${n.id})">Remove</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Error loading saved notices.</div>';
+            }
+        }
+
+        async function removeNoticeBookmark(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}/bookmark`, { method: 'POST' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Notice removed from bookmarks.', 'info');
+                    loadSavedNotices();
+                }
+            } catch (e) {
+                App.showToast('Failed to update bookmark', 'error');
+            }
+        }
+
+        async function loadSavedDiscussions() {
+            const container = document.getElementById('saved-discussions-container');
+            try {
+                const res = await fetch('/api/forum/saved');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const topics = json.data;
+                    if (topics.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:40px 20px; color:var(--muted);">
+                                <div style="margin-bottom:8px; display:flex; justify-content:center;">${App.icon('bookmark', 36, 'text-muted')}</div>
+                                <p style="font-weight:600; color:var(--dark);">No saved discussions yet.</p>
+                                <p style="font-size:0.85rem; margin-bottom:14px;">Bookmark useful threads in the discussion forum to access them here anytime.</p>
+                                <a href="/forum" class="btn btn-outline" style="font-size:0.85rem;">Explore Forum</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = topics.map(t => `
+                        <div class="saved-item-row">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                                    <span class="badge" style="background:#e0e7ff; color:#3730a3;">${t.category ? t.category.name : 'Discussion'}</span>
+                                    <span style="font-size:0.8rem; color:var(--muted);">By ${t.author ? t.author.fullName : 'Anonymous'} &bull; ${new Date(t.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <a href="/topic-detail?id=${t.id}" style="font-size:1rem; font-weight:700; color:var(--dark); text-decoration:none;">
+                                    ${t.title}
+                                </a>
+                                <div style="font-size:0.8rem; color:var(--muted); margin-top:4px; display:flex; gap:10px; align-items:center;">
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('messageCircle', 13)} ${t.replyCount || 0} Replies</span>
+                                    <span>&bull;</span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('thumbsUp', 13)} ${t.likesCount || 0} Upvotes</span>
+                                    <span>&bull;</span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('eye', 13)} ${t.viewsCount || 0} Views</span>
+                                </div>
+                            </div>
+                            <div>
+                                <a href="/topic-detail?id=${t.id}" class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px;">View Thread</a>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Error loading saved discussions.</div>';
+            }
+        }
+
+        async function loadMyDiscussions() {
+            const container = document.getElementById('my-discussions-container');
+            try {
+                const res = await fetch('/api/forum/my-discussions');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    const topics = json.data;
+                    document.getElementById('stat-my-discussions').textContent = topics.length;
+
+                    if (topics.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align:center; padding:40px 20px; color:var(--muted);">
+                                <div style="margin-bottom:8px; display:flex; justify-content:center;">${App.icon('messageCircle', 36, 'text-muted')}</div>
+                                <p style="font-weight:600; color:var(--dark);">You haven't posted any discussions yet.</p>
+                                <p style="font-size:0.85rem; margin-bottom:14px;">Have questions regarding coursework, campus facilities, or tech? Start a discussion!</p>
+                                <a href="/forum" class="btn btn-primary" style="font-size:0.85rem;">Ask a Question</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    container.innerHTML = topics.map(t => `
+                        <div class="saved-item-row">
+                            <div style="flex:1;">
+                                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                                    <span class="badge" style="background:#e0f2fe; color:#0369a1;">${t.category ? t.category.name : 'General'}</span>
+                                    <span class="badge" style="background:#f1f5f9; color:var(--muted);">${t.status}</span>
+                                    <span style="font-size:0.8rem; color:var(--muted);">${new Date(t.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <a href="/topic-detail?id=${t.id}" style="font-size:1rem; font-weight:700; color:var(--dark); text-decoration:none;">
+                                    ${t.title}
+                                </a>
+                                <div style="font-size:0.82rem; color:var(--muted); margin-top:4px; display:flex; gap:10px; align-items:center;">
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('messageCircle', 13)} ${t.replyCount || 0} Replies</span>
+                                    <span>&bull;</span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('thumbsUp', 13)} ${t.likesCount || 0} Upvotes</span>
+                                    <span>&bull;</span>
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">${App.icon('eye', 13)} ${t.viewsCount || 0} Views</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <a href="/topic-detail?id=${t.id}" class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px;">View</a>
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:6px 12px; color:var(--danger); border-color:var(--border);" onclick="handleDeleteMyDiscussion(${t.id})">${App.icon('trash', 12)} Delete</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger);">Error loading your discussions.</div>';
+            }
+        }
+
+        async function handleDeleteMyDiscussion(topicId) {
+            if (!confirm('Are you sure you want to delete this discussion thread?')) return;
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Discussion thread deleted successfully.', 'success');
+                    loadMyDiscussions();
+                } else {
+                    App.showToast(json.message || 'Failed to delete discussion.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting discussion.', 'error');
+            }
+        }
+
+        async function loadDocumentsCount() {
+            try {
+                const res = await fetch('/api/documents');
+                const json = await res.json();
+                if (json.success && json.data) {
+                    document.getElementById('stat-documents').textContent = json.data.length;
+                }
+            } catch (ignored) {}
+        }
+
+        async function loadClubs() {
+            const grid = document.getElementById('clubs-grid');
+            try {
+                const [clubsRes, myMembRes] = await Promise.all([
+                    fetch('/api/clubs'),
+                    fetch('/api/clubs/my-memberships')
+                ]);
+                const clubsJson = await clubsRes.json();
+                const membJson = await myMembRes.json();
+
+                const clubs = clubsJson.data || [];
+                const memberships = membJson.data || [];
+                const membMap = {};
+                memberships.forEach(m => {
+                    if (m.club) membMap[m.club.id] = m.status;
+                });
+
+                if (clubs.length === 0) {
+                    grid.innerHTML = '<div style="text-align:center; padding:30px; color:var(--muted); grid-column:1/-1;">No campus clubs active at this moment.</div>';
+                    return;
+                }
+
+                grid.innerHTML = clubs.map(c => {
+                    const isLeader = c.leader && c.leader.id === studentUser.id;
+                    const status = membMap[c.id];
+                    let actionHtml = '';
+
+                    if (isLeader) {
+                        actionHtml = '<span class="badge badge-club-leader" style="width:100%; justify-content:center; padding:8px 12px; font-size:0.85rem;">You are Club Leader</span>';
+                    } else if (status === 'APPROVED') {
+                        actionHtml = '<span class="badge" style="width:100%; justify-content:center; padding:8px 12px; font-size:0.85rem; background:var(--forest-light); color:var(--forest); font-weight:700;">Active Club Member</span>';
+                    } else if (status === 'PENDING') {
+                        actionHtml = '<span class="badge badge-important" style="width:100%; justify-content:center; padding:8px 12px; font-size:0.85rem;">Join Request Pending</span>';
+                    } else {
+                        actionHtml = `
+                            <button class="btn btn-primary" style="width:100%; font-size:0.85rem; display:flex; justify-content:center; align-items:center; gap:6px;" onclick="openJoinClubModal(${c.id}, '${App.escapeHtml(c.clubName).replace(/'/g, "\\'")}')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+                                <span>Apply to Join Club</span>
+                            </button>
+                        `;
+                    }
+
+                    const deptName = c.department ? c.department.name : 'College-Wide';
+
+                    return `
+                        <div class="club-card">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                                    <h4 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin:0;">${App.escapeHtml(c.clubName)}</h4>
+                                    <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">ACTIVE</span>
+                                </div>
+                                <div style="font-size:0.8rem; color:var(--primary); font-weight:600; margin-bottom:8px;">${deptName}</div>
+                                <p style="color:var(--muted); font-size:0.88rem; margin-bottom:14px; line-height:1.5;">${App.escapeHtml(c.description || 'Dedicated to student activities and community.')}</p>
+                                <div style="font-size:0.85rem; color:var(--muted); margin-bottom:16px;">
+                                    Club Leader: <strong>${c.leader ? App.escapeHtml(c.leader.fullName) : '<span style="color:var(--important);">Pending Appointment by HOD/Dean</span>'}</strong>
+                                </div>
+                            </div>
+                            <div>
+                                ${actionHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                grid.innerHTML = '<div style="text-align:center; padding:30px; color:var(--danger); grid-column:1/-1;">Failed to load campus clubs.</div>';
+            }
+        }
+
+        function switchStudentTab(tabId, tabEl) {
+            document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+            tabEl.classList.add('active');
+
+            ['department', 'saved-notices', 'saved-discussions', 'my-discussions', 'clubs', 'leadership'].forEach(id => {
+                const el = document.getElementById('tab-' + id);
+                if (el) el.style.display = (id === tabId) ? 'block' : 'none';
+            });
+            if (tabId === 'leadership') {
+                loadLeadershipDesk();
+            }
+        }
+
+        function openJoinClubModal(clubId, clubName) {
+            document.getElementById('join-club-id').value = clubId;
+            document.getElementById('join-club-name').value = clubName;
+            
+            // Auto-populate academic fields from logged in student
+            document.getElementById('join-student-name').value = studentUser.fullName || '';
+            document.getElementById('join-student-email').value = studentUser.email || '';
+            document.getElementById('join-student-prn').value = studentUser.prnRollNo || '';
+            document.getElementById('join-student-dept').value = (studentUser.department ? studentUser.department.name : '') || '';
+            document.getElementById('join-student-course').value = studentUser.course || 'B.Tech';
+            document.getElementById('join-student-year').value = studentUser.year || studentUser.semester || 'Third Year';
+            document.getElementById('join-student-division').value = studentUser.division || 'A';
+            document.getElementById('join-student-phone').value = studentUser.phone || '';
+            document.getElementById('join-club-reason').value = '';
+            
+            App.openModal('join-club-modal');
+        }
+
+        function closeJoinClubModal() {
+            App.closeModal('join-club-modal');
+        }
+
+        async function submitJoinClub(e) {
+            e.preventDefault();
+            const clubId = document.getElementById('join-club-id').value;
+            const payload = {
+                studentName: document.getElementById('join-student-name').value.trim(),
+                email: document.getElementById('join-student-email').value.trim(),
+                prnRollNo: document.getElementById('join-student-prn').value.trim(),
+                departmentName: document.getElementById('join-student-dept').value.trim(),
+                course: document.getElementById('join-student-course').value.trim(),
+                academicYear: document.getElementById('join-student-year').value.trim(),
+                division: document.getElementById('join-student-division').value.trim(),
+                phone: document.getElementById('join-student-phone').value.trim(),
+                reason: document.getElementById('join-club-reason').value.trim()
+            };
+            const btn = document.getElementById('btn-submit-join');
+
+            btn.disabled = true;
+            btn.textContent = 'Submitting Application...';
+
+            try {
+                const res = await fetch(`/api/clubs/${clubId}/join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Application submitted with academic profile to Club Leader!', 'success');
+                    closeJoinClubModal();
+                    loadClubs();
+                } else {
+                    App.showToast(json.message || 'Failed to submit application', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while submitting application', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Submit Join Application';
+            }
+        }
+
+        // --- CLUB LEADERSHIP DESK ---
+        let ledClubs = [];
+
+        async function loadLeadershipDesk() {
+            await Promise.all([
+                loadMyLedClubs(),
+                loadLeaderJoinRequests(),
+                loadMyOrganizedEvents()
+            ]);
+        }
+
+        async function loadMyLedClubs() {
+            try {
+                const res = await fetch('/api/clubs/my-led-clubs');
+                const json = await res.json();
+                ledClubs = json.data || [];
+
+                const isLeader = (studentUser.role === 'CLUB_LEADER') || (studentUser.designation === 'CLUB_LEADER') || (ledClubs.length > 0);
+                const leadTabBtn = document.getElementById('tab-btn-leadership');
+                if (leadTabBtn) {
+                    leadTabBtn.style.display = isLeader ? 'block' : 'none';
+                }
+
+                if (ledClubs.length > 0) {
+                    const primaryClub = ledClubs[0];
+                    document.getElementById('led-clubs-title').textContent = primaryClub.clubName + ' Operations';
+                    document.getElementById('led-clubs-subtitle').textContent = `Assigned Department: ${primaryClub.department ? primaryClub.department.name : 'College-Wide'} • Status: Active`;
+                    loadClubMembersRoster(primaryClub.id);
+                } else {
+                    document.getElementById('led-clubs-title').textContent = 'My Club Operations';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadLeaderJoinRequests() {
+            const container = document.getElementById('leader-join-requests-container');
+            try {
+                const res = await fetch('/api/clubs/leader/requests');
+                const json = await res.json();
+                const requests = json.data || [];
+
+                if (requests.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:18px; color:var(--muted);">No pending student membership applications for your club.</div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate Name</th>
+                                    <th>PRN / Roll No</th>
+                                    <th>Academic Profile</th>
+                                    <th>Contact</th>
+                                    <th>Statement of Purpose</th>
+                                    <th>Applied Date</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${requests.map(r => `
+                                    <tr>
+                                        <td>
+                                            <strong style="color:var(--dark);">${App.escapeHtml(r.studentName || (r.student ? r.student.fullName : 'N/A'))}</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-normal" style="font-family:monospace; font-size:0.8rem;">
+                                                ${App.escapeHtml(r.prnRollNo || (r.student && r.student.prnRollNo ? r.student.prnRollNo : 'N/A'))}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div style="font-weight:600; color:var(--dark);">${App.escapeHtml(r.departmentName || (r.student && r.student.department ? r.student.department.name : 'General'))}</div>
+                                            <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
+                                                ${App.escapeHtml(r.course || (r.student ? r.student.course : '') || 'B.Tech')} &bull; Year: ${App.escapeHtml(r.academicYear || (r.student ? r.student.year : '') || 'N/A')} &bull; Div ${App.escapeHtml(r.division || (r.student ? r.student.division : '') || 'A')}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div><a href="mailto:${App.escapeHtml(r.email || (r.student ? r.student.email : ''))}" style="color:var(--primary); font-size:0.84rem;">${App.escapeHtml(r.email || (r.student ? r.student.email : 'N/A'))}</a></div>
+                                            ${r.phone ? `<div style="font-size:0.78rem; color:var(--muted);">${App.escapeHtml(r.phone)}</div>` : ''}
+                                        </td>
+                                        <td style="max-width:280px; font-size:0.84rem; line-height:1.45; color:var(--dark-muted);">
+                                            ${App.escapeHtml(r.joinReason || 'Interested in contributing to club activities.')}
+                                        </td>
+                                        <td style="font-size:0.82rem; color:var(--muted); white-space:nowrap;">
+                                            ${App.formatDate(r.createdAt)}
+                                        </td>
+                                        <td style="text-align:right;">
+                                            <div style="display:inline-flex; gap:6px;">
+                                                <button class="btn btn-sm btn-primary" onclick="approveClubMemberApplication(${r.id})" style="padding:4px 10px; font-size:0.78rem;">
+                                                    Approve
+                                                </button>
+                                                <button class="btn btn-sm btn-outline" onclick="rejectClubMemberApplication(${r.id})" style="padding:4px 10px; font-size:0.78rem; color:var(--danger); border-color:var(--danger);">
+                                                    Decline
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:10px;">Error loading member requests.</div>';
+            }
+        }
+
+        async function approveClubMemberApplication(membershipId) {
+            try {
+                const res = await fetch(`/api/clubs/memberships/${membershipId}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Student admitted to club successfully!', 'success');
+                    loadLeaderJoinRequests();
+                    if (ledClubs.length > 0) loadClubMembersRoster(ledClubs[0].id);
+                } else {
+                    App.showToast(json.message || 'Failed to approve application', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function rejectClubMemberApplication(membershipId) {
+            const reason = prompt('Optional feedback or reason for declining admission:');
+            try {
+                const res = await fetch(`/api/clubs/memberships/${membershipId}/reject`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason: reason || 'Not accepted at this time' })
+                });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Application declined.', 'info');
+                    loadLeaderJoinRequests();
+                } else {
+                    App.showToast(json.message || 'Failed to reject application', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function loadClubMembersRoster(clubId) {
+            const container = document.getElementById('club-members-roster-container');
+            if (!container) return;
+            try {
+                const res = await fetch(`/api/clubs/${clubId}/members`);
+                const json = await res.json();
+                const members = (json.data || []).filter(m => m.status === 'APPROVED');
+
+                if (members.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:18px; color:var(--muted);">No approved members enrolled yet.</div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Member Name</th>
+                                    <th>PRN / Roll No</th>
+                                    <th>Department</th>
+                                    <th>Academic Class &amp; Div</th>
+                                    <th>Contact</th>
+                                    <th>Admission Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${members.map(m => `
+                                    <tr>
+                                        <td><strong style="color:var(--dark);">${App.escapeHtml(m.studentName || (m.student ? m.student.fullName : 'N/A'))}</strong></td>
+                                        <td><span class="badge badge-normal" style="font-family:monospace; font-size:0.8rem;">${App.escapeHtml(m.prnRollNo || (m.student && m.student.prnRollNo ? m.student.prnRollNo : 'N/A'))}</span></td>
+                                        <td>${App.escapeHtml(m.departmentName || (m.student && m.student.department ? m.student.department.name : 'General'))}</td>
+                                        <td>${App.escapeHtml(m.course || (m.student ? m.student.course : '') || 'B.Tech')} &bull; Div ${App.escapeHtml(m.division || (m.student ? m.student.division : '') || 'A')} (${App.escapeHtml(m.academicYear || (m.student ? m.student.year : '') || 'N/A')})</td>
+                                        <td><a href="mailto:${App.escapeHtml(m.email || (m.student ? m.student.email : ''))}" style="color:var(--primary); font-size:0.84rem;">${App.escapeHtml(m.email || (m.student ? m.student.email : 'N/A'))}</a></td>
+                                        <td>${App.formatDate(m.joinedAt || m.createdAt)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:10px;">Failed to load member roster.</div>';
+            }
+        }
+
+        async function loadMyOrganizedEvents() {
+            const container = document.getElementById('my-organized-events-list');
+            try {
+                const res = await fetch('/api/events/my-organized');
+                const json = await res.json();
+                const events = json.data || [];
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:30px; color:var(--muted);">
+                            <div style="margin-bottom:8px;">${App.icon('calendar', 32, 'text-muted')}</div>
+                            <p style="font-weight:600; color:var(--dark);">You haven't organized any events yet.</p>
+                            <p style="font-size:0.85rem;">Club Leaders can propose workshops, competitions, and seminars for faculty/HOD sanction.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = events.map(ev => {
+                    let badge = '<span class="badge badge-urgent">PENDING REVIEW</span>';
+                    if (ev.status === 'APPROVED') badge = '<span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">APPROVED &bull; PUBLISHED</span>';
+                    else if (ev.status === 'REJECTED') badge = '<span class="badge badge-urgent">DECLINED</span>';
+
+                    return `
+                        <div class="card" style="margin-bottom:12px; background:var(--bg); border:1px solid var(--border);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                                <div style="flex:1;">
+                                    <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                                        ${badge}
+                                        <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700;">${App.escapeHtml(ev.category)}</span>
+                                        ${ev.club ? `<span class="badge" style="background:#f3e8ff; color:#7c3aed; font-weight:700;">${App.escapeHtml(ev.club.clubName)}</span>` : ''}
+                                    </div>
+                                    <h4 style="font-size:1.1rem; font-weight:700; color:var(--dark); margin-bottom:6px;">${App.escapeHtml(ev.title)}</h4>
+                                    <p style="font-size:0.86rem; color:var(--dark-muted); line-height:1.5; margin-bottom:8px;">${App.escapeHtml(ev.description)}</p>
+                                    <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.8rem; color:var(--muted);">
+                                        <span>${App.icon('calendar', 13)} ${ev.eventDate} at ${App.escapeHtml(ev.eventTime)}</span>
+                                        <span>${App.icon('mapPin', 13)} ${App.escapeHtml(ev.location)}</span>
+                                        ${ev.maxParticipants ? `<span>${App.icon('users', 13)} Capacity: ${ev.maxParticipants}</span>` : ''}
+                                    </div>
+                                    ${ev.rejectionReason ? `<div style="margin-top:8px; font-size:0.82rem; color:var(--danger); background:var(--urgent-light); padding:6px 12px; border-radius:var(--radius-sm);"><strong>Review Remarks:</strong> ${App.escapeHtml(ev.rejectionReason)}</div>` : ''}
+                                </div>
+                                <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                                    <button class="btn btn-sm btn-outline" onclick="openAttendeeRosterModal(${ev.id}, '${App.escapeHtml(ev.title).replace(/'/g, "\\'")}')" style="display:inline-flex; align-items:center; gap:5px; font-weight:700; border-color:var(--primary); color:var(--primary);">
+                                        ${App.icon('users', 14)} Registered Attendees
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="deleteMyOrganizedEvent(${ev.id})" style="display:inline-flex; align-items:center; gap:5px; color:var(--danger); border-color:rgba(239,68,68,0.35);">
+                                        ${App.icon('trash', 14)} Delete Event
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:16px;">Failed to load organized events.</div>';
+            }
+        }
+
+        async function deleteMyOrganizedEvent(id) {
+            if (!confirm('Are you sure you want to delete this event? This will permanently cancel the event and remove all registered attendees.')) return;
+            try {
+                const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event deleted successfully.', 'success');
+                    loadMyOrganizedEvents();
+                } else {
+                    App.showToast(json.message || 'Failed to delete event.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting event.', 'error');
+            }
+        }
+
+        async function openProposeEventModal() {
+            // Load clubs for dropdown
+            const clubSelect = document.getElementById('pe-club');
+            clubSelect.innerHTML = '<option value="">Select Club (Optional)</option>';
+            try {
+                const res = await fetch('/api/clubs');
+                const json = await res.json();
+                const clubs = json.data || [];
+                clubs.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.clubName;
+                    clubSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+            App.openModal('propose-event-modal');
+        }
+
+        async function submitProposeEvent(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-propose-submit');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            const payload = {
+                title: document.getElementById('pe-title').value.trim(),
+                description: document.getElementById('pe-desc').value.trim(),
+                eventDate: document.getElementById('pe-date').value,
+                eventTime: document.getElementById('pe-time').value.trim(),
+                location: document.getElementById('pe-location').value.trim(),
+                category: document.getElementById('pe-category').value,
+                clubId: document.getElementById('pe-club').value ? parseInt(document.getElementById('pe-club').value) : null,
+                eligibility: document.getElementById('pe-eligibility') ? document.getElementById('pe-eligibility').value : 'OPEN_TO_ALL',
+                maxParticipants: parseInt(document.getElementById('pe-max-participants').value) || 60,
+                rules: document.getElementById('pe-rules').value.trim(),
+                contactInfo: document.getElementById('pe-contact').value.trim(),
+                departmentId: studentUser.department ? studentUser.department.id : null
+            };
+
+            try {
+                const res = await fetch('/api/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Event proposed! Awaiting faculty/HOD sanction.', 'success');
+                    App.closeModal('propose-event-modal');
+                    document.getElementById('propose-event-form').reset();
+                    loadMyOrganizedEvents();
+                } else {
+                    App.showToast(json.message || 'Submission failed', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while proposing event', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Proposal to Faculty/HOD';
+            }
+        }
+
+        async function openAttendeeRosterModal(eventId, eventTitle) {
+            currentRosterEvent = { id: eventId, title: eventTitle };
+            document.getElementById('roster-modal-title').innerText = `Registered Attendees: ${eventTitle}`;
+            document.getElementById('roster-search-input').value = '';
+            App.openModal('attendee-roster-modal');
+
+            const tbody = document.getElementById('roster-table-body');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading attendee roster from database...</td></tr>';
+
+            try {
+                const res = await fetch(`/api/events/${eventId}/attendees`);
+                const json = await res.json();
+                if (res.ok) {
+                    rawRosterList = json.data || [];
+                    renderRosterTable(rawRosterList);
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="7" style="color:var(--danger); text-align:center; padding:20px;">${json.message || 'Access denied or failed to load roster.'}</td></tr>`;
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="color:var(--danger); text-align:center; padding:20px;">Network error loading roster.</td></tr>';
+            }
+        }
+
+        function renderRosterTable(list) {
+            const tbody = document.getElementById('roster-table-body');
+            document.getElementById('roster-count-label').innerText = `${list.length} Student${list.length === 1 ? '' : 's'} Registered`;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--muted);">No students have registered for this event yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(a => `
+                <tr>
+                    <td><strong>${App.escapeHtml(a.prnRollNo || 'N/A')}</strong></td>
+                    <td style="font-weight:700; color:var(--dark);">${App.escapeHtml(a.fullName)}</td>
+                    <td>${App.escapeHtml(a.email)}</td>
+                    <td>${App.escapeHtml(a.department || 'General')}</td>
+                    <td>${App.escapeHtml(a.course || 'B.Tech')} &bull; ${App.escapeHtml(a.year || 'N/A')}</td>
+                    <td>Div ${App.escapeHtml(a.division || 'A')}</td>
+                    <td>${App.formatDate(a.registeredAt)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterAttendeesTable() {
+            const q = document.getElementById('roster-search-input').value.toLowerCase().trim();
+            if (!q) {
+                renderRosterTable(rawRosterList);
+                return;
+            }
+            const filtered = rawRosterList.filter(a =>
+                (a.fullName && a.fullName.toLowerCase().includes(q)) ||
+                (a.prnRollNo && a.prnRollNo.toLowerCase().includes(q)) ||
+                (a.email && a.email.toLowerCase().includes(q)) ||
+                (a.department && a.department.toLowerCase().includes(q))
+            );
+            renderRosterTable(filtered);
+        }
+
+        function downloadAttendeesCSV() {
+            if (!rawRosterList || rawRosterList.length === 0) {
+                alert('No attendee records available to export.');
+                return;
+            }
+
+            const headers = ['Student PRN / Roll No', 'Full Name', 'Email', 'Department', 'Course', 'Year', 'Division', 'Registration Date'];
+            const rows = rawRosterList.map(a => [
+                `"${(a.prnRollNo || '').replace(/"/g, '""')}"`,
+                `"${(a.fullName || '').replace(/"/g, '""')}"`,
+                `"${(a.email || '').replace(/"/g, '""')}"`,
+                `"${(a.department || '').replace(/"/g, '""')}"`,
+                `"${(a.course || '').replace(/"/g, '""')}"`,
+                `"${(a.year || '').replace(/"/g, '""')}"`,
+                `"${(a.division || '').replace(/"/g, '""')}"`,
+                `"${(a.registeredAt || '').replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const fileName = (currentRosterEvent && currentRosterEvent.title ? currentRosterEvent.title.replace(/[^a-zA-Z0-9]/g, '_') : 'Event') + '_Attendees.csv';
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            App.showToast('Attendee roster CSV downloaded!', 'success');
+        }
+    </script>
+</body>
+</html>

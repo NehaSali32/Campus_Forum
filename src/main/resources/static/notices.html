@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Notices | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices" class="active">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container">
+            <!-- Populated via app.js -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <!-- Page Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+            <div>
+                <h1 style="font-size:1.75rem; font-weight:800; color:var(--dark); margin:0;">Official Institutional Circulars</h1>
+                <p style="color:var(--muted); font-size:0.9rem; margin-top:4px;">Verified college circulars, examination schedules, placement notices, and administrative announcements</p>
+            </div>
+            <div id="create-notice-btn-wrapper" style="display:none;">
+                <button class="btn btn-primary" onclick="App.openModal('create-notice-modal')">
+                    <span style="display:flex; align-items:center; gap:6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>Publish Official Notice</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="filter-bar" style="margin-bottom:16px;">
+            <div class="category-pills" id="category-pills">
+                <button class="pill active" onclick="setCategoryFilter('All', this)">All Circulars</button>
+                <button class="pill" onclick="setCategoryFilter('Academic', this)">Academic</button>
+                <button class="pill" onclick="setCategoryFilter('Examination', this)">Examinations</button>
+                <button class="pill" onclick="setCategoryFilter('Training & Placement', this)">Training &amp; Placement</button>
+                <button class="pill" onclick="setCategoryFilter('Campus Events', this)">Campus Events</button>
+                <button class="pill" onclick="setCategoryFilter('Administrative', this)">Administrative</button>
+                <button class="pill" onclick="setCategoryFilter('Department', this)">Departmental</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="notice-search" placeholder="Search notices by title or content..." oninput="handleSearch(this.value)">
+            </div>
+        </div>
+
+        <!-- Secondary Filters (Department & Priority) -->
+        <div style="display:flex; gap:16px; margin-bottom:24px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:0.82rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Priority:</label>
+                <select id="filter-priority" class="form-control" style="width:auto; padding:6px 12px; font-size:0.85rem;" onchange="applyFilters()">
+                    <option value="All">All Priorities</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Important">Important</option>
+                    <option value="Normal">Normal</option>
+                </select>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label style="font-size:0.82rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">Target Department:</label>
+                <select id="filter-dept" class="form-control" style="width:auto; padding:6px 12px; font-size:0.85rem;" onchange="applyFilters()">
+                    <option value="">All Departments (College Wide)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Notices Feed -->
+        <div id="notices-list">
+            <div style="text-align:center; padding:40px; color:var(--muted);">Loading official notices...</div>
+        </div>
+
+    </main>
+
+    <!-- Notice Detail Modal -->
+    <div class="modal-backdrop" id="notice-detail-modal">
+        <div class="modal-content" style="max-width:680px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="det-modal-title">Notice Details</h3>
+                <button class="modal-close" onclick="App.closeModal('notice-detail-modal')">&times;</button>
+            </div>
+            <div id="det-modal-meta" style="margin-bottom:14px; font-size:0.85rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:8px; align-items:center;"></div>
+            <div id="det-modal-body" style="line-height:1.75; white-space:pre-line; color:var(--dark); margin-bottom:16px; font-size:0.95rem;"></div>
+            <div id="det-modal-attachment" style="margin-bottom:16px;"></div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid var(--border); flex-wrap:wrap; gap:10px;">
+                <div id="det-modal-actions" style="display:flex; gap:8px; align-items:center;"></div>
+                <button type="button" class="btn btn-outline" onclick="App.closeModal('notice-detail-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Notice Modal (For Faculty and Admin) -->
+    <div class="modal-backdrop" id="create-notice-modal">
+        <div class="modal-content" style="max-width:650px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Publish Official Notice</h3>
+                <button class="modal-close" onclick="App.closeModal('create-notice-modal')">&times;</button>
+            </div>
+            <form id="create-notice-form" onsubmit="handleCreateNotice(event)">
+                <div class="form-group">
+                    <label class="form-label" for="new-notice-title">Notice Title *</label>
+                    <input type="text" id="new-notice-title" class="form-control" placeholder="e.g., In-Semester Exam Schedule 2026" required>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="new-notice-category">Category *</label>
+                        <select id="new-notice-category" class="form-control" required>
+                            <option value="Academic">Academic</option>
+                            <option value="Examination">Examination</option>
+                            <option value="Training & Placement">Training &amp; Placement</option>
+                            <option value="Campus Events">Campus Events</option>
+                            <option value="Hostel & Mess">Hostel &amp; Mess</option>
+                            <option value="Administrative">Administrative</option>
+                            <option value="Sports & Cultural">Sports &amp; Cultural</option>
+                            <option value="Department">Department</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="new-notice-priority">Priority *</label>
+                        <select id="new-notice-priority" class="form-control" required>
+                            <option value="Normal">Normal</option>
+                            <option value="Important">Important</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="new-notice-dept">Target Audience *</label>
+                        <select id="new-notice-dept" class="form-control">
+                            <option value="">All Students (College-Wide)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display:flex; flex-direction:column; justify-content:center;">
+                        <label class="form-label" style="margin-bottom:6px;">Options</label>
+                        <div style="display:flex; gap:16px;">
+                            <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+                                <input type="checkbox" id="new-notice-pinned"> Pin to Top
+                            </label>
+                            <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; cursor:pointer;">
+                                <input type="checkbox" id="new-notice-ack"> Require Acknowledgement
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="new-notice-content">Notice Content &amp; Circular Details *</label>
+                    <textarea id="new-notice-content" class="form-control" rows="5" placeholder="Enter complete circular text..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="new-notice-file">Attach Circular / Document (PDF, Image, DOC)</label>
+                    <input type="file" id="new-notice-file" class="form-control" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="App.closeModal('create-notice-modal')">Cancel</button>
+                    <button type="submit" id="btn-submit-notice" class="btn btn-primary">Publish Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div>&copy; 2026 Campus Forum &bull; Academic Discussion &amp; College Communication Platform &bull; Department of Information Technology</div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let currentCategory = 'All';
+        let searchQuery = '';
+        let searchTimeout = null;
+        let loadedDepartments = [];
+
+        async function initNoticesPage() {
+            await App.init();
+            if (App.currentUser && (App.currentUser.role === 'ADMIN' || App.currentUser.role === 'FACULTY' || App.currentUser.role === 'HOD' || App.currentUser.role === 'DEAN')) {
+                document.getElementById('create-notice-btn-wrapper').style.display = 'block';
+            }
+
+            await loadDepartmentsDropdown();
+            await applyFilters();
+        }
+
+        async function loadDepartmentsDropdown() {
+            try {
+                const res = await fetch('/api/departments');
+                if (!res.ok) return;
+                const json = await res.json();
+                loadedDepartments = json.data || [];
+
+                const filterDept = document.getElementById('filter-dept');
+                const newNoticeDept = document.getElementById('new-notice-dept');
+
+                loadedDepartments.forEach(d => {
+                    const opt1 = document.createElement('option');
+                    opt1.value = d.id;
+                    opt1.innerText = `${d.name} (${d.code})`;
+                    filterDept.appendChild(opt1);
+
+                    const opt2 = document.createElement('option');
+                    opt2.value = d.id;
+                    opt2.innerText = `${d.name} (${d.code})`;
+                    newNoticeDept.appendChild(opt2);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function setCategoryFilter(category, btn) {
+            currentCategory = category;
+            document.querySelectorAll('#category-pills .pill').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            applyFilters();
+        }
+
+        function handleSearch(val) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = val.trim();
+                applyFilters();
+            }, 300);
+        }
+
+        async function applyFilters() {
+            const container = document.getElementById('notices-list');
+            container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--muted);">Loading notices...</div>';
+
+            const priority = document.getElementById('filter-priority').value;
+            const deptId = document.getElementById('filter-dept').value;
+
+            const params = new URLSearchParams();
+            if (searchQuery) params.append('query', searchQuery);
+            if (currentCategory && currentCategory !== 'All') params.append('category', currentCategory);
+            if (priority && priority !== 'All') params.append('priority', priority);
+            if (deptId) params.append('departmentId', deptId);
+
+            try {
+                const res = await fetch('/api/notices?' + params.toString());
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center; padding:60px 20px; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);">
+                            <div style="margin-bottom:12px; display:flex; justify-content:center;">${App.icon('fileText', 44, 'text-muted')}</div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark);">No official notices found</h3>
+                            <p style="font-size:0.88rem; margin-top:4px;">Try adjusting your search keywords, category, or priority filters.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = list.map(n => {
+                    const priorityClass = n.priority ? 'badge-' + n.priority.toLowerCase() : 'badge-normal';
+                    const deptTag = n.department 
+                        ? `<span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(n.department.code)}</span>` 
+                        : '<span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--dark-muted);">All Students</span>';
+                    const pinnedBadge = n.pinned 
+                        ? `<span style="color:var(--terracotta); font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">${App.icon('pin', 12)} PINNED</span>` 
+                        : '';
+                    const hasAttachment = n.attachmentUrl 
+                        ? `<span style="color:var(--primary); display:inline-flex; align-items:center; gap:4px; font-size:0.8rem;">${App.icon('paperclip', 13)} Attachment</span>` 
+                        : '';
+
+                    return `
+                        <div class="card ${n.pinned ? 'card-pinned' : ''}" style="margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                                <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                    ${pinnedBadge}
+                                    <span class="${priorityClass}">● ${App.escapeHtml(n.priority || 'Normal')}</span>
+                                    ${deptTag}
+                                    <span class="badge" style="background:var(--bg); border:1px solid var(--border); color:var(--dark);">${App.escapeHtml(n.category)}</span>
+                                </div>
+                                <span style="font-size:0.8rem; color:var(--muted); display:inline-flex; align-items:center; gap:4px;">
+                                    ${App.icon('clock', 12)}
+                                    <span>${App.formatDate(n.createdAt)}</span>
+                                </span>
+                            </div>
+                            
+                            <h2 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:8px; cursor:pointer;" onclick="openNoticeDetail(${n.id})">
+                                ${App.escapeHtml(n.title)}
+                            </h2>
+                            <p style="color:var(--dark-muted); line-height:1.6; font-size:0.92rem; margin-bottom:14px;">
+                                ${App.escapeHtml(n.content.substring(0, 220))}${n.content.length > 220 ? '...' : ''}
+                            </p>
+                            
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:0.8rem; color:var(--muted); border-top:1px solid var(--border); padding-top:12px;">
+                                <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">
+                                        ${App.icon('user', 14)}
+                                        <strong>${App.escapeHtml(n.author.fullName)}</strong>
+                                        <span style="color:var(--muted);">(${App.escapeHtml(n.author.designation || n.author.role)})</span>
+                                    </span>
+                                    ${hasAttachment}
+                                    <span style="display:inline-flex; align-items:center; gap:4px;">
+                                        ${App.icon('eye', 14)}
+                                        <span>${n.viewsCount} views</span>
+                                    </span>
+                                </div>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <button class="btn btn-sm btn-outline" onclick="handleBookmarkNotice(${n.id})" title="Save to bookmarks" style="display:inline-flex; align-items:center; gap:4px;">
+                                        ${App.icon('bookmark', 13)}
+                                        <span>Save</span>
+                                    </button>
+                                    ${(App.currentUser && ((n.author && App.currentUser.id === n.author.id) || ['ADMIN', 'DEAN', 'HOD', 'FACULTY'].includes(App.currentUser.role))) ? `
+                                        <button class="btn btn-sm btn-outline" onclick="handleDeleteNotice(${n.id})" title="Delete official notice" style="display:inline-flex; align-items:center; gap:4px; color:var(--danger); border-color:var(--border);">
+                                            ${App.icon('trash', 13)}
+                                            <span>Delete</span>
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-primary" onclick="openNoticeDetail(${n.id})" style="display:inline-flex; align-items:center; gap:4px;">
+                                        <span>Read Circular</span>
+                                        ${App.icon('chevronRight', 14)}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--danger);">Error loading notices.</div>';
+            }
+        }
+
+        async function openNoticeDetail(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}`);
+                const json = await res.json();
+                const data = json.data || {};
+                const n = data.notice;
+                if (!n) return;
+
+                document.getElementById('det-modal-title').innerText = n.title;
+                document.getElementById('det-modal-meta').innerHTML = `
+                    <span class="badge ${n.priority ? 'badge-' + n.priority.toLowerCase() : 'badge-normal'}">● ${App.escapeHtml(n.priority || 'Normal')}</span>
+                    <span class="badge" style="background:var(--bg); border:1px solid var(--border);">${App.escapeHtml(n.category)}</span>
+                    <span style="display:inline-flex; align-items:center; gap:4px;">
+                        ${App.icon('user', 13)}
+                        <span>Published by <strong>${App.escapeHtml(n.author.fullName)}</strong></span>
+                    </span>
+                    <span>&bull;</span>
+                    <span style="display:inline-flex; align-items:center; gap:4px;">
+                        ${App.icon('clock', 13)}
+                        <span>${App.formatDate(n.createdAt)}</span>
+                    </span>
+                    <span>&bull;</span>
+                    <span style="display:inline-flex; align-items:center; gap:4px;">
+                        ${App.icon('eye', 13)}
+                        <span>${n.viewsCount} views</span>
+                    </span>
+                `;
+                document.getElementById('det-modal-body').innerText = n.content;
+
+                const attachDiv = document.getElementById('det-modal-attachment');
+                if (n.attachmentUrl) {
+                    attachDiv.innerHTML = `
+                        <div style="background:var(--primary-light); border:1px solid var(--primary-border); padding:12px 16px; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                            <span style="display:flex; align-items:center; gap:8px; font-size:0.9rem;">
+                                ${App.icon('paperclip', 16)}
+                                <strong>${App.escapeHtml(n.attachmentName || 'Circular Attachment')}</strong>
+                            </span>
+                            <a href="${n.attachmentUrl}" target="_blank" class="btn btn-sm btn-primary" download style="display:inline-flex; align-items:center; gap:4px;">
+                                ${App.icon('download', 14)}
+                                <span>Download</span>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    attachDiv.innerHTML = '';
+                }
+
+                const actionsDiv = document.getElementById('det-modal-actions');
+                let ackHtml = '';
+                if (n.requiresAcknowledgement) {
+                    if (data.hasAcknowledged) {
+                        ackHtml = `<span style="color:var(--forest); font-weight:700; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;">${App.icon('checkCircle', 16)} Acknowledged (${data.ackCount} total)</span>`;
+                    } else {
+                        ackHtml = `<button class="btn btn-sm btn-outline" style="border-color:var(--forest); color:var(--forest); display:inline-flex; align-items:center; gap:6px;" onclick="handleAcknowledgeInModal(${n.id})">${App.icon('check', 14)} I Understand &amp; Acknowledge</button>`;
+                    }
+                }
+
+                const canDeleteNotice = App.currentUser && (
+                    (n.author && App.currentUser.id === n.author.id) ||
+                    App.currentUser.role === 'ADMIN' ||
+                    App.currentUser.role === 'DEAN' ||
+                    App.currentUser.role === 'HOD' ||
+                    App.currentUser.role === 'FACULTY'
+                );
+
+                const modalDeleteBtn = canDeleteNotice ? `
+                    <button class="btn btn-sm btn-outline" onclick="handleDeleteNotice(${n.id})" style="display:inline-flex; align-items:center; gap:6px; color:var(--danger); border-color:var(--border);">
+                        ${App.icon('trash', 14)}
+                        <span>Delete Notice</span>
+                    </button>
+                ` : '';
+
+                actionsDiv.innerHTML = `
+                    <button class="btn btn-sm btn-outline" onclick="handleBookmarkNotice(${n.id})" style="display:inline-flex; align-items:center; gap:6px;">
+                        ${data.isBookmarked ? `${App.icon('bookmarkFilled', 14)} Saved` : `${App.icon('bookmark', 14)} Save Notice`}
+                    </button>
+                    ${modalDeleteBtn}
+                    ${ackHtml}
+                `;
+
+                App.openModal('notice-detail-modal');
+            } catch (e) {
+                App.showToast('Failed to load notice details', 'error');
+            }
+        }
+
+        async function handleDeleteNotice(id) {
+            if (!confirm('Are you sure you want to permanently delete this official notice?')) return;
+            try {
+                const res = await fetch(`/api/notices/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Notice deleted successfully.', 'success');
+                    App.closeModal('notice-detail-modal');
+                    applyFilters();
+                } else {
+                    App.showToast(json.message || 'Failed to delete notice.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting notice.', 'error');
+            }
+        }
+
+        async function handleBookmarkNotice(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}/bookmark`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast(json.message || 'Bookmark updated', 'success');
+                } else {
+                    App.showToast(json.message || 'Bookmark failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function handleAcknowledgeInModal(id) {
+            try {
+                const res = await fetch(`/api/notices/${id}/acknowledge`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Acknowledgement recorded!', 'success');
+                    openNoticeDetail(id);
+                } else {
+                    App.showToast(json.message || 'Acknowledgement failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function handleCreateNotice(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-notice');
+            btn.disabled = true;
+            btn.innerText = 'Publishing...';
+
+            let attachmentUrl = null;
+            let attachmentName = null;
+
+            const fileInput = document.getElementById('new-notice-file');
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                try {
+                    const uploadRes = await fetch('/api/notices/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const uploadData = await uploadRes.json();
+                    if (uploadRes.ok && uploadData.success) {
+                        attachmentUrl = uploadData.data.fileUrl;
+                        attachmentName = uploadData.data.fileName;
+                    }
+                } catch (err) {
+                    console.error('File upload failed', err);
+                }
+            }
+
+            const deptVal = document.getElementById('new-notice-dept').value;
+
+            const payload = {
+                title: document.getElementById('new-notice-title').value.trim(),
+                category: document.getElementById('new-notice-category').value,
+                priority: document.getElementById('new-notice-priority').value,
+                departmentId: deptVal ? parseInt(deptVal) : null,
+                isPinned: document.getElementById('new-notice-pinned').checked,
+                requiresAcknowledgement: document.getElementById('new-notice-ack').checked,
+                content: document.getElementById('new-notice-content').value.trim(),
+                attachmentUrl: attachmentUrl,
+                attachmentName: attachmentName
+            };
+
+            try {
+                const res = await fetch('/api/notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    App.showToast('Notice published successfully!', 'success');
+                    App.closeModal('create-notice-modal');
+                    document.getElementById('create-notice-form').reset();
+                    applyFilters();
+                } else {
+                    App.showToast(data.message || 'Failed to publish notice', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while publishing notice', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Publish Notice';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => initNoticesPage());
+    </script>
+</body>
+</html>

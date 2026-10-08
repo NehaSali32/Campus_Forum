@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Thread | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum" class="active">Discussions</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container">
+            <!-- Populated via app.js -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        
+        <div style="margin-bottom:18px;">
+            <a href="/forum" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+                <span>&larr;</span>
+                <span>Back to All Discussions</span>
+            </a>
+        </div>
+
+        <!-- Topic Card -->
+        <div class="card" id="topic-container" style="margin-bottom:24px;">
+            <div style="text-align:center; padding:30px; color:var(--muted);">Loading thread...</div>
+        </div>
+
+        <!-- Replies Section -->
+        <div class="card" style="padding:24px;">
+            <h3 style="font-size:1.2rem; font-weight:800; color:var(--dark); margin-bottom:18px; display:flex; align-items:center; gap:8px;">
+                <span style="display:flex; color:var(--primary);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </span>
+                <span>Discussion Responses</span>
+                <span id="comments-count-badge" style="font-size:0.85rem; color:var(--muted); font-weight:normal;"></span>
+            </h3>
+
+            <!-- Comments List -->
+            <div id="comments-list" style="margin-bottom:24px;">
+                <div style="color:var(--muted); font-size:0.9rem;">Loading replies...</div>
+            </div>
+
+            <!-- Reply Form -->
+            <div style="border-top:1px solid var(--border); padding-top:20px;">
+                <h4 style="font-size:1.05rem; font-weight:700; color:var(--dark); margin-bottom:12px;">Post Your Answer or Perspective</h4>
+                <div id="reply-identity-box" style="margin-bottom:14px;"></div>
+                <form id="comment-form" onsubmit="handlePostComment(event)">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <textarea id="comment-content" class="form-control" rows="4" placeholder="Write a clear, constructive, and respectful response to this thread..." required></textarea>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <span style="font-size:0.8rem; color:var(--muted); display:inline-flex; align-items:center; gap:5px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <span>Your response will be visible to all verified students and faculty.</span>
+                        </span>
+                        <button type="submit" id="btn-post-reply" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px; padding:9px 20px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <span>Post Reply</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Report Content Modal -->
+    <div class="modal-backdrop" id="report-modal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Report Academic Content</h3>
+                <button class="modal-close" onclick="App.closeModal('report-modal')">&times;</button>
+            </div>
+            <form id="report-form" onsubmit="submitContentReport(event)">
+                <div style="font-size:0.85rem; color:var(--muted); margin-bottom:14px;" id="report-target-info">
+                    Flagging inappropriate or non-academic material for moderator review.
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="report-reason">Reason *</label>
+                    <select id="report-reason" class="form-control" required>
+                        <option value="SPAM">Spam or Unsolicited Promotion</option>
+                        <option value="HARASSMENT">Harassment or Abusive Conduct</option>
+                        <option value="INAPPROPRIATE">Inappropriate / Non-Academic Content</option>
+                        <option value="MISLEADING">Misleading or False Academic Information</option>
+                        <option value="OTHER">Other Academic Concern</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="report-details">Additional Details (Optional)</label>
+                    <textarea id="report-details" class="form-control" rows="3" placeholder="Briefly clarify the issue to assist campus moderators..."></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="App.closeModal('report-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-report" style="background:var(--terracotta); border-color:var(--terracotta);">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div>&copy; 2026 Campus Forum &bull; Academic Discussion &amp; College Communication Platform &bull; Department of Information Technology</div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('id');
+        let currentTopic = null;
+
+        function getAuthorBadges(user) {
+            if (!user) return { name: 'Anonymous Member', initials: '?', badges: '', meta: '' };
+            
+            const name = user.fullName || 'Member';
+            const initials = name.split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || 'U';
+            
+            let badges = [];
+            let metaParts = [];
+
+            if (user.role === 'ADMIN') {
+                badges.push('<span class="badge badge-role admin">Administrator</span>');
+            } else if (user.role === 'DEAN') {
+                badges.push('<span class="badge badge-dean">Dean</span>');
+                badges.push(`<span class="badge-verified">${App.icon('checkCircle', 12)} Academic Official</span>`);
+            } else if (user.role === 'HOD') {
+                badges.push('<span class="badge badge-hod">Head of Department (HOD)</span>');
+                badges.push(`<span class="badge-verified">${App.icon('checkCircle', 12)} Academic Official</span>`);
+            } else if (user.role === 'FACULTY') {
+                badges.push('<span class="badge badge-role faculty">Faculty</span>');
+                badges.push(`<span class="badge-verified">${App.icon('checkCircle', 12)} Verified Faculty</span>`);
+            } else if (user.role === 'STUDENT') {
+                if (user.designation === 'CLUB_LEADER') {
+                    badges.push('<span class="badge badge-club-leader">Club Leader</span>');
+                }
+                badges.push('<span class="badge badge-role student">Student</span>');
+            }
+
+            if (user.department && user.department.name) {
+                metaParts.push(App.escapeHtml(user.department.name));
+            }
+            if (user.designation && user.designation !== 'STUDENT' && user.designation !== 'CLUB_LEADER') {
+                metaParts.push(App.escapeHtml(user.designation));
+            }
+            if (user.year) {
+                metaParts.push(`Year: ${App.escapeHtml(user.year)}`);
+            }
+            if (user.division) {
+                metaParts.push(`Div: ${App.escapeHtml(user.division)}`);
+            }
+
+            return {
+                name,
+                initials,
+                badges: badges.join(' '),
+                meta: metaParts.join(' • ')
+            };
+        }
+
+        function renderReplyUserInfo() {
+            const box = document.getElementById('reply-identity-box');
+            if (!box) return;
+            if (App.currentUser) {
+                const info = getAuthorBadges(App.currentUser);
+                box.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); flex-wrap:wrap; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="comment-avatar" style="width:34px; height:34px; font-size:0.82rem;">
+                                ${info.initials}
+                            </div>
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                    <span style="font-size:0.88rem; font-weight:700; color:var(--dark);">Replying as ${App.escapeHtml(info.name)}</span>
+                                    ${info.badges}
+                                </div>
+                                ${info.meta ? `<div style="font-size:0.75rem; color:var(--muted); margin-top:2px;">${info.meta}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                box.innerHTML = `
+                    <div style="padding:12px 16px; background:var(--border-subtle); border-radius:var(--radius-sm); font-size:0.88rem; color:var(--muted);">
+                        Please <a href="/login" style="color:var(--primary); font-weight:700;">sign in</a> to participate and reply in this discussion.
+                    </div>
+                `;
+            }
+        }
+
+        async function initTopicDetail() {
+            await App.init();
+            if (!topicId) {
+                window.location.replace('/forum');
+                return;
+            }
+            renderReplyUserInfo();
+            await loadTopic();
+            await loadComments();
+        }
+
+        async function loadTopic() {
+            const container = document.getElementById('topic-container');
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}`);
+                if (!res.ok) throw new Error('Topic not found');
+                const json = await res.json();
+                const data = json.data || {};
+                currentTopic = data.topic;
+
+                const authorInfo = getAuthorBadges(currentTopic.author);
+                const deptTag = currentTopic.department ? `<span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(currentTopic.department.name)}</span>` : '';
+                const solvedBadge = currentTopic.solved ? `<span class="badge" style="background:#e6f4ea; color:#137333; font-weight:700; border:1px solid #ceead6; display:inline-flex; align-items:center; gap:4px;">${App.icon('checkCircle', 12)} Solved</span>` : '';
+                const tagsHtml = currentTopic.tags ? currentTopic.tags.split(' ').filter(Boolean).map(tag => `<span style="font-size:0.8rem; color:var(--primary); font-weight:600; margin-right:8px;">${App.escapeHtml(tag)}</span>`).join('') : '';
+
+                const canDeleteTopic = App.currentUser && (
+                    (currentTopic.author && String(App.currentUser.id) === String(currentTopic.author.id)) ||
+                    App.currentUser.role === 'ADMIN' ||
+                    App.currentUser.role === 'DEAN' ||
+                    App.currentUser.role === 'HOD' ||
+                    App.currentUser.role === 'FACULTY'
+                );
+
+                const canSolve = App.currentUser && (
+                    (currentTopic.author && String(App.currentUser.id) === String(currentTopic.author.id)) ||
+                    App.currentUser.role === 'ADMIN' ||
+                    App.currentUser.role === 'DEAN' ||
+                    App.currentUser.role === 'HOD' ||
+                    App.currentUser.role === 'FACULTY'
+                );
+
+                const solveBtn = canSolve ? `
+                    <button class="btn btn-sm btn-outline" onclick="handleToggleSolved()" style="display:inline-flex; align-items:center; gap:4px; color:${currentTopic.solved ? '#137333' : 'var(--primary)'}; border-color:var(--border);">
+                        ${App.icon('checkCircle', 13)}
+                        <span>${currentTopic.solved ? 'Unmark Solved' : 'Mark as Solved'}</span>
+                    </button>
+                ` : '';
+
+                const deleteTopicBtn = canDeleteTopic ? `
+                    <button class="btn btn-sm btn-outline" onclick="handleDeleteCurrentTopic()" title="Delete discussion thread" style="display:inline-flex; align-items:center; gap:4px; color:var(--danger); border-color:var(--border);">
+                        ${App.icon('trash', 13)}
+                        <span>Delete</span>
+                    </button>
+                ` : '';
+
+                const reportTopicBtn = `
+                    <button class="btn btn-sm btn-outline" onclick="openReportModal('TOPIC', ${currentTopic.id})" title="Report discussion thread" style="display:inline-flex; align-items:center; gap:4px; color:var(--muted); border-color:var(--border);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                        <span>Report</span>
+                    </button>
+                `;
+
+                container.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(currentTopic.category ? currentTopic.category.name : 'General')}</span>
+                            ${deptTag}
+                            ${solvedBadge}
+                            ${authorInfo.badges}
+                            <span class="badge" style="background:var(--bg); border:1px solid var(--border);">${currentTopic.status}</span>
+                        </div>
+                        <span style="font-size:0.8rem; color:var(--muted); display:inline-flex; align-items:center; gap:4px;">
+                            ${App.icon('clock', 12)}
+                            <span>${App.formatDate(currentTopic.createdAt)}</span>
+                        </span>
+                    </div>
+
+                    <h1 style="font-size:1.55rem; font-weight:800; color:var(--dark); margin-bottom:14px; line-height:1.35; letter-spacing:-0.01em;">
+                        ${App.escapeHtml(currentTopic.title)}
+                    </h1>
+
+                    <div style="color:var(--dark); line-height:1.8; font-size:0.98rem; margin-bottom:18px; white-space:pre-line;">
+                        ${App.escapeHtml(currentTopic.content)}
+                    </div>
+
+                    <div style="margin-bottom:18px;">${tagsHtml}</div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; border-top:1px solid var(--border); padding-top:16px; font-size:0.85rem; color:var(--muted);">
+                        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                            <div class="comment-avatar" style="width:36px; height:36px; font-size:0.85rem;">
+                                ${authorInfo.initials}
+                            </div>
+                            <div>
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <strong style="color:var(--dark);">${App.escapeHtml(authorInfo.name)}</strong>
+                                    <span style="font-size:0.75rem; color:var(--muted);">• Topic Creator</span>
+                                </div>
+                                ${authorInfo.meta ? `<div style="font-size:0.75rem; color:var(--muted);">${authorInfo.meta}</div>` : ''}
+                            </div>
+                            <span style="display:inline-flex; align-items:center; gap:4px; margin-left:12px; color:var(--muted);">
+                                ${App.icon('eye', 14)}
+                                <span>${currentTopic.viewsCount} views</span>
+                            </span>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                            ${solveBtn}
+                            <button class="btn btn-sm btn-outline" id="btn-upvote-topic" onclick="handleTopicUpvote()" style="display:inline-flex; align-items:center; gap:4px;">
+                                ${App.icon('thumbsUp', 13)}
+                                <span>${data.hasUpvoted ? 'Upvoted' : 'Upvote'} (${currentTopic.likesCount})</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="handleTopicBookmark()" style="display:inline-flex; align-items:center; gap:4px;">
+                                ${data.isBookmarked ? `${App.icon('bookmarkFilled', 13)} Saved` : `${App.icon('bookmark', 13)} Save`}
+                            </button>
+                            ${reportTopicBtn}
+                            ${deleteTopicBtn}
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                container.innerHTML = '<div style="padding:40px; text-align:center; color:var(--danger);">Discussion thread could not be loaded.</div>';
+            }
+        }
+
+        async function handleDeleteCurrentTopic() {
+            if (!confirm('Are you sure you want to permanently delete this discussion thread and all its replies?')) return;
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Discussion thread deleted successfully.', 'success');
+                    setTimeout(() => {
+                        window.location.replace('/forum');
+                    }, 600);
+                } else {
+                    App.showToast(json.message || 'Failed to delete discussion thread.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting discussion.', 'error');
+            }
+        }
+
+        async function loadComments() {
+            const container = document.getElementById('comments-list');
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/comments`);
+                const json = await res.json();
+                const comments = json.data || [];
+
+                document.getElementById('comments-count-badge').innerText = `(${comments.length})`;
+
+                if (comments.length === 0) {
+                    container.innerHTML = '<div style="padding:28px 20px; text-align:center; color:var(--muted); font-size:0.9rem; background:var(--bg); border:1px dashed var(--border); border-radius:var(--radius-sm);">No responses yet. Be the first to share an answer or perspective!</div>';
+                    return;
+                }
+
+                container.innerHTML = comments.map(c => {
+                    const authorInfo = getAuthorBadges(c.author);
+                    const canDelete = App.currentUser && (
+                        App.currentUser.role === 'ADMIN' ||
+                        App.currentUser.role === 'DEAN' ||
+                        App.currentUser.role === 'HOD' ||
+                        App.currentUser.role === 'FACULTY' ||
+                        (c.author && String(App.currentUser.id) === String(c.author.id))
+                    );
+
+                    const canAccept = App.currentUser && (
+                        (currentTopic && currentTopic.author && String(App.currentUser.id) === String(currentTopic.author.id)) ||
+                        App.currentUser.role === 'ADMIN' ||
+                        App.currentUser.role === 'DEAN' ||
+                        App.currentUser.role === 'HOD' ||
+                        App.currentUser.role === 'FACULTY'
+                    );
+
+                    const acceptedBadge = c.acceptedAnswer ? `
+                        <div style="display:inline-flex; align-items:center; gap:6px; background:#e6f4ea; color:#137333; font-weight:700; font-size:0.78rem; padding:4px 10px; border-radius:var(--radius-sm); margin-bottom:10px; border:1px solid #ceead6;">
+                            ${App.icon('checkCircle', 14)}
+                            <span>Accepted Solution</span>
+                        </div>
+                    ` : '';
+
+                    const acceptBtn = (canAccept && !c.acceptedAnswer) ? `
+                        <button class="btn btn-sm btn-outline" style="color:#137333; border-color:var(--border); padding:3px 9px; font-size:0.75rem; border-radius:var(--radius-sm); display:inline-flex; align-items:center; gap:4px;" onclick="handleAcceptComment(${c.id})" title="Mark as Accepted Solution">
+                            ${App.icon('checkCircle', 12)}
+                            <span>Accept Solution</span>
+                        </button>
+                    ` : '';
+
+                    const reportCommentBtn = `
+                        <button class="btn btn-sm btn-outline" style="color:var(--muted); border-color:var(--border); padding:3px 9px; font-size:0.75rem; border-radius:var(--radius-sm); display:inline-flex; align-items:center; gap:4px;" onclick="openReportModal('COMMENT', ${c.id})" title="Report response">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+                            <span>Report</span>
+                        </button>
+                    `;
+
+                    const deleteBtn = canDelete ? `
+                        <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:var(--border); padding:3px 9px; font-size:0.75rem; border-radius:var(--radius-sm); display:inline-flex; align-items:center; gap:4px;" onclick="handleDeleteComment(${c.id})" title="Delete Reply">
+                            ${App.icon('trash', 12)}
+                            <span>Delete</span>
+                        </button>
+                    ` : '';
+
+                    const borderStyle = c.acceptedAnswer ? 'border: 2px solid #34a853; background: rgba(52, 168, 83, 0.04);' : '';
+
+                    return `
+                        <div class="comment-card" id="comment-${c.id}" style="${borderStyle}">
+                            ${acceptedBadge}
+                            <div class="comment-header">
+                                <div class="comment-author-wrap">
+                                    <div class="comment-avatar">
+                                        ${authorInfo.initials}
+                                    </div>
+                                    <div>
+                                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                            <span class="comment-author-name">${App.escapeHtml(authorInfo.name)}</span>
+                                            ${authorInfo.badges}
+                                        </div>
+                                        ${authorInfo.meta ? `<div class="comment-author-meta">${authorInfo.meta}</div>` : ''}
+                                    </div>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                    <span style="font-size:0.75rem; color:var(--muted); display:inline-flex; align-items:center; gap:4px;">
+                                        ${App.icon('clock', 12)}
+                                        <span>${App.formatDate(c.createdAt)}</span>
+                                    </span>
+                                    ${acceptBtn}
+                                    ${reportCommentBtn}
+                                    ${deleteBtn}
+                                </div>
+                            </div>
+                            <div class="comment-body">
+                                ${App.escapeHtml(c.content)}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<div style="color:var(--danger); padding:16px;">Error loading replies.</div>';
+            }
+        }
+
+        async function handleDeleteComment(commentId) {
+            if (!confirm('Are you sure you want to delete this reply?')) return;
+            try {
+                const res = await fetch(`/api/forum/comments/${commentId}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Reply removed successfully.', 'success');
+                    loadComments();
+                } else {
+                    App.showToast(json.message || 'Failed to delete reply.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting reply.', 'error');
+            }
+        }
+
+        async function handleToggleSolved() {
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/solve`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast(json.message, 'success');
+                    loadTopic();
+                } else {
+                    App.showToast(json.message || 'Could not update solved status', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while toggling solved status', 'error');
+            }
+        }
+
+        async function handleAcceptComment(commentId) {
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/accept-comment/${commentId}`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok && json.success) {
+                    App.showToast('Solution accepted for this discussion!', 'success');
+                    loadTopic();
+                    loadComments();
+                } else {
+                    App.showToast(json.message || 'Could not accept answer', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while accepting answer', 'error');
+            }
+        }
+
+        // ================= CONTENT REPORTING =================
+        let reportTargetType = null;
+        let reportTargetId = null;
+
+        function openReportModal(targetType, targetId) {
+            if (!App.currentUser) {
+                App.showToast('Please sign in to report content.', 'info');
+                setTimeout(() => window.location.href = '/login', 1200);
+                return;
+            }
+            reportTargetType = targetType;
+            reportTargetId = targetId;
+            document.getElementById('report-target-info').innerText = `Reporting ${targetType.toLowerCase()} #${targetId} for academic review`;
+            document.getElementById('report-form').reset();
+            App.openModal('report-modal');
+        }
+
+        async function submitContentReport(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-report');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            const payload = {
+                targetType: reportTargetType,
+                targetId: reportTargetId,
+                reason: document.getElementById('report-reason').value,
+                details: document.getElementById('report-details').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/forum/reports', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    App.showToast('Thank you. Content reported for academic review.', 'success');
+                    App.closeModal('report-modal');
+                } else {
+                    App.showToast(data.message || 'Report could not be submitted.', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error while reporting.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Report';
+            }
+        }
+
+        async function handleTopicUpvote() {
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/like`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast(json.message, 'success');
+                    loadTopic();
+                } else {
+                    App.showToast(json.message || 'Upvote failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function handleTopicBookmark() {
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/bookmark`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast(json.message, 'success');
+                    loadTopic();
+                } else {
+                    App.showToast(json.message || 'Bookmark failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function handlePostComment(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-post-reply');
+            btn.disabled = true;
+            btn.innerText = 'Posting...';
+
+            const content = document.getElementById('comment-content').value.trim();
+
+            try {
+                const res = await fetch(`/api/forum/topics/${topicId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    App.showToast('Reply posted successfully!', 'success');
+                    document.getElementById('comment-form').reset();
+                    loadComments();
+                } else {
+                    App.showToast(data.message || 'Failed to post reply', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Post Reply';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => initTopicDetail());
+    </script>
+</body>
+</html>

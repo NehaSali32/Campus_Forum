@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dean of Academics Portal | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .portal-header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: #ffffff;
+            padding: 32px 24px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-md);
+        }
+        .portal-title {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .portal-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .dean-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            padding: 4px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.82rem;
+            font-weight: 700;
+            margin-top: 12px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 18px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: var(--primary-light);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        .badge-count {
+            background: var(--urgent);
+            color: #fff;
+            font-size: 0.72rem;
+            padding: 2px 7px;
+            border-radius: var(--radius-full);
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Unified Header Navigation -->
+    <header class="navbar">
+        <div class="nav-brand"></div>
+        <ul class="nav-links"></ul>
+        <div id="nav-auth-container" class="nav-right-actions"></div>
+    </header>
+
+    <main class="main-content" style="max-width:1240px; margin:28px auto; padding:0 20px;">
+        <!-- Dean Banner -->
+        <div class="portal-header">
+            <h1 class="portal-title">Dean of Academics Console</h1>
+            <p class="portal-subtitle">Institutional Academic Oversight &bull; Inter-Departmental Leadership &bull; Collegiate Event Sanctions</p>
+            <div id="dean-role-tag" class="dean-badge">Office of Academic Affairs</div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="stats-grid" style="grid-template-columns: repeat(6, 1fr); margin-bottom:28px;">
+            <div class="stat-card">
+                <div class="stat-value" id="kpi-students">0</div>
+                <div class="stat-label">Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="kpi-faculty">0</div>
+                <div class="stat-label">Faculty</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="kpi-hods" style="color:var(--primary);">0</div>
+                <div class="stat-label">Appointed HODs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="kpi-departments">0</div>
+                <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid var(--urgent);">
+                <div class="stat-value" id="kpi-events" style="color:var(--urgent);">0</div>
+                <div class="stat-label">Pending Events</div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid var(--forest);">
+                <div class="stat-value" id="kpi-clubs" style="color:var(--forest);">0</div>
+                <div class="stat-label">Pending Club Leads</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchDeanTab('events')">
+                <span>College-wide Event Approvals</span>
+                <span class="badge-count" id="tab-events-badge" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchDeanTab('clubs')">
+                <span>Club Leadership Sanctions</span>
+                <span class="badge-count" id="tab-clubs-badge" style="display:none;">0</span>
+            </button>
+            <button class="tab-btn" onclick="switchDeanTab('faculty')">Institutional Faculty &amp; HODs</button>
+        </div>
+
+        <!-- TAB 1: Event Approvals Desk -->
+        <div id="pane-events" class="tab-pane active">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark);">Pending Events Requiring Institutional Sanction</h3>
+                        <p style="font-size:0.85rem; color:var(--muted); margin-top:2px;">Academic symposiums, student club workshops, and inter-departmental events.</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadDeanEvents()">Refresh</button>
+                </div>
+                <div id="dean-events-list">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading events...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Club Leadership Sanctions Desk -->
+        <div id="pane-clubs" class="tab-pane">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark);">Pending Club Leadership Applications</h3>
+                        <p style="font-size:0.85rem; color:var(--muted); margin-top:2px;">Applications from students across all departments to lead campus clubs.</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadDeanClubRequests()">Refresh</button>
+                </div>
+                <div id="dean-club-requests-list">
+                    <div style="text-align:center; padding:30px; color:var(--muted);">Loading applications...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Faculty & HOD Directory -->
+        <div id="pane-faculty" class="tab-pane">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; font-weight:800; color:var(--dark);">Institutional Faculty &amp; Department Heads</h3>
+                        <p style="font-size:0.85rem; color:var(--muted); margin-top:2px;">Complete register of faculty and department heads across the college.</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline" onclick="loadDeanFaculty()">Refresh</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Emp ID</th>
+                                <th>Full Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dean-faculty-body">
+                            <tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Loading faculty directory...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Reject Reason Modal -->
+    <div class="modal-backdrop" id="dean-reject-modal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="dean-reject-title">Decline Proposal</h3>
+                <button class="modal-close" onclick="App.closeModal('dean-reject-modal')">&times;</button>
+            </div>
+            <div style="padding:16px 0;">
+                <label class="form-label" for="dean-reject-reason">Dean Review Remarks / Reason *</label>
+                <textarea id="dean-reject-reason" class="form-control" rows="4" placeholder="Enter explanation for declining proposal..." required></textarea>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border); padding-top:14px;">
+                <button type="button" class="btn btn-outline" onclick="App.closeModal('dean-reject-modal')">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="submitDeanRejection()">Confirm Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let currentDean = null;
+        let deanRejectAction = null; // { type: 'event'|'club', id: 123 }
+
+        async function initDeanPortal() {
+            await loadDeanOverview();
+            loadDeanEvents();
+            loadDeanClubRequests();
+            loadDeanFaculty();
+        }
+
+        async function loadDeanOverview() {
+            try {
+                const res = await fetch('/api/dean/overview');
+                if (!res.ok) {
+                    App.showToast('Dean privileges required.', 'error');
+                    setTimeout(() => window.location.replace('/'), 1000);
+                    return;
+                }
+                const json = await res.json();
+                const d = json.data || {};
+                currentDean = d.dean;
+
+                document.getElementById('dean-role-tag').innerText = currentDean ? `${currentDean.designation} &bull; ${currentDean.fullName}` : 'Office of Academic Affairs';
+
+                document.getElementById('kpi-students').innerText = d.totalStudents || 0;
+                document.getElementById('kpi-faculty').innerText = d.totalFaculty || 0;
+                document.getElementById('kpi-hods').innerText = d.totalHods || 0;
+                document.getElementById('kpi-departments').innerText = d.totalDepartments || 0;
+                document.getElementById('kpi-events').innerText = d.pendingEventsCount || 0;
+                document.getElementById('kpi-clubs').innerText = d.pendingClubRequestsCount || 0;
+
+                const evBadge = document.getElementById('tab-events-badge');
+                if (d.pendingEventsCount > 0) {
+                    evBadge.innerText = d.pendingEventsCount;
+                    evBadge.style.display = 'inline-block';
+                } else {
+                    evBadge.style.display = 'none';
+                }
+
+                const clBadge = document.getElementById('tab-clubs-badge');
+                if (d.pendingClubRequestsCount > 0) {
+                    clBadge.innerText = d.pendingClubRequestsCount;
+                    clBadge.style.display = 'inline-block';
+                } else {
+                    clBadge.style.display = 'none';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadDeanEvents() {
+            const list = document.getElementById('dean-events-list');
+            try {
+                const res = await fetch('/api/dean/events?status=PENDING');
+                const json = await res.json();
+                const events = json.data || [];
+
+                if (events.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding:36px; color:var(--muted);">${App.icon('checkCircle', 24)}<div style="margin-top:8px;">No pending events awaiting Dean approval.</div></div>`;
+                    return;
+                }
+
+                list.innerHTML = events.map(ev => `
+                    <div class="card" style="margin-bottom:14px; border-left:4px solid var(--urgent); background:var(--bg);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                            <div style="flex:1; min-width:280px;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                                    <span class="badge badge-urgent">PENDING DEAN SANCTION</span>
+                                    <span class="badge" style="background:var(--primary-light); color:var(--primary); font-weight:700;">${App.escapeHtml(ev.category)}</span>
+                                    ${ev.department ? `<span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">Dept: ${App.escapeHtml(ev.department.code)}</span>` : ''}
+                                    ${ev.club ? `<span class="badge" style="background:#f3e8ff; color:#7c3aed; font-weight:700;">Club: ${App.escapeHtml(ev.club.clubName)}</span>` : ''}
+                                </div>
+                                <h4 style="font-size:1.15rem; font-weight:800; color:var(--dark); margin-bottom:6px;">${App.escapeHtml(ev.title)}</h4>
+                                <p style="font-size:0.88rem; color:var(--dark-muted); line-height:1.55; margin-bottom:10px;">${App.escapeHtml(ev.description)}</p>
+                                
+                                <div style="display:flex; gap:18px; flex-wrap:wrap; font-size:0.8rem; color:var(--muted);">
+                                    <span>${App.icon('calendar', 13)} <strong>Date:</strong> ${ev.eventDate} at ${App.escapeHtml(ev.eventTime)}</span>
+                                    <span>${App.icon('mapPin', 13)} <strong>Location:</strong> ${App.escapeHtml(ev.location)}</span>
+                                    <span>${App.icon('user', 13)} <strong>Organizer:</strong> ${App.escapeHtml(ev.organizer || ev.createdBy.fullName)} (${ev.createdBy.email})</span>
+                                    ${ev.maxParticipants ? `<span>${App.icon('users', 13)} <strong>Capacity:</strong> ${ev.maxParticipants} attendees</span>` : ''}
+                                </div>
+                                ${ev.rules ? `<div style="margin-top:8px; font-size:0.8rem; background:var(--card-bg); padding:6px 12px; border-radius:var(--radius-sm); border:1px solid var(--border);"><strong>Rules:</strong> ${App.escapeHtml(ev.rules)}</div>` : ''}
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <button class="btn btn-sm btn-primary" onclick="approveDeanEvent(${ev.id})" style="background:var(--forest); border-color:var(--forest); display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('check', 14)} Sanction Event
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="openDeanRejectModal('event', ${ev.id}, '${App.escapeHtml(ev.title)}')" style="display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('x', 14)} Decline
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="deleteDeanEvent(${ev.id})" style="color:var(--danger); border-color:rgba(239,68,68,0.35); display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('trash', 14)} Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<div style="color:var(--danger); padding:20px;">Failed to load events.</div>';
+            }
+        }
+
+        async function approveDeanEvent(id) {
+            if (!confirm('Sanction and publish this event across the institution?')) return;
+            try {
+                const res = await fetch(`/api/dean/events/${id}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Event sanctioned successfully by Dean!', 'success');
+                    loadDeanOverview();
+                    loadDeanEvents();
+                } else {
+                    App.showToast(json.message || 'Sanction failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function deleteDeanEvent(id) {
+            if (!confirm('Permanently delete this event proposal? All attendee registrations will be cleared.')) return;
+            try {
+                const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event deleted successfully.', 'success');
+                    loadDeanOverview();
+                    loadDeanEvents();
+                } else {
+                    App.showToast(json.message || 'Failed to delete event.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting event.', 'error');
+            }
+        }
+
+        async function loadDeanClubRequests() {
+            const list = document.getElementById('dean-club-requests-list');
+            try {
+                const res = await fetch('/api/dean/club-requests');
+                const json = await res.json();
+                const requests = json.data || [];
+
+                if (requests.length === 0) {
+                    list.innerHTML = `<div style="text-align:center; padding:36px; color:var(--muted);">${App.icon('checkCircle', 24)}<div style="margin-top:8px;">No pending club leader requests.</div></div>`;
+                    return;
+                }
+
+                list.innerHTML = requests.map(r => `
+                    <div class="card" style="margin-bottom:14px; border-left:4px solid var(--forest); background:var(--bg);">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px;">
+                            <div style="flex:1;">
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+                                    <span class="badge" style="background:#e0e7ff; color:#3730a3; font-weight:700;">Club Application</span>
+                                    <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">${App.escapeHtml(r.club.clubName)}</span>
+                                </div>
+                                <h4 style="font-size:1.1rem; font-weight:800; color:var(--dark); margin-bottom:4px;">
+                                    Student: ${App.escapeHtml(r.student.fullName)} 
+                                    <span style="font-size:0.85rem; font-weight:500; color:var(--muted);">(PRN: ${App.escapeHtml(r.student.prnRollNo || 'N/A')} &bull; ${r.student.email})</span>
+                                </h4>
+                                <div style="font-size:0.88rem; color:var(--dark); margin:8px 0; background:var(--card-bg); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+                                    <strong>Statement of Purpose / Vision:</strong>
+                                    <div style="margin-top:4px; color:var(--dark-muted); line-height:1.5;">${App.escapeHtml(r.reason)}</div>
+                                </div>
+                                <div style="font-size:0.78rem; color:var(--muted);">
+                                    Submitted on: ${App.formatDate(r.createdAt)}
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <button class="btn btn-sm btn-primary" onclick="approveDeanClubRequest(${r.id})" style="background:var(--forest); border-color:var(--forest); display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('check', 14)} Sanction Club Leader
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="openDeanRejectModal('club', ${r.id}, '${App.escapeHtml(r.student.fullName)} for ${App.escapeHtml(r.club.clubName)}')" style="display:inline-flex; align-items:center; gap:5px;">
+                                    ${App.icon('x', 14)} Decline
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = '<div style="color:var(--danger); padding:20px;">Failed to load club applications.</div>';
+            }
+        }
+
+        async function approveDeanClubRequest(id) {
+            if (!confirm('Sanction this student as official Club Leader?')) return;
+            try {
+                const res = await fetch(`/api/dean/club-requests/${id}/approve`, { method: 'PUT' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Club Leader sanctioned successfully!', 'success');
+                    loadDeanOverview();
+                    loadDeanClubRequests();
+                } else {
+                    App.showToast(json.message || 'Sanction failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        function openDeanRejectModal(type, id, title) {
+            deanRejectAction = { type, id };
+            document.getElementById('dean-reject-title').innerText = `Decline ${type === 'event' ? 'Event' : 'Club Request'}: ${title}`;
+            document.getElementById('dean-reject-reason').value = '';
+            App.openModal('dean-reject-modal');
+        }
+
+        async function submitDeanRejection() {
+            if (!deanRejectAction) return;
+            const reason = document.getElementById('dean-reject-reason').value.trim();
+            if (!reason) {
+                alert('Please enter a rejection reason.');
+                return;
+            }
+
+            const url = deanRejectAction.type === 'event' 
+                ? `/api/dean/events/${deanRejectAction.id}/reject` 
+                : `/api/dean/club-requests/${deanRejectAction.id}/reject`;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast('Proposal declined with feedback recorded.', 'info');
+                    App.closeModal('dean-reject-modal');
+                    loadDeanOverview();
+                    if (deanRejectAction.type === 'event') loadDeanEvents();
+                    else loadDeanClubRequests();
+                } else {
+                    App.showToast(json.message || 'Decline failed', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function loadDeanFaculty() {
+            const tbody = document.getElementById('dean-faculty-body');
+            try {
+                const res = await fetch('/api/dean/faculty-directory');
+                const json = await res.json();
+                const list = json.data || [];
+
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">No faculty registered.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(f => `
+                    <tr>
+                        <td><strong>${App.escapeHtml(f.employeeId || 'FAC' + f.id)}</strong></td>
+                        <td>
+                            <div style="font-weight:700; color:var(--dark);">${App.escapeHtml(f.fullName)}</div>
+                        </td>
+                        <td>${f.department ? App.escapeHtml(f.department.name) : '<span style="color:var(--muted);">General</span>'}</td>
+                        <td>${App.escapeHtml(f.designation || 'Professor')}</td>
+                        <td>
+                            <span class="badge ${f.role === 'HOD' ? 'badge-hod' : (f.role === 'DEAN' ? 'badge-dean' : '')}">${f.role}</span>
+                        </td>
+                        <td>${App.escapeHtml(f.email)}</td>
+                        <td>
+                            <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">
+                                ${App.escapeHtml(f.status)}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7" style="color:var(--danger); text-align:center;">Failed to load faculty.</td></tr>';
+            }
+        }
+
+        function switchDeanTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+            const pane = document.getElementById('pane-' + tab);
+            if (pane) pane.classList.add('active');
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            if (tab === 'events') buttons[0].classList.add('active');
+            else if (tab === 'clubs') buttons[1].classList.add('active');
+            else if (tab === 'faculty') buttons[2].classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => initDeanPortal());
+    </script>
+</body>
+</html>

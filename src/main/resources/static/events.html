@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Events &amp; Workshops | Campus Forum</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">CF</div>
+            <div>
+                <div class="brand-title">Campus Forum</div>
+                <div class="brand-subtitle">Academic Discussion &amp; College Communication Platform</div>
+            </div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/notices">Notices</a></li>
+            <li><a href="/forum">Discussions</a></li>
+            <li><a href="/events" class="active">Events</a></li>
+            <li><a href="/resources">Resources</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+        <div class="nav-right-actions" id="nav-auth-container">
+            <!-- Populated via app.js -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <!-- Page Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+            <div>
+                <h1 style="font-size:1.75rem; font-weight:800; color:var(--dark); margin:0;">Campus Events &amp; Technical Symposia</h1>
+                <p style="color:var(--muted); font-size:0.9rem; margin-top:4px;">Participate in collegiate hackathons, technical symposiums, research seminars, and cultural fests</p>
+            </div>
+            <button class="btn btn-primary" onclick="App.openModal('create-event-modal')">
+                <span style="display:flex; align-items:center; gap:6px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>Submit Event Proposal</span>
+                </span>
+            </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar" style="margin-bottom:24px;">
+            <div class="category-pills" id="event-category-pills">
+                <button class="pill active" onclick="setEventCategory('All', this)">All Events</button>
+                <button class="pill" onclick="setEventCategory('Technical', this)">Technical</button>
+                <button class="pill" onclick="setEventCategory('Hackathon', this)">Hackathons</button>
+                <button class="pill" onclick="setEventCategory('Workshop', this)">Workshops</button>
+                <button class="pill" onclick="setEventCategory('Seminar', this)">Seminars</button>
+                <button class="pill" onclick="setEventCategory('Cultural', this)">Cultural</button>
+                <button class="pill" onclick="setEventCategory('Sports', this)">Sports</button>
+                <button class="pill" onclick="setEventCategory('Placement', this)">Placement</button>
+            </div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="events-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px;">
+            <div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--muted);">Loading campus events...</div>
+        </div>
+
+    </main>
+
+    <!-- Create Event Modal -->
+    <div class="modal-backdrop" id="create-event-modal">
+        <div class="modal-content" style="max-width:650px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Submit Campus Event</h3>
+                <button class="modal-close" onclick="App.closeModal('create-event-modal')">&times;</button>
+            </div>
+            <form id="create-event-form" onsubmit="handleCreateEvent(event)">
+                <div class="form-group">
+                    <label class="form-label" for="ev-title">Event Title *</label>
+                    <input type="text" id="ev-title" class="form-control" placeholder="e.g., Smart Campus Hackathon 2026" required>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="ev-category">Category *</label>
+                        <select id="ev-category" class="form-control" required>
+                            <option value="Technical">Technical</option>
+                            <option value="Hackathon">Hackathon</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Seminar">Seminar</option>
+                            <option value="Cultural">Cultural</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Placement">Placement</option>
+                            <option value="Academic">Academic</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ev-dept">Organizing Department</label>
+                        <select id="ev-dept" class="form-control">
+                            <option value="">Campus-Wide / Student Council</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="ev-date">Date *</label>
+                        <input type="date" id="ev-date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ev-time">Time *</label>
+                        <input type="text" id="ev-time" class="form-control" placeholder="e.g., 10:00 AM - 04:00 PM" required>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" for="ev-location">Venue / Location *</label>
+                        <input type="text" id="ev-location" class="form-control" placeholder="e.g., Main Auditorium or CCF Lab" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ev-organizer">Organizer / Club</label>
+                        <input type="text" id="ev-organizer" class="form-control" placeholder="e.g., Coding Club / Dept of IT">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ev-desc">Event Description &amp; Schedule *</label>
+                    <textarea id="ev-desc" class="form-control" rows="4" placeholder="Detail prizes, registration eligibility, schedule..." required></textarea>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+                    <button type="button" class="btn btn-outline" onclick="App.closeModal('create-event-modal')">Cancel</button>
+                    <button type="submit" id="btn-submit-event" class="btn btn-primary">Submit Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div>&copy; 2026 Campus Forum &bull; Academic Discussion &amp; College Communication Platform &bull; Department of Information Technology</div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let currentEventCategory = 'All';
+
+        async function initEvents() {
+            await loadDepartmentDropdown();
+            await loadEvents();
+        }
+
+        async function loadDepartmentDropdown() {
+            try {
+                const res = await fetch('/api/departments');
+                if (!res.ok) return;
+                const json = await res.json();
+                const depts = json.data || [];
+                const select = document.getElementById('ev-dept');
+                depts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.innerText = `${d.name} (${d.code})`;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function setEventCategory(category, btn) {
+            currentEventCategory = category;
+            document.querySelectorAll('#event-category-pills .pill').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            loadEvents();
+        }
+
+        async function loadEvents() {
+            const container = document.getElementById('events-grid');
+            container.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--muted);">Loading campus events...</div>';
+
+            const url = currentEventCategory === 'All' ? '/api/events' : `/api/events?category=${encodeURIComponent(currentEventCategory)}`;
+
+            try {
+                const res = await fetch(url);
+                const json = await res.json();
+                const events = json.data || [];
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align:center; padding:60px 20px; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);">
+                            <div style="margin-bottom:12px; display:flex; justify-content:center;">${App.icon('calendar', 44, 'text-muted')}</div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark);">No events found in this category</h3>
+                            <p style="font-size:0.88rem; margin-top:4px;">Upcoming symposiums, competitions, and seminars will appear here.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = events.map(ev => {
+                    const deptTag = ev.department ? `<span class="badge" style="background:var(--primary-light); color:var(--navy); font-weight:700;">${App.escapeHtml(ev.department.code)}</span>` : '';
+                    
+                    const elig = ev.eligibility || 'OPEN_TO_ALL';
+                    let eligBadge = '<span class="badge" style="background:#ecfdf5; color:#065f46; font-weight:700;">Open to All</span>';
+                    if (elig === 'MEMBERS_ONLY') {
+                        eligBadge = `<span class="badge" style="background:#fef3c7; color:#92400e; font-weight:700;">${ev.club ? App.escapeHtml(ev.club.clubName) + ' ' : ''}Members Only</span>`;
+                    } else if (elig === 'DEPARTMENT_ONLY') {
+                        eligBadge = `<span class="badge" style="background:#ede9fe; color:#5b21b6; font-weight:700;">${ev.department ? App.escapeHtml(ev.department.code) + ' ' : ''}Dept Only</span>`;
+                    }
+
+                    const user = App.currentUser;
+                    const canDelete = user && (user.role === 'ADMIN' || user.role === 'DEAN' || user.role === 'HOD' || user.role === 'FACULTY' || (ev.createdBy && ev.createdBy.id === user.id));
+
+                    return `
+                        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; border-top:4px solid var(--forest);">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                        <span class="badge" style="background:var(--forest-light); color:var(--forest); font-weight:700;">${App.escapeHtml(ev.category)}</span>
+                                        ${deptTag}
+                                        ${eligBadge}
+                                    </div>
+                                    <span style="font-size:0.8rem; color:var(--muted); display:inline-flex; align-items:center; gap:4px;">
+                                        ${App.icon('calendar', 13)}
+                                        <span>${ev.eventDate}</span>
+                                    </span>
+                                </div>
+
+                                <h3 style="font-size:1.15rem; font-weight:700; color:var(--dark); margin-bottom:8px; line-height:1.4;">
+                                    ${App.escapeHtml(ev.title)}
+                                </h3>
+
+                                <p style="font-size:0.88rem; color:var(--dark-muted); line-height:1.6; margin-bottom:14px;">
+                                    ${App.escapeHtml(ev.description.substring(0, 160))}${ev.description.length > 160 ? '...' : ''}
+                                </p>
+
+                                <div style="font-size:0.82rem; color:var(--muted); margin-bottom:14px; display:flex; flex-direction:column; gap:6px;">
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        ${App.icon('clock', 14)}
+                                        <span><strong>Time:</strong> ${App.escapeHtml(ev.eventTime)}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        ${App.icon('mapPin', 14)}
+                                        <span><strong>Venue:</strong> ${App.escapeHtml(ev.location)}</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        ${App.icon('users', 14)}
+                                        <span><strong>Organizer:</strong> ${App.escapeHtml(ev.organizer || 'Student Council')}</span>
+                                    </div>
+                                    ${ev.maxParticipants ? `<div style="display:flex; align-items:center; gap:6px;">
+                                        ${App.icon('check', 14)}
+                                        <span><strong>Capacity Limit:</strong> ${ev.maxParticipants} Attendees</span>
+                                    </div>` : ''}
+                                </div>
+                            </div>
+
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:12px; margin-top:8px; gap:8px;">
+                                <span style="font-size:0.8rem; color:var(--muted); display:inline-flex; align-items:center; gap:4px;" id="event-attendee-count-${ev.id}">
+                                    ${App.icon('users', 13)}
+                                    <span>Loading...</span>
+                                </span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    ${canDelete ? `
+                                        <button class="btn btn-sm btn-outline" style="color:var(--danger); border-color:rgba(239,68,68,0.35); padding:5px 9px; display:inline-flex; align-items:center; gap:4px;" onclick="deleteEventCard(${ev.id})" title="Delete Event">
+                                            ${App.icon('trash', 14)}
+                                            <span style="font-size:0.75rem;">Delete</span>
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-primary" id="btn-register-${ev.id}" onclick="handleEventRegister(${ev.id})">
+                                        Register / Attend
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Check registration status for each event asynchronously
+                events.forEach(async (ev) => {
+                    try {
+                        const detRes = await fetch(`/api/events/${ev.id}`);
+                        if (!detRes.ok) return;
+                        const detJson = await detRes.json();
+                        const detData = detJson.data || {};
+                        const btn = document.getElementById(`btn-register-${ev.id}`);
+                        const countSpan = document.getElementById(`event-attendee-count-${ev.id}`);
+
+                        if (countSpan) {
+                            countSpan.innerHTML = `
+                                ${App.icon('users', 13)}
+                                <span>${detData.attendeeCount || 0} registered</span>
+                            `;
+                        }
+                        if (btn && detData.isRegistered) {
+                            btn.innerHTML = `
+                                <span style="display:inline-flex; align-items:center; gap:4px;">
+                                    ${App.icon('check', 14)}
+                                    <span>Registered</span>
+                                </span>
+                            `;
+                            btn.classList.remove('btn-primary');
+                            btn.classList.add('btn-outline');
+                            btn.style.color = 'var(--forest)';
+                            btn.style.borderColor = 'var(--forest)';
+                        }
+                    } catch (err) {
+                        // ignore background status fetch error
+                    }
+                });
+            } catch (e) {
+                container.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--danger);">Error loading events.</div>';
+            }
+        }
+
+        async function handleEventRegister(id) {
+            try {
+                const res = await fetch(`/api/events/${id}/register`, { method: 'POST' });
+                const json = await res.json();
+                if (res.ok) {
+                    App.showToast(json.message, 'success');
+                    loadEvents();
+                } else {
+                    App.showToast(json.message || 'Registration failed', 'error');
+                    if (res.status === 404) {
+                        loadEvents();
+                    }
+                }
+            } catch (e) {
+                App.showToast('Network error', 'error');
+            }
+        }
+
+        async function deleteEventCard(id) {
+            if (!confirm('Are you sure you want to permanently delete this event? This will remove all attendee registrations.')) return;
+            try {
+                const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    App.showToast('Event deleted successfully.', 'success');
+                    loadEvents();
+                } else {
+                    App.showToast(json.message || 'Failed to delete event.', 'error');
+                }
+            } catch (e) {
+                App.showToast('Network error while deleting event.', 'error');
+            }
+        }
+
+        async function handleCreateEvent(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-event');
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            const deptVal = document.getElementById('ev-dept').value;
+
+            const payload = {
+                title: document.getElementById('ev-title').value.trim(),
+                category: document.getElementById('ev-category').value,
+                departmentId: deptVal ? parseInt(deptVal) : null,
+                eventDate: document.getElementById('ev-date').value,
+                eventTime: document.getElementById('ev-time').value.trim(),
+                location: document.getElementById('ev-location').value.trim(),
+                organizer: document.getElementById('ev-organizer').value.trim(),
+                description: document.getElementById('ev-desc').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/events', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    App.showToast(data.message || 'Event proposal submitted successfully!', 'success');
+                    App.closeModal('create-event-modal');
+                    document.getElementById('create-event-form').reset();
+                    loadEvents();
+                } else {
+                    App.showToast(data.message || 'Failed to submit event', 'error');
+                }
+            } catch (err) {
+                App.showToast('Network error', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Event';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => initEvents());
+    </script>
+</body>
+</html>
