@@ -62,10 +62,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (initialAdminPassword.isBlank()) {
-            throw new IllegalStateException("ADMIN_PASSWORD must be set to a non-blank value.");
-        }
-
         // 1. Seed Core Categories if empty
         if (categoryRepository.count() == 0) {
             categoryRepository.saveAll(List.of(
@@ -94,6 +90,10 @@ public class DataInitializer implements CommandLineRunner {
         // 3. Ensure Primary Administrator Account Exists
         boolean hasAdmin = userRepository.findAll().stream().anyMatch(u -> u.getRole() == Role.ADMIN);
         if (!hasAdmin) {
+            if (initialAdminPassword.isBlank()) {
+                throw new IllegalStateException("ADMIN_PASSWORD must be set when no administrator account exists.");
+            }
+
             User primaryAdmin = new User();
             primaryAdmin.setFullName("Campus Forum Administrator");
             primaryAdmin.setEmail(initialAdminEmail.trim().toLowerCase());
@@ -106,7 +106,8 @@ public class DataInitializer implements CommandLineRunner {
             primaryAdmin.setStatus("ACTIVE");
             userRepository.save(primaryAdmin);
         } else {
-            if (userRepository.findByEmail(initialAdminEmail.trim().toLowerCase()).isEmpty()) {
+            if (!initialAdminPassword.isBlank()
+                    && userRepository.findByEmail(initialAdminEmail.trim().toLowerCase()).isEmpty()) {
                 User primaryAdmin = new User();
                 primaryAdmin.setFullName("Campus Forum Administrator");
                 primaryAdmin.setEmail(initialAdminEmail.trim().toLowerCase());
