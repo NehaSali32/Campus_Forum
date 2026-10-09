@@ -62,6 +62,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (initialAdminPassword.isBlank()) {
+            throw new IllegalStateException("ADMIN_PASSWORD must be set to a non-blank value.");
+        }
+
         // 1. Seed Core Categories if empty
         if (categoryRepository.count() == 0) {
             categoryRepository.saveAll(List.of(

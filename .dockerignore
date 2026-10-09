@@ -1,0 +1,10 @@
+.git
+.github
+.vscode
+.env
+.env.*
+target
+uploads
+scratch
+cookie.txt
+*.log

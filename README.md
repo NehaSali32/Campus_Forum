@@ -18,17 +18,7 @@ A secure, modern, enterprise-ready academic discussion forum and official commun
 
 ## 🔑 Initial Administrator Credentials
 
-On first run, the system automatically initializes the foundational categories, academic departments, and the primary administrator account:
-
-| Attribute | Initial Production Value |
-| :--- | :--- |
-| **Admin Portal** | `http://localhost:8080/admin` or `http://localhost:8080/login` |
-| **Email / Username** | `admin@campusforum.edu` |
-| **Password** | `Admin@Campus2026` |
-| **Secondary Legacy Admin** | `admin@college.ac.in` / `admin123` |
-
-> [!IMPORTANT]
-> Log in immediately with these credentials upon first deployment and update your password via `/profile`.
+On first startup, the system initializes the foundational categories, academic departments, and an administrator account. Set `ADMIN_EMAIL` and a unique, strong `ADMIN_PASSWORD` before starting a production deployment. The production profile requires this password and will not start without it. Never publish deployment credentials in source code or documentation.
 
 ---
 
@@ -78,7 +68,7 @@ On first run, the system automatically initializes the foundational categories, 
 
 ## 🚀 Environment Configuration
 
-The application uses modern environment variable interpolation with safe production fallbacks:
+The application uses environment-driven configuration. Production secrets must be set explicitly:
 
 ```properties
 # Server Port
@@ -89,19 +79,47 @@ DB_URL=jdbc:mysql://localhost:3306/campus_connect_db?createDatabaseIfNotExist=tr
 DB_USERNAME=root
 DB_PASSWORD=your_mysql_password
 
-# Initial Admin Credentials
+# Initial Admin Credentials (set a unique value for each deployment)
 ADMIN_EMAIL=admin@campusforum.edu
-ADMIN_PASSWORD=Admin@Campus2026
+ADMIN_PASSWORD=
 
-# Seed Demo Data (set to false for clean production databases)
-APP_SEED_DEMO_DATA=false
+# Seed Demo Data (set to false for production)
+SEED_DEMO_DATA=false
 ```
+
+`ADMIN_PASSWORD` is required for production and must be set to a unique, strong secret.
 
 Templates provided:
 - `.env.example` — Environment template for containerized or cloud deployments
 - `application.properties` — Base configuration with env variable interpolation
 - `application-dev.properties` — Local development settings (demo data enabled)
 - `application-prod.properties` — Hardened production profile
+
+---
+
+## ☁️ Permanent Hosting on Railway
+
+The repository includes a Dockerfile and Railway deployment settings. Railway hosts the app and MySQL independently of your laptop. A Railway account and an active plan may be required; check current pricing before deploying.
+
+1. Push this repository to GitHub and create a Railway project from the repository.
+2. Add a Railway **MySQL** service and name it `MySQL`.
+3. In the app service's **Variables**, add:
+
+   | Variable | Value |
+   | :--- | :--- |
+   | `SPRING_PROFILES_ACTIVE` | `prod` |
+   | `ADMIN_EMAIL` | Your administrator email |
+   | `ADMIN_PASSWORD` | A new, strong password kept private |
+   | `DB_URL` | `jdbc:mysql://${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}?serverTimezone=UTC` |
+   | `DB_USERNAME` | `${{MySQL.MYSQLUSER}}` |
+   | `DB_PASSWORD` | `${{MySQL.MYSQLPASSWORD}}` |
+   | `SEED_DEMO_DATA` | `false` |
+   | `UPLOAD_DIR` | `/app/uploads` |
+
+4. Attach a Railway persistent volume to the app service at `/app/uploads` so uploaded documents survive redeploys. Keep the MySQL service's persistent storage enabled as well.
+5. Deploy the app service, then use Railway's **Networking** settings to generate a public domain. The resulting Railway domain remains reachable while the Railway services and plan remain active, even when your laptop is off.
+
+Set all secrets in Railway's Variables UI, not in this repository. Do not enable demo-data seeding on a public deployment.
 
 ---
 
@@ -138,11 +156,11 @@ Run the full automated test suite and package a production `.jar`:
 ```
 
 The resulting executable archive will be generated at:
-`target/campus-forum-2.0.0.jar`
+`target/campus-forum-1.0.0.jar`
 
 Launch in production:
 ```bash
-java -jar target/campus-forum-2.0.0.jar --spring.profiles.active=prod
+java -jar target/campus-forum-1.0.0.jar --spring.profiles.active=prod
 ```
 
 ---
